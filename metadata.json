@@ -1,0 +1,6 @@
+{
+  "name": "FacturaDo",
+  "description": "Sistema de facturación completo para emisión de facturas (B01, B02, etc.), cotizaciones, control de inventario, reportes DGII (606, 607, 608, 609), importación/exportación de Excel y diseño dinámico.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

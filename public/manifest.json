@@ -1,0 +1,43 @@
+{
+  "short_name": "FacturaDo",
+  "name": "FacturaDo — Facturación Fiscal & Control",
+  "description": "FacturaDo es la plataforma líder y segura en República Dominicana para la emisión de comprobantes fiscales (NCF), gestión comercial de inventarios, reportes de formatos 606 y 607 para la DGII y control POS.",
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/dap38hi9l/image/upload/w_192,h_192,c_fit/v1781252769/facturaDonuevologo_favicon_ej1mlq.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://res.cloudinary.com/dap38hi9l/image/upload/w_512,h_512,c_fit/v1781252769/facturaDonuevologo_favicon_ej1mlq.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://res.cloudinary.com/dap38hi9l/image/upload/v1781252769/facturaDonuevologo_favicon_ej1mlq.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/facturadomockup.png",
+      "type": "image/png",
+      "sizes": "1280x720",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/facturadomockup.png",
+      "type": "image/png",
+      "sizes": "720x1280",
+      "form_factor": "narrow"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#059669",
+  "background_color": "#ffffff"
+}
