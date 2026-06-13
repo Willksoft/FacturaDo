@@ -65,7 +65,7 @@
     "appId": "com.facturado.app",
     "productName": "FacturaDo",
     "directories": {
-      "output": "release"
+      "output": "C:/temp/facturado-release"
     },
     "files": [
       "dist/**/*",
