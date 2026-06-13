@@ -23,7 +23,8 @@ function createWindow() {
     win.loadURL('http://localhost:3000');
     // win.webContents.openDevTools();
   } else {
-    win.loadFile(path.join(__dirname, '../dist/index.html'));
+    // Wrap the deployed SaaS
+    win.loadURL('https://facturado.vercel.app/');
   }
 }
 

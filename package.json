@@ -1,7 +1,13 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "FacturaDo Desktop App",
+  "author": "Willksoft",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Willksoft/FacturaDo.git"
+  },
   "type": "module",
   "main": "electron/main.js",
   "scripts": {
