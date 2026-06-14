@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { Client, Product, Seller, InvoiceItem, NcfType, PaymentMethod, Invoice } from '../types';
 import { validateDgiiRnc } from '../lib/dgiiApi';
 import { emitirEcfMSeller } from '../lib/msellerApi';
@@ -159,6 +160,19 @@ export default function InvoiceCreator({
   // Draft banner indicator state
   const [hasRestoredDraft, setHasRestoredDraft] = useState(false);
 
+
+  // Prevent accidental tab closure if there are unsaved items
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (items.length > 0 || selectedClientId) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [items, selectedClientId]);
+
   // Load from LocalStorage draft on mount (ONLY if NOT prefilled duplicating document)
   useEffect(() => {
     if (!initialPrefilledDoc) {
@@ -187,6 +201,7 @@ export default function InvoiceCreator({
 
           if (loadedAny) {
             setHasRestoredDraft(true);
+            toast.info('Borrador recuperado', { description: 'Hemos restaurado tu sesión anterior.' });
           }
         }
       } catch (err) {

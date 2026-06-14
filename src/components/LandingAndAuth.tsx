@@ -6,6 +6,8 @@ import HelpManualView from './HelpManualView';
 import * as OTPAuth from 'otpauth';
 import { 
   Infinity,
+  Eye,
+  EyeOff,
   Building, 
   User, 
   Mail, 
@@ -199,6 +201,22 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const getPasswordStrength = (pass: string) => {
+    if (!pass) return 0;
+    let score = 0;
+    if (pass.length >= 6) score += 1;
+    if (pass.length >= 8) score += 1;
+    if (/[A-Za-z]/.test(pass) && /[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+    return Math.min(score, 3);
+  };
+  const strength = getPasswordStrength(password);
+  const strengthColors = ['bg-neutral-200', 'bg-red-500', 'bg-amber-500', 'bg-emerald-500'];
+  const strengthLabels = ['', 'Débil', 'Buena', 'Fuerte'];
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState('');
 
@@ -2223,16 +2241,28 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                       </div>
                       <div className="relative">
                         <input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="w-full h-12 px-3.5 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
+                          className="w-full h-12 pl-3.5 pr-10 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
                           required
                         />
-                        <Key className="absolute right-3.5 top-4 w-4 h-4 text-neutral-400" />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-neutral-600 cursor-pointer">
+                          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
                       </div>
                       {isEmailRegisterMode && <p className="text-[10px] text-neutral-500 pt-1">Sugerencia: Usa al menos 6 caracteres con letras y números.</p>}
+                      {isEmailRegisterMode && password.length > 0 && (
+                        <div className="flex items-center gap-2 mt-2 w-full">
+                          <div className="flex-1 flex gap-1 h-1.5">
+                            <div className={`flex-1 rounded-full transition-all duration-300 ${strength >= 1 ? strengthColors[strength] : 'bg-neutral-200'}`}></div>
+                            <div className={`flex-1 rounded-full transition-all duration-300 ${strength >= 2 ? strengthColors[strength] : 'bg-neutral-200'}`}></div>
+                            <div className={`flex-1 rounded-full transition-all duration-300 ${strength >= 3 ? strengthColors[strength] : 'bg-neutral-200'}`}></div>
+                          </div>
+                          <span className={`text-[10px] font-extrabold uppercase tracking-wider ${strength === 3 ? 'text-emerald-600' : strength === 2 ? 'text-amber-600' : 'text-red-600'}`}>{strengthLabels[strength]}</span>
+                        </div>
+                      )}
                     </div>
 
                     {isEmailRegisterMode && (
@@ -2240,14 +2270,16 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Confirmar Clave de Acceso *</label>
                         <div className="relative">
                           <input
-                            type="password"
+                            type={showConfirmPassword ? "text" : "password"}
                             placeholder="••••••••"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full h-12 px-3.5 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
+                            className="w-full h-12 pl-3.5 pr-10 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
                             required
                           />
-                          <Key className="absolute right-3.5 top-4 w-4 h-4 text-neutral-400" />
+                          <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-neutral-600 cursor-pointer">
+                            {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                          </button>
                         </div>
                       </div>
                     )}

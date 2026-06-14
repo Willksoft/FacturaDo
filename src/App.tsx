@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Toaster } from 'sonner';
 import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { insforge } from './lib/insforge';
 import { LogoFacturaDo, OldLogoFacturaDo } from './components/LogoFacturaDo';
@@ -2812,6 +2813,7 @@ export default function App() {
       </div>
     </div>
   )}
+<Toaster position="top-right" richColors />
 </>
 );
 }
