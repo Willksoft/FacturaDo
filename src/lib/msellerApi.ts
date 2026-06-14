@@ -1,7 +1,7 @@
 import { Invoice } from '../types';
 
 // La API Key dada por el cliente
-const M_SELLER_API_KEY = 'dd3bb871-fe7f-4204-9540-5abf51c382b9';
+const M_SELLER_API_KEY = (import.meta as any).env?.VITE_MSELLER_API_KEY || 'dd3bb871-fe7f-4204-9540-5abf51c382b9';
 
 // Esta función actúa como el "Adapter" para conectarse a MSeller.
 // Recibe los datos genéricos de FacturaDo y los enviará formateados como MSeller los pida.
