@@ -8,6 +8,7 @@ import { useInvoiceState } from './hooks/useInvoiceState';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
+import AIAssistantWidget from './components/AIAssistantWidget';
 // Vistas Lazy Load
 const LandingAndAuth = React.lazy(() => import('./components/LandingAndAuth'));
 const OnboardingWizard = React.lazy(() => import('./components/OnboardingWizard'));
@@ -2814,6 +2815,7 @@ export default function App() {
     </div>
   )}
 <Toaster position="top-right" richColors />
+<AIAssistantWidget />
 </>
 );
 }
