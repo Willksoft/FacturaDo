@@ -198,6 +198,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
   // Login form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState('');
 
@@ -2165,6 +2166,15 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                           setLoginError('Por favor complete su correo y clave.');
                           return;
                         }
+                        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
+                        if (!passwordRegex.test(password)) {
+                          setLoginError('La clave debe tener al menos 6 caracteres y contener letras y números.');
+                          return;
+                        }
+                        if (password !== confirmPassword) {
+                          setLoginError('Las contraseñas no coinciden.');
+                          return;
+                        }
                         setRegisterForm(prev => ({
                           ...prev,
                           email: email,
@@ -2222,7 +2232,25 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         />
                         <Key className="absolute right-3.5 top-4 w-4 h-4 text-neutral-400" />
                       </div>
+                      {isEmailRegisterMode && <p className="text-[10px] text-neutral-500 pt-1">Sugerencia: Usa al menos 6 caracteres con letras y números.</p>}
                     </div>
+
+                    {isEmailRegisterMode && (
+                      <div className="space-y-1">
+                        <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Confirmar Clave de Acceso *</label>
+                        <div className="relative">
+                          <input
+                            type="password"
+                            placeholder="••••••••"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full h-12 px-3.5 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
+                            required
+                          />
+                          <Key className="absolute right-3.5 top-4 w-4 h-4 text-neutral-400" />
+                        </div>
+                      </div>
+                    )}
 
                     <button
                       type="submit"
