@@ -5,6 +5,7 @@ import { insforge } from '../lib/insforge';
 import HelpManualView from './HelpManualView';
 import * as OTPAuth from 'otpauth';
 import { 
+  Infinity,
   Building, 
   User, 
   Mail, 
@@ -967,6 +968,63 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               </div>
             </div>
           </section>
+
+                    {/* SECCION ILIMITADO Y GRATIS */}
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="py-16 sm:py-24 bg-slate-900 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.15),transparent_70%)]" />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="flex flex-col items-center text-center space-y-8">
+                
+                <div className="inline-flex items-center gap-2 bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
+                  <Infinity className="w-4 h-4" />
+                  Totalmente Gratis. Sin Límites.
+                </div>
+                
+                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-white tracking-tight max-w-4xl">
+                  Todo el poder de FacturaDo <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400">Sin Restricciones</span>
+                </h2>
+                
+                <p className="text-slate-400 text-base sm:text-lg max-w-2xl">
+                  No pagues suscripciones abusivas. Crece tu negocio sin preocuparte por límites de uso. Todo incluido desde el primer día.
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-6 w-full pt-8">
+                  {[
+                    { label: 'Facturas', icon: Receipt },
+                    { label: 'Ventas y POS', icon: Store },
+                    { label: 'Usuarios', icon: Users },
+                    { label: 'Reportes DGII', icon: BarChart3 },
+                    { label: 'Clientes', icon: UserPlus },
+                    { label: 'Inventario', icon: Database },
+                  ].map((item, idx) => (
+                    <div key={idx} className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-5 flex flex-col items-center justify-center gap-3 hover:bg-slate-800 hover:border-sky-500/30 transition-all duration-300 group">
+                      <div className="w-12 h-12 rounded-xl bg-slate-700/50 flex items-center justify-center group-hover:bg-sky-500/10 group-hover:scale-110 transition-all">
+                        <item.icon className="w-6 h-6 text-slate-300 group-hover:text-sky-400 transition-colors" />
+                      </div>
+                      <span className="text-white font-bold text-[13px] sm:text-sm">{item.label}</span>
+                      <span className="text-sky-400 text-[10px] sm:text-xs font-extrabold bg-sky-400/10 px-2.5 py-1 rounded-md tracking-wider uppercase">Ilimitado</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-10">
+                  <button
+                    onClick={() => setView('register')}
+                    className="px-8 py-4 bg-sky-500 hover:bg-sky-400 text-white rounded-2xl font-bold text-base transition-all shadow-[0_0_30px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.5)] flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-1 duration-200"
+                  >
+                    Empieza Ya - Es Gratis <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </motion.section>
 
           {/* Empieza a Facturar en 2 Minutos */}
           <motion.section
