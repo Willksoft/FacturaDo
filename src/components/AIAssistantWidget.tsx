@@ -115,6 +115,8 @@ export default function AIAssistantWidget() {
             <div className="p-3 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800">
               <form onSubmit={handleSubmit} className="flex relative">
                 <input
+                  id="ai-chat-input"
+                  name="ai-chat-input"
                   type="text"
                   className="w-full bg-neutral-100 dark:bg-neutral-800 border-none text-sm rounded-full pl-4 pr-10 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500"
                   value={inputValue}
