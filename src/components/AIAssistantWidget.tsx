@@ -8,7 +8,7 @@ export default function AIAssistantWidget() {
   const [inputValue, setInputValue] = useState('');
   
   // useChat automatically calls POST /api/chat by default
-  const { messages, append, status, error } = useChat({
+  const { messages, sendMessage, status, error } = useChat({
     onError: (err) => {
       console.error('useChat error:', err);
       alert('Error de IA: ' + err.message);
@@ -27,7 +27,7 @@ export default function AIAssistantWidget() {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
     
-    append({
+    sendMessage({
       role: 'user',
       content: inputValue
     } as any);
