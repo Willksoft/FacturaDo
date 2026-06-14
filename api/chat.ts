@@ -30,7 +30,7 @@ export default async function POST(req: Request) {
     });
 
     // Devuelve el stream directamente al cliente
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error: any) {
     console.error('Error en AI Gateway:', error);
     return new Response(JSON.stringify({ error: error.message }), {

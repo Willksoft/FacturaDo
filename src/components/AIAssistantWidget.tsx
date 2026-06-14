@@ -5,14 +5,43 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AIAssistantWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  
   // useChat automatically calls POST /api/chat by default
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat();
+  const { messages, sendMessage, status } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const isLoading = status === 'submitted' || status === 'streaming';
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim() || isLoading) return;
+    
+    sendMessage({
+      role: 'user',
+      content: inputValue
+    } as any);
+    
+    setInputValue('');
+  };
+
+  const renderMessageContent = (m: any) => {
+    if (typeof m.content === 'string') {
+      return m.content;
+    }
+    if (m.parts && Array.isArray(m.parts)) {
+      return m.parts.map((p: any, i: number) => {
+        if (p.type === 'text') return <span key={i}>{p.text}</span>;
+        return null;
+      });
+    }
+    return '';
+  };
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
@@ -51,7 +80,7 @@ export default function AIAssistantWidget() {
                   <p className="text-sm">¡Hola! Soy tu asistente de FacturaDo. ¿En qué te puedo ayudar hoy?</p>
                 </div>
               ) : (
-                messages.map((m) => (
+                messages.map((m: any) => (
                   <motion.div
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -65,7 +94,7 @@ export default function AIAssistantWidget() {
                           : 'bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200 rounded-tl-sm'
                       }`}
                     >
-                      {m.content}
+                      {renderMessageContent(m)}
                     </div>
                   </motion.div>
                 ))
@@ -88,14 +117,14 @@ export default function AIAssistantWidget() {
                 <input
                   type="text"
                   className="w-full bg-neutral-100 dark:bg-neutral-800 border-none text-sm rounded-full pl-4 pr-10 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500"
-                  value={input}
-                  onChange={handleInputChange}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Pregunta algo..."
                   disabled={isLoading}
                 />
                 <button
                   type="submit"
-                  disabled={isLoading || !input.trim()}
+                  disabled={isLoading || !inputValue.trim()}
                   className="absolute right-1.5 top-1.5 bottom-1.5 w-7 h-7 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white rounded-full flex items-center justify-center transition-colors"
                 >
                   <Send className="w-3.5 h-3.5" />
