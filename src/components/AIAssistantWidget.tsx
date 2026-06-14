@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { SparklesIcon, XMarkIcon, PaperAirplaneIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import { Sparkles, X, Send, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AIAssistantWidget() {
@@ -29,7 +29,7 @@ export default function AIAssistantWidget() {
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 flex justify-between items-center text-white">
               <div className="flex items-center space-x-2">
-                <SparklesIcon className="w-5 h-5 text-blue-200" />
+                <Sparkles className="w-5 h-5 text-blue-200" />
                 <h3 className="font-semibold text-sm">Asistente AI</h3>
               </div>
               <button 
@@ -37,7 +37,7 @@ export default function AIAssistantWidget() {
                 className="p-1 hover:bg-white/20 rounded-full transition-colors"
                 aria-label="Cerrar asistente"
               >
-                <XMarkIcon className="w-5 h-5" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -46,7 +46,7 @@ export default function AIAssistantWidget() {
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center text-neutral-500 space-y-3">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                    <ChatBubbleLeftRightIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <p className="text-sm">¡Hola! Soy tu asistente de FacturaDo. ¿En qué te puedo ayudar hoy?</p>
                 </div>
@@ -98,7 +98,7 @@ export default function AIAssistantWidget() {
                   disabled={isLoading || !input.trim()}
                   className="absolute right-1.5 top-1.5 bottom-1.5 w-7 h-7 bg-blue-600 hover:bg-blue-700 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white rounded-full flex items-center justify-center transition-colors"
                 >
-                  <PaperAirplaneIcon className="w-3.5 h-3.5" />
+                  <Send className="w-3.5 h-3.5" />
                 </button>
               </form>
             </div>
@@ -114,7 +114,7 @@ export default function AIAssistantWidget() {
         }`}
         aria-label="Abrir asistente AI"
       >
-        {isOpen ? <XMarkIcon className="w-6 h-6" /> : <SparklesIcon className="w-6 h-6" />}
+        {isOpen ? <X className="w-6 h-6" /> : <Sparkles className="w-6 h-6" />}
       </button>
     </div>
   );
