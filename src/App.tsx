@@ -341,8 +341,12 @@ export default function App() {
     return mainTab as TabType;
   })();
 
-  const setCurrentTab = (newTab: TabType) => {
+  const rawSetCurrentTab = (newTab: TabType) => {
     navigate('/' + newTab);
+  };
+
+  const setCurrentTab = (destination: TabType) => {
+    checkAndNavigate(destination);
   };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -848,7 +852,7 @@ export default function App() {
   };
 
   const executeNavigation = (destination: TabType) => {
-    setCurrentTab(destination);
+    rawSetCurrentTab(destination);
     setMobileMenuOpen(false);
     setSelectedInvoiceForPreview(null);
     setPrefilledDocForCopy(null);
