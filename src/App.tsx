@@ -2819,7 +2819,12 @@ export default function App() {
     </div>
   )}
 <Toaster position="top-right" richColors />
-<AIAssistantWidget />
+<AIAssistantWidget 
+  invoices={invoices} 
+  clients={clients} 
+  products={products} 
+  expenses={expenses} 
+/>
 </>
 );
 }
