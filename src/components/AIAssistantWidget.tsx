@@ -8,7 +8,12 @@ export default function AIAssistantWidget() {
   const [inputValue, setInputValue] = useState('');
   
   // useChat automatically calls POST /api/chat by default
-  const { messages, sendMessage, status } = useChat();
+  const { messages, append, status, error } = useChat({
+    onError: (err) => {
+      console.error('useChat error:', err);
+      alert('Error de IA: ' + err.message);
+    }
+  });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const isLoading = status === 'submitted' || status === 'streaming';
@@ -22,7 +27,7 @@ export default function AIAssistantWidget() {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
     
-    sendMessage({
+    append({
       role: 'user',
       content: inputValue
     } as any);
