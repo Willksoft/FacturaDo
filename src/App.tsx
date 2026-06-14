@@ -3,57 +3,62 @@ import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-
 import { insforge } from './lib/insforge';
 import { LogoFacturaDo, OldLogoFacturaDo } from './components/LogoFacturaDo';
 import { useInvoiceState } from './hooks/useInvoiceState';
-import Dashboard from './components/Dashboard';
-import AnalyticsDashboard from './components/AnalyticsDashboard';
-import InvoiceCreator from './components/InvoiceCreator';
-import InvoiceList from './components/InvoiceList';
-import Directories from './components/Directories';
-import DgiiReports from './components/DgiiReports';
-import InventoryManager from './components/InventoryManager';
-import TemplateSettingsPanel from './components/TemplateSettingsPanel';
-import AppearanceSettingsView from './components/AppearanceSettingsView';
-import ShiftsView from './components/ShiftsView';
-import UserPermissions from './components/UserPermissions';
-import SupportSection from './components/SupportSection';
-import { InsForgeServicesView } from './components/InsForgeServicesView';
-import ReceiptsList from './components/ReceiptsList';
-import POSView from './components/POSView';
-import WarehousesView from './components/WarehousesView';
-import FinancialAccountsView from './components/FinancialAccountsView';
-import PurchaseOrdersView from './components/PurchaseOrdersView';
-import DocumentDetailsView from './components/DocumentDetailsView';
-import DocumentEditView from './components/DocumentEditView';
-import { ExpensesView } from './components/ExpensesView';
-import { VendedoresView } from './components/VendedoresView';
-import BusinessStateView from './components/BusinessStateView';
-import LandingAndAuth from './components/LandingAndAuth';
-import OnboardingWizard from './components/OnboardingWizard';
-import { AuditLogsView } from './components/AuditLogsView';
-import { SecuritySettingsView } from './components/SecuritySettingsView';
+// Componentes comunes
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
-import {
-  ClientHistoryView,
-  ClientAccountStatementView,
-  ProductCategoriesView,
-  InventoryAdjustmentsView,
-  FinancialCajaView,
-  FinancialBancosView,
-  AccountsReceivableView,
-  AccountsPayableView,
-  CreditNotesView,
-  ConfigLogoView,
-  ConfigImpuestosView,
-  ReportVentasView,
-  ReportGastosView,
-  ReportUtilidadesView,
-  ReportInventoryView,
-  ReportClientsView,
-  ReportExcelView,
-  ConfigUsuariosView,
-  ConfigRolesView
-} from './components/SpecializedViews';
+// Vistas Lazy Load
+const LandingAndAuth = React.lazy(() => import('./components/LandingAndAuth'));
+const OnboardingWizard = React.lazy(() => import('./components/OnboardingWizard'));
+const Dashboard = React.lazy(() => import('./components/Dashboard'));
+const AnalyticsDashboard = React.lazy(() => import('./components/AnalyticsDashboard'));
+const InvoiceCreator = React.lazy(() => import('./components/InvoiceCreator'));
+const InvoiceList = React.lazy(() => import('./components/InvoiceList'));
+const Directories = React.lazy(() => import('./components/Directories'));
+const DgiiReports = React.lazy(() => import('./components/DgiiReports'));
+const InventoryManager = React.lazy(() => import('./components/InventoryManager'));
+const TemplateSettingsPanel = React.lazy(() => import('./components/TemplateSettingsPanel'));
+const AppearanceSettingsView = React.lazy(() => import('./components/AppearanceSettingsView'));
+const ShiftsView = React.lazy(() => import('./components/ShiftsView'));
+const UserPermissions = React.lazy(() => import('./components/UserPermissions'));
+const SupportSection = React.lazy(() => import('./components/SupportSection'));
+const ReceiptsList = React.lazy(() => import('./components/ReceiptsList'));
+const POSView = React.lazy(() => import('./components/POSView'));
+const WarehousesView = React.lazy(() => import('./components/WarehousesView'));
+const FinancialAccountsView = React.lazy(() => import('./components/FinancialAccountsView'));
+const PurchaseOrdersView = React.lazy(() => import('./components/PurchaseOrdersView'));
+const DocumentDetailsView = React.lazy(() => import('./components/DocumentDetailsView'));
+const DocumentEditView = React.lazy(() => import('./components/DocumentEditView'));
+const BusinessStateView = React.lazy(() => import('./components/BusinessStateView'));
+
+// Named exports to Lazy
+const InsForgeServicesView = React.lazy(() => import('./components/InsForgeServicesView').then(m => ({ default: m.InsForgeServicesView })));
+const ExpensesView = React.lazy(() => import('./components/ExpensesView').then(m => ({ default: m.ExpensesView })));
+const VendedoresView = React.lazy(() => import('./components/VendedoresView').then(m => ({ default: m.VendedoresView })));
+const AuditLogsView = React.lazy(() => import('./components/AuditLogsView').then(m => ({ default: m.AuditLogsView })));
+const SecuritySettingsView = React.lazy(() => import('./components/SecuritySettingsView').then(m => ({ default: m.SecuritySettingsView })));
+
+const Specialized = import('./components/SpecializedViews');
+const ClientHistoryView = React.lazy(() => Specialized.then(m => ({ default: m.ClientHistoryView })));
+const ClientAccountStatementView = React.lazy(() => Specialized.then(m => ({ default: m.ClientAccountStatementView })));
+const ProductCategoriesView = React.lazy(() => Specialized.then(m => ({ default: m.ProductCategoriesView })));
+const InventoryAdjustmentsView = React.lazy(() => Specialized.then(m => ({ default: m.InventoryAdjustmentsView })));
+const FinancialCajaView = React.lazy(() => Specialized.then(m => ({ default: m.FinancialCajaView })));
+const FinancialBancosView = React.lazy(() => Specialized.then(m => ({ default: m.FinancialBancosView })));
+const AccountsReceivableView = React.lazy(() => Specialized.then(m => ({ default: m.AccountsReceivableView })));
+const AccountsPayableView = React.lazy(() => Specialized.then(m => ({ default: m.AccountsPayableView })));
+const CreditNotesView = React.lazy(() => Specialized.then(m => ({ default: m.CreditNotesView })));
+const ConfigLogoView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigLogoView })));
+const ConfigImpuestosView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigImpuestosView })));
+const ReportVentasView = React.lazy(() => Specialized.then(m => ({ default: m.ReportVentasView })));
+const ReportGastosView = React.lazy(() => Specialized.then(m => ({ default: m.ReportGastosView })));
+const ReportUtilidadesView = React.lazy(() => Specialized.then(m => ({ default: m.ReportUtilidadesView })));
+const ReportInventoryView = React.lazy(() => Specialized.then(m => ({ default: m.ReportInventoryView })));
+const ReportClientsView = React.lazy(() => Specialized.then(m => ({ default: m.ReportClientsView })));
+const ReportExcelView = React.lazy(() => Specialized.then(m => ({ default: m.ReportExcelView })));
+const ConfigUsuariosView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigUsuariosView })));
+const ConfigRolesView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigRolesView })));
+
 
 import {
   LayoutDashboard,
@@ -850,14 +855,37 @@ export default function App() {
     }
   };
 
-  // Mostrar un cargador simple mientras se inicializa el sistema
+  // Pantalla de Carga (Splash Screen)
   if (!loaded || authChecking) {
-    return null;
+    return (
+      <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center font-sans">
+        <div className="flex flex-col items-center animate-in fade-in duration-700">
+          <img src="/facturaDonuevologo_favicon.svg" alt="FacturaDo" className="w-20 h-20 mb-6 drop-shadow-2xl animate-pulse" />
+          <h1 className="text-3xl font-black text-white tracking-tight mb-2">FacturaDo</h1>
+          <p className="text-neutral-400 text-sm mb-8 font-medium">Preparando tu espacio de trabajo...</p>
+          <div className="w-48 h-1.5 bg-neutral-800 rounded-full overflow-hidden">
+            <div className="w-full h-full bg-white rounded-full animate-[progress_1.5s_ease-in-out_infinite]" style={{ transformOrigin: 'left' }} />
+          </div>
+        </div>
+        <style>{`
+          @keyframes progress {
+            0% { transform: scaleX(0); }
+            50% { transform: scaleX(0.5); }
+            100% { transform: scaleX(1); transform-origin: right; }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   return (
     <>
-      <Routes>
+      <React.Suspense fallback={
+        <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-neutral-400 animate-spin" />
+        </div>
+      }>
+        <Routes>
       <Route 
         path="/" 
         element={
@@ -2680,6 +2708,8 @@ export default function App() {
       }
     />
   </Routes>
+      </React.Suspense>
+      
 
   {isLoggedIn && isScreenLocked && (
     <div className="fixed inset-0 z-[9999] bg-neutral-955/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 text-white font-sans animate-fade-in" style={{ zIndex: 99999 }}>
