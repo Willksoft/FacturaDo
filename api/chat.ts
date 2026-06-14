@@ -1,12 +1,4 @@
 import { streamText } from 'ai';
-import { createOpenAI } from '@ai-sdk/openai';
-
-// Configura Vercel AI SDK Gateway
-const openai = createOpenAI({
-  apiKey: process.env.AI_GATEWAY_API_KEY || process.env.OPENAI_API_KEY || '',
-  // Nota: Si usas una base URL de Vercel Gateway específica, añádela aquí:
-  // baseURL: 'https://gateway.vercel.com/v1/projects/my-project/endpoints/my-endpoint',
-});
 
 // Opción para ejecutar en el Edge (más rápido y barato en Vercel)
 export const config = {
@@ -21,7 +13,7 @@ export default async function POST(req: Request) {
 
     // Stream de texto usando el modelo correspondiente
     const result = await streamText({
-      model: openai('gpt-4o-mini'), // Usamos un modelo rápido y barato/gratis
+      model: 'openai/gpt-4o-mini', // Usamos un modelo rápido y barato/gratis
       system: `Eres el Asistente AI de FacturaDo, una plataforma SaaS moderna dominicana de facturación, inventario y reportes.
       Tu tono es profesional, súper amigable, útil y directo.
       El usuario te preguntará sobre cómo usar la plataforma, consejos de negocio, o sobre los datos de sus ventas.
