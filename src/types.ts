@@ -267,6 +267,7 @@ export interface UserPermission {
   role: 'Administrador' | 'Facturador' | 'Auditor' | 'Vendedor / POS';
   commissionRate?: number; // percentage
   avatarUrl?: string;
+  isBanned?: boolean; // Indicates if user access is revoked
   permissions: {
     canCreateInvoice: boolean;
     canEditInvoice: boolean;

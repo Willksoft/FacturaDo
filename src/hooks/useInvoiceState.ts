@@ -2277,12 +2277,18 @@ export function useInvoiceState() {
     saveToStorage('inv_users', updated);
   };
 
-  const deleteUser = async (id: string) => {
-    const confirmed = await showConfirm("Â¿EstÃ¡s seguro de que deseas eliminar este elemento?");
-    if (!confirmed) return;
-    const updated = users.filter(u => u.id !== id);
-    setUsers(updated);
-    saveToStorage('inv_users', updated);
+  const deleteUser = (id: string) => {
+    const updatedUsers = users.filter(u => u.id !== id);
+    setUsers(updatedUsers);
+    localStorage.setItem('inv_users', JSON.stringify(updatedUsers));
+  };
+
+  const banUser = (id: string, isBanned: boolean) => {
+    const updatedUsers = users.map(u => 
+      u.id === id ? { ...u, isBanned } : u
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem('inv_users', JSON.stringify(updatedUsers));
   };
 
   const updateUserAvatar = (id: string, avatarUrl: string) => {
@@ -2681,6 +2687,7 @@ export function useInvoiceState() {
     addUser,
     updateUserRole,
     deleteUser,
+    banUser,
     updateUserAvatar,
     handleActiveUserChange,
     handleLoginSuccessUser,

@@ -1817,16 +1817,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             </div>
           </footer>
 
-          {/* Mock Floating WhatsApp Help */}
-          <a
-            href="https://wa.me/18095550192"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white px-3.5 py-2.5 rounded-full shadow-2xl hover:scale-105 active:scale-95 duration-100 flex items-center justify-center font-bold font-sans text-[11px] gap-1.5 cursor-pointer decoration-0"
-          >
-            <MessageSquare className="w-4 h-4" />
-            <span>¿Necesitas ayuda?</span>
-          </a>
+
 
         </div>
       )}

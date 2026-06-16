@@ -371,7 +371,7 @@ No logré identificar la consulta. Por favor escribe una palabra clave o selecci
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 flex justify-between items-center text-white">
               <div className="flex items-center space-x-2">
-                <Sparkles className="w-5 h-5 text-blue-200" />
+                <MessageSquare className="w-5 h-5 text-blue-200" />
                 <div className="flex flex-col">
                   <h3 className="font-semibold text-sm leading-none">Asistente Operativo</h3>
                   <span className="text-[9px] text-blue-200 mt-0.5 flex items-center gap-1">
@@ -536,7 +536,7 @@ No logré identificar la consulta. Por favor escribe una palabra clave o selecci
         }`}
         aria-label="Abrir asistente AI"
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Sparkles className="w-6 h-6" />}
+        {isOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
       </button>
     </div>
   );

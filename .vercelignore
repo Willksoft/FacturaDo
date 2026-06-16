@@ -1,0 +1,10 @@
+node_modules
+.git
+.github
+.agent
+.agents
+dist
+.gemini
+brain
+public/release
+release

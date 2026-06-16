@@ -61,6 +61,7 @@ const ReportExcelView = React.lazy(() => Specialized.then(m => ({ default: m.Rep
 const ConfigUsuariosView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigUsuariosView })));
 const ConfigRolesView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigRolesView })));
 
+const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout'));
 
 import {
   LayoutDashboard,
@@ -288,6 +289,7 @@ export default function App() {
     addUser,
     updateUserRole,
     deleteUser,
+    banUser,
     handleActiveUserChange,
     handleLoginSuccessUser,
     addTicket,
@@ -892,6 +894,22 @@ export default function App() {
         </div>
       }>
         <Routes>
+      <Route 
+        path="/admin/*" 
+        element={
+          <AdminLayout 
+            currentUser={currentUser}
+            users={users}
+            invoices={invoices}
+            clients={clients}
+            products={products}
+            updateUserRole={updateUserRole}
+            deleteUser={deleteUser}
+            banUser={banUser}
+          />
+        }
+      />
+
       <Route 
         path="/" 
         element={
@@ -2819,12 +2837,14 @@ export default function App() {
     </div>
   )}
 <Toaster position="top-right" richColors />
-<AIAssistantWidget 
-  invoices={invoices} 
-  clients={clients} 
-  products={products} 
-  expenses={expenses} 
-/>
+{isLoggedIn && (
+  <AIAssistantWidget 
+    invoices={invoices} 
+    clients={clients} 
+    products={products} 
+    expenses={expenses} 
+  />
+)}
 </>
 );
 }
