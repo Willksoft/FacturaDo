@@ -450,7 +450,9 @@ export default function POSView({
                 <Label className="text-neutral-800 font-bold block">Caja a Operar *</Label>
                 <Select value={selectedCajaId} onValueChange={setSelectedCajaId}>
                   <SelectTrigger className="w-full h-10 bg-white border border-neutral-250 font-bold text-neutral-850 focus:ring-1 focus:ring-black">
-                    <SelectValue placeholder="Seleccionar Caja Física..." />
+                    <SelectValue placeholder="Seleccionar Caja Física...">
+                      {cajas.find(c => c.id === selectedCajaId)?.name || selectedCajaId}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="font-sans text-xs bg-white">
                     {cajas.map(c => (
@@ -1085,7 +1087,9 @@ export default function POSView({
                   </Label>
                   <Select value={selectedSellerId} onValueChange={setSelectedSellerId}>
                     <SelectTrigger className="w-full h-10 bg-white border-neutral-300 font-bold text-neutral-800 text-xs shadow-sm">
-                      <SelectValue placeholder="-- Sin vendedor --" />
+                      <SelectValue placeholder="-- Sin vendedor --">
+                        {sellers.find(s => s.id === selectedSellerId)?.name || (selectedSellerId === 'none' || !selectedSellerId ? '-- Sin vendedor --' : selectedSellerId)}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none" className="text-xs italic text-neutral-500">-- Sin vendedor --</SelectItem>
@@ -1271,7 +1275,10 @@ export default function POSView({
                         onValueChange={(val) => setSelectedClientId(val)}
                       >
                         <SelectTrigger className="w-full h-10 bg-white border border-neutral-305 rounded-lg text-xs font-extrabold text-neutral-900 focus:ring-2 focus:ring-neutral-950 transition-all shadow-sm">
-                          <SelectValue placeholder="Seleccionar Cliente" />
+                          <SelectValue placeholder="Seleccionar Cliente">
+                            {clients.find(c => c.id === selectedClientId)?.name || 
+                             (selectedClientId === 'cli-consumo' ? 'Cliente de Consumo (Público General)' : selectedClientId)}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="font-sans text-xs">
                           {clients.map(c => (
