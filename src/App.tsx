@@ -1981,6 +1981,11 @@ export default function App() {
               warehouses={warehouses}
               addClient={addClient}
               templateSettings={templateSettings}
+              activeShift={activeShift}
+              addShift={addShift}
+              updateShift={updateShift}
+              receipts={receipts}
+              onNavigateToTurnos={() => setCurrentTab('turnos')}
             />
           )}
 

@@ -568,6 +568,23 @@ export function useInvoiceState() {
           ...c,
           id: c.id.replace(`${currentUserId}_`, '')
         }));
+        if (!loadedClients.some(c => c.id === 'cli-consumo')) {
+          const consumptionClient: Client = {
+            id: 'cli-consumo',
+            type: 'Fisica',
+            name: 'Cliente de Consumo (Público General)',
+            rncOrCedula: '224-00125-4',
+            email: 'consumidor@correo.com',
+            phone: '809-555-5555',
+            address: 'Público General, R.D.',
+            createdAt: new Date().toISOString(),
+            dgiiVerified: false,
+          };
+          const dbCli = mapClientToDb(consumptionClient);
+          dbCli.id = `${currentUserId}_${consumptionClient.id}`;
+          await insforge.database.from('clients').insert([dbCli]);
+          loadedClients.push(consumptionClient);
+        }
         setClients(loadedClients);
       } else {
         if (isRealUser) {

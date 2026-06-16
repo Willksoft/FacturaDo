@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Product, Client, Seller, NcfSequence, PaymentMethod, FinancialAccount, UserPermission, TemplateSettings } from '../types';
+import { Product, Client, Seller, NcfSequence, PaymentMethod, FinancialAccount, UserPermission, TemplateSettings, Shift, Receipt } from '../types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Label } from './ui/label';
-import { ShoppingCart, Package, Users, Receipt, CreditCard, Landmark, Check, Trash2, Search, Printer, FileText, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import { ShoppingCart, Package, Users, Receipt as ReceiptIcon, CreditCard, Landmark, Check, Trash2, Search, Printer, FileText, CheckCircle2, AlertTriangle, Loader2, PlayCircle, StopCircle, Calculator, Clock } from 'lucide-react';
 import { generateInvoicePDF } from '../lib/pdfGenerator';
 import { getDgiiAutocomplete, validateDgiiRnc } from '../lib/dgiiApi';
 
@@ -21,6 +21,11 @@ interface POSViewProps {
   warehouses: any[];
   addClient: (client: Omit<Client, 'id' | 'createdAt'>) => Client | Promise<Client>;
   templateSettings: TemplateSettings;
+  activeShift: Shift | null;
+  addShift: (sh: Omit<Shift, 'id'>) => void;
+  updateShift: (id: string, updates: Partial<Shift>) => void;
+  receipts: Receipt[];
+  onNavigateToTurnos?: () => void;
 }
 
 export default function POSView({
@@ -35,13 +40,81 @@ export default function POSView({
   warehouses,
   addClient,
   templateSettings,
+  activeShift,
+  addShift,
+  updateShift,
+  receipts,
+  onNavigateToTurnos,
 }: POSViewProps) {
   const [cart, setCart] = useState<{ product: Product; quantity: number }[]>([]);
-  const [selectedClientId, setSelectedClientId] = useState<string>(clients[0]?.id || 'cli-consumo');
+  const [selectedClientId, setSelectedClientId] = useState<string>(clients.some(c => c.id === 'cli-consumo') ? 'cli-consumo' : (clients[0]?.id || 'cli-consumo'));
   const [selectedSellerId, setSelectedSellerId] = useState<string>('');
   const [docType, setDocType] = useState<'Factura' | 'Cotizacion'>('Factura');
-  const [selectedNcfType, setSelectedNcfType] = useState<string>('02'); // Consumer standard B02 by default
+  const [selectedNcfType, setSelectedNcfType] = useState<string>('B02'); // Consumer standard B02 by default (corrected from 02)
   const [paymentNotes, setPaymentNotes] = useState('');
+
+  // Shift/Turn Opening/Closing Local States
+  const [openingBalance, setOpeningBalance] = useState('0');
+  const [selectedCajaId, setSelectedCajaId] = useState('');
+  const [showCloseShiftModal, setShowCloseShiftModal] = useState(false);
+  const [closingBalanceActual, setClosingBalanceActual] = useState('');
+
+  // Shift helpers and computations
+  const cajas = useMemo(() => financialAccounts.filter(acc => acc.type === 'Caja'), [financialAccounts]);
+
+  const activeShiftCashPayments = useMemo(() => {
+    if (!activeShift) return 0;
+    return receipts
+      .filter(r => {
+        const isAfterStart = new Date(r.date) >= new Date(activeShift.startTime);
+        const isCash = r.paymentMethod === 'Efectivo';
+        const isThisCaja = r.accountId === activeShift.cajaId;
+        return isAfterStart && isCash && isThisCaja;
+      })
+      .reduce((sum, r) => sum + r.amountPaid, 0);
+  }, [activeShift, receipts]);
+
+  const expectedClosingBalance = useMemo(() => {
+    if (!activeShift) return 0;
+    return activeShift.openingBalance + activeShiftCashPayments;
+  }, [activeShift, activeShiftCashPayments]);
+
+  const handleOpenShift = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCajaId) {
+      alert('Por favor seleccione una caja física para operar.');
+      return;
+    }
+    addShift({
+      startTime: new Date().toISOString(),
+      openingBalance: parseFloat(openingBalance) || 0,
+      openedById: currentUser.id,
+      openedByName: currentUser.username,
+      status: 'Abierto',
+      cajaId: selectedCajaId
+    });
+    setOpeningBalance('0');
+    setSelectedCajaId('');
+  };
+
+  const handleCloseShift = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeShift) return;
+    const actual = parseFloat(closingBalanceActual) || 0;
+    const discrepancy = actual - expectedClosingBalance;
+
+    updateShift(activeShift.id, {
+      endTime: new Date().toISOString(),
+      closingBalanceActual: actual,
+      closingBalanceExpected: expectedClosingBalance,
+      discrepancy,
+      closedById: currentUser.id,
+      closedByName: currentUser.username,
+      status: 'Cerrado'
+    });
+    setClosingBalanceActual('');
+    setShowCloseShiftModal(false);
+  };
 
   // Quick Client States
   const [showQuickClient, setShowQuickClient] = useState(false);
@@ -358,8 +431,186 @@ export default function POSView({
     setShowCheckoutModal(false);
   };
 
+  if (!activeShift) {
+    return (
+      <div className="max-w-md mx-auto my-12 animate-fade-in" id="pos-shift-blocker">
+        <Card className="border-red-200 shadow-lg bg-white overflow-hidden rounded-2xl">
+          <CardHeader className="bg-red-50 border-b border-red-150 p-6 text-center space-y-2">
+            <div className="w-12 h-12 rounded-full bg-red-550 flex items-center justify-center mx-auto shadow-md">
+              <AlertTriangle className="w-6 h-6 text-white" />
+            </div>
+            <CardTitle className="text-lg font-bold text-red-950">Apertura de Turno Obligatoria</CardTitle>
+            <CardDescription className="text-xs text-red-800">
+              Para poder vender y facturar en la terminal POS, es obligatorio iniciar un turno de caja para control y cuadre de efectivo.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-6">
+            <form onSubmit={handleOpenShift} className="space-y-4 font-sans text-xs">
+              <div className="space-y-2">
+                <Label className="text-neutral-800 font-bold block">Caja a Operar *</Label>
+                <Select value={selectedCajaId} onValueChange={setSelectedCajaId}>
+                  <SelectTrigger className="w-full h-10 bg-white border border-neutral-250 font-bold text-neutral-850 focus:ring-1 focus:ring-black">
+                    <SelectValue placeholder="Seleccionar Caja Física..." />
+                  </SelectTrigger>
+                  <SelectContent className="font-sans text-xs bg-white">
+                    {cajas.map(c => (
+                      <SelectItem key={c.id} value={c.id} className="text-xs font-bold text-neutral-855">
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-neutral-800 font-bold block">Fondo Inicial (Menudo / Caja Chica) *</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono font-bold text-neutral-450">RD$</span>
+                  <Input 
+                    type="number" 
+                    step="0.01" 
+                    value={openingBalance} 
+                    onChange={e => setOpeningBalance(e.target.value)}
+                    required 
+                    className="h-10 pl-11 text-xs font-bold font-mono focus:ring-1 focus:ring-black"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2">
+                <Button type="submit" className="w-full h-10 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 rounded-lg shadow-sm">
+                  <PlayCircle className="w-4 h-4" />
+                  Abrir Turno de Caja
+                </Button>
+                {onNavigateToTurnos && (
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={onNavigateToTurnos}
+                    className="w-full h-10 text-neutral-600 font-semibold text-xs border border-neutral-300 hover:bg-neutral-50 rounded-lg"
+                  >
+                    Ver Historial de Turnos
+                  </Button>
+                )}
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 animate-fade-in" id="pos-terminal-root">
+      {/* ACTIVE SHIFT STATUS BANNER */}
+      {activeShift && (
+        <div className="bg-neutral-900 text-white rounded-xl p-3 px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-sans shadow-sm border border-neutral-800">
+          <div className="flex items-center space-x-3 text-xs">
+            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shrink-0">
+              <PlayCircle className="w-4.5 h-4.5 text-emerald-400" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold uppercase text-[10px] tracking-wider text-emerald-400">Turno en Operación</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
+              <p className="font-semibold text-neutral-200 mt-0.5">
+                Caja: <span className="text-white font-extrabold">{cajas.find(c => c.id === activeShift.cajaId)?.name || 'Caja General'}</span> • 
+                Cajero: <span className="text-white font-extrabold">{activeShift.openedByName}</span> • 
+                Fondo Inicial: <span className="font-mono text-neutral-300">RD$ {activeShift.openingBalance.toLocaleString()}</span>
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2 shrink-0">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                setClosingBalanceActual(String(expectedClosingBalance));
+                setShowCloseShiftModal(true);
+              }}
+              className="h-8 text-[11px] font-bold bg-red-650 hover:bg-red-755 text-white flex items-center gap-1.5 rounded-lg transition-all"
+            >
+              <StopCircle className="w-3.5 h-3.5" />
+              Cerrar Turno (Cuadre)
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* PROFESSIONAL SHIFT CLOSE & CASH CLOSURE MODAL */}
+      {showCloseShiftModal && activeShift && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white rounded-2xl max-w-md w-full border border-neutral-250 overflow-hidden shadow-2xl flex flex-col">
+            <div className="bg-red-900 text-white p-5">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-neutral-200">Cierre de Turno y Cuadre de Caja</h3>
+              <p className="text-xl font-black mt-1">Caja: {cajas.find(c => c.id === activeShift.cajaId)?.name || 'Caja General'}</p>
+            </div>
+
+            <form onSubmit={handleCloseShift} className="p-6 space-y-4 text-xs font-sans">
+              <div className="space-y-3 bg-neutral-50 p-4 rounded-xl border border-neutral-200">
+                <div className="flex justify-between font-bold text-neutral-600">
+                  <span>Fondo Inicial:</span>
+                  <span className="font-mono text-neutral-900">{activeShift.openingBalance.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}</span>
+                </div>
+                <div className="flex justify-between font-bold text-neutral-600">
+                  <span>Ventas en Efectivo:</span>
+                  <span className="font-mono text-neutral-900">{activeShiftCashPayments.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}</span>
+                </div>
+                <div className="flex justify-between font-extrabold text-neutral-900 pt-2 border-t border-neutral-250 border-dashed text-sm">
+                  <span>Efectivo Esperado:</span>
+                  <span className="font-mono text-blue-700">{expectedClosingBalance.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}</span>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-neutral-800 font-bold block">Efectivo Real en Caja *</Label>
+                <Input 
+                  type="number" 
+                  step="0.01" 
+                  value={closingBalanceActual} 
+                  onChange={e => setClosingBalanceActual(e.target.value)}
+                  required 
+                  className="text-lg bg-neutral-50 font-mono h-11 border-neutral-300 focus:ring-1 focus:ring-black"
+                  placeholder="Ej. 15000"
+                />
+                <span className="text-[10px] text-neutral-500 block">Indique la cantidad total de dinero físico contado en la caja registradora.</span>
+              </div>
+
+              {closingBalanceActual && (
+                <div className="p-3.5 rounded-xl border flex justify-between items-center bg-neutral-50 border-neutral-200">
+                  <span className="font-bold text-neutral-700">Diferencia / Descuadre:</span>
+                  <span className={`font-mono font-bold text-sm ${(parseFloat(closingBalanceActual) || 0) - expectedClosingBalance === 0 ? 'text-emerald-750' : 'text-red-700'}`}>
+                    {((parseFloat(closingBalanceActual) || 0) - expectedClosingBalance).toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex space-x-2 pt-2 justify-end">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="h-9 font-bold"
+                  onClick={() => {
+                    setShowCloseShiftModal(false);
+                    setClosingBalanceActual('');
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  type="submit" 
+                  variant="destructive" 
+                  className="h-9 font-bold flex items-center gap-1 bg-red-650 hover:bg-red-750"
+                >
+                  <StopCircle className="w-4 h-4" />
+                  Cerrar Turno y Guardar Cuadre
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       {/* PROFESSIONAL MULTIPLE SPLIT-PAYMENTS COBRO DIALOG */}
       {showCheckoutModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
@@ -381,7 +632,7 @@ export default function POSView({
                 <div className="text-right">
                   <span className="text-neutral-550 font-bold block uppercase text-[9px] mb-0.5">Comprobante Fiscal</span>
                   <span className="font-mono font-bold text-neutral-900 text-xs bg-white px-2 py-0.5 rounded border border-neutral-250">
-                    {docType === 'Factura' ? `Comprobante NCF B${selectedNcfType}` : 'Sin Comprobante'}
+                    {docType === 'Factura' ? `Comprobante NCF ${selectedNcfType}` : 'Sin Comprobante'}
                   </span>
                 </div>
               </div>
@@ -1020,7 +1271,7 @@ export default function POSView({
                         onValueChange={(val) => setSelectedClientId(val)}
                       >
                         <SelectTrigger className="w-full h-10 bg-white border border-neutral-305 rounded-lg text-xs font-extrabold text-neutral-900 focus:ring-2 focus:ring-neutral-950 transition-all shadow-sm">
-                          <SelectValue />
+                          <SelectValue placeholder="Seleccionar Cliente" />
                         </SelectTrigger>
                         <SelectContent className="font-sans text-xs">
                           {clients.map(c => (
@@ -1028,6 +1279,11 @@ export default function POSView({
                               {c.name} {c.id !== 'cli-consumo' ? `(${c.rncOrCedula})` : ''}
                             </SelectItem>
                           ))}
+                          {!clients.some(c => c.id === 'cli-consumo') && (
+                            <SelectItem value="cli-consumo">
+                              Cliente de Consumo (Público General)
+                            </SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                       <p className="text-[10px] text-neutral-500 font-medium font-sans mt-1.5">
@@ -1067,10 +1323,10 @@ export default function POSView({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="font-sans text-xs">
-                          <SelectItem value="01">B01 - Crédito Fiscal</SelectItem>
-                          <SelectItem value="02">B02 - Consumidor</SelectItem>
-                          <SelectItem value="14">B14 - Regímenes Especiales</SelectItem>
-                          <SelectItem value="15">B15 - Gubernamental</SelectItem>
+                          <SelectItem value="B01">B01 - Crédito Fiscal</SelectItem>
+                          <SelectItem value="B02">B02 - Consumidor</SelectItem>
+                          <SelectItem value="B14">B14 - Regímenes Especiales</SelectItem>
+                          <SelectItem value="B15">B15 - Gubernamental</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
