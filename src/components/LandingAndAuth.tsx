@@ -51,7 +51,7 @@ import {
   MonitorSmartphone,
   Apple
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 
 interface LandingAndAuthProps {
   onLoginSuccess: (user: any) => void;
@@ -88,6 +88,8 @@ function LiveCounter() {
 }
 
 export default function LandingAndAuth({ onLoginSuccess, usersList, initialView = 'landing' }: LandingAndAuthProps) {
+  const { scrollY } = useScroll();
+  const yParallax = useTransform(scrollY, [0, 1000], [0, 120]);
   const navigate = useNavigate();
   const [view, rawSetView] = useState<'landing' | 'login' | 'register' | 'ayuda'>(initialView);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -853,12 +855,13 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <div className="relative flex justify-center w-full mt-12 w-full max-w-5xl">
                   <div className="absolute inset-0 bg-sky-200/30 rounded-full blur-3xl transform rotate-3 -z-10" />
                   <motion.div
-                    initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                    style={{ y: yParallax }}
                     className="relative w-full drop-shadow-2xl"
                   >
-                    <img 
+                    <motion.img 
+                      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
                       src={heroSlides[currentSlide].image} 
                       alt="FacturaDo Dashboard" 
                       onClick={() => setIsLightboxOpen(true)}
