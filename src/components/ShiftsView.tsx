@@ -32,7 +32,7 @@ export default function ShiftsView({
   // Open Shift Form State
   const [openingBalance, setOpeningBalance] = useState('0');
   const [selectedCajaId, setSelectedCajaId] = useState('');
-  const [selectedShiftSellerId, setSelectedShiftSellerId] = useState('');
+  const [selectedShiftSellerId, setSelectedShiftSellerId] = useState('sel-admin-default');
 
   // Close Shift Form State
   const [closingBalanceActual, setClosingBalanceActual] = useState('');
@@ -61,7 +61,7 @@ export default function ShiftsView({
     });
     setOpeningBalance('0');
     setSelectedCajaId('');
-    setSelectedShiftSellerId('');
+    setSelectedShiftSellerId('sel-admin-default');
   };
 
   const handleCloseShift = (e: React.FormEvent) => {

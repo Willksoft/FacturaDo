@@ -48,7 +48,7 @@ export default function POSView({
 }: POSViewProps) {
   const [cart, setCart] = useState<{ product: Product; quantity: number }[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string>(clients.some(c => c.id === 'cli-consumo') ? 'cli-consumo' : (clients[0]?.id || 'cli-consumo'));
-  const [selectedSellerId, setSelectedSellerId] = useState<string>('');
+  const [selectedSellerId, setSelectedSellerId] = useState<string>('sel-admin-default');
   const [docType, setDocType] = useState<'Factura' | 'Cotizacion'>('Factura');
   const [selectedNcfType, setSelectedNcfType] = useState<string>('B02'); // Consumer standard B02 by default (corrected from 02)
   const [paymentNotes, setPaymentNotes] = useState('');
@@ -58,7 +58,7 @@ export default function POSView({
   const [selectedCajaId, setSelectedCajaId] = useState('');
   const [showCloseShiftModal, setShowCloseShiftModal] = useState(false);
   const [closingBalanceActual, setClosingBalanceActual] = useState('');
-  const [selectedShiftSellerId, setSelectedShiftSellerId] = useState('');
+  const [selectedShiftSellerId, setSelectedShiftSellerId] = useState('sel-admin-default');
 
   // Shift helpers and computations
   const cajas = useMemo(() => financialAccounts.filter(acc => acc.type === 'Caja'), [financialAccounts]);
@@ -101,7 +101,7 @@ export default function POSView({
     });
     setOpeningBalance('0');
     setSelectedCajaId('');
-    setSelectedShiftSellerId('');
+    setSelectedShiftSellerId('sel-admin-default');
   };
 
   const handleCloseShift = (e: React.FormEvent) => {
