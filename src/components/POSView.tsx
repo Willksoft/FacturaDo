@@ -58,6 +58,7 @@ export default function POSView({
   const [selectedCajaId, setSelectedCajaId] = useState('');
   const [showCloseShiftModal, setShowCloseShiftModal] = useState(false);
   const [closingBalanceActual, setClosingBalanceActual] = useState('');
+  const [selectedShiftSellerId, setSelectedShiftSellerId] = useState('');
 
   // Shift helpers and computations
   const cajas = useMemo(() => financialAccounts.filter(acc => acc.type === 'Caja'), [financialAccounts]);
@@ -85,16 +86,22 @@ export default function POSView({
       alert('Por favor seleccione una caja física para operar.');
       return;
     }
+    const chosenSeller = sellers.find(s => s.id === selectedShiftSellerId);
+    if (!selectedShiftSellerId || !chosenSeller) {
+      alert('Por favor seleccione un vendedor para abrir el turno.');
+      return;
+    }
     addShift({
       startTime: new Date().toISOString(),
       openingBalance: parseFloat(openingBalance) || 0,
-      openedById: currentUser.id,
-      openedByName: currentUser.username,
+      openedById: chosenSeller.id,
+      openedByName: chosenSeller.name,
       status: 'Abierto',
       cajaId: selectedCajaId
     });
     setOpeningBalance('0');
     setSelectedCajaId('');
+    setSelectedShiftSellerId('');
   };
 
   const handleCloseShift = (e: React.FormEvent) => {
@@ -458,6 +465,24 @@ export default function POSView({
                     {cajas.map(c => (
                       <SelectItem key={c.id} value={c.id} className="text-xs font-bold text-neutral-855">
                         {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-neutral-800 font-bold block">Vendedor Asignado *</Label>
+                <Select value={selectedShiftSellerId} onValueChange={setSelectedShiftSellerId}>
+                  <SelectTrigger className="w-full h-10 bg-white border border-neutral-250 font-bold text-neutral-850 focus:ring-1 focus:ring-black">
+                    <SelectValue placeholder="Seleccionar Vendedor...">
+                      {sellers.find(s => s.id === selectedShiftSellerId)?.name || selectedShiftSellerId}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="font-sans text-xs bg-white">
+                    {sellers.filter(s => s.isActive).map(seller => (
+                      <SelectItem key={seller.id} value={seller.id} className="text-xs font-bold text-neutral-855">
+                        {seller.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
