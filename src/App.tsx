@@ -1998,6 +1998,7 @@ export default function App() {
               users={users}
               financialAccounts={financialAccounts}
               currentUser={currentUser}
+              sellers={sellers}
             />
           )}
 

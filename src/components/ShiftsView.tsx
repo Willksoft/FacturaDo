@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shift, UserPermission, FinancialAccount } from '../types';
+import { Shift, UserPermission, FinancialAccount, Seller } from '../types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -16,6 +16,7 @@ interface ShiftsViewProps {
   users: UserPermission[];
   financialAccounts: FinancialAccount[];
   currentUser: UserPermission;
+  sellers?: Seller[];
 }
 
 export default function ShiftsView({
@@ -25,11 +26,13 @@ export default function ShiftsView({
   updateShift,
   users,
   financialAccounts,
-  currentUser
+  currentUser,
+  sellers = []
 }: ShiftsViewProps) {
   // Open Shift Form State
   const [openingBalance, setOpeningBalance] = useState('0');
   const [selectedCajaId, setSelectedCajaId] = useState('');
+  const [selectedShiftSellerId, setSelectedShiftSellerId] = useState('');
 
   // Close Shift Form State
   const [closingBalanceActual, setClosingBalanceActual] = useState('');
@@ -38,18 +41,27 @@ export default function ShiftsView({
 
   const handleOpenShift = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedCajaId) return alert('Seleccione una caja');
+    if (!selectedCajaId) {
+      alert('Por favor seleccione una caja física para operar.');
+      return;
+    }
+    const chosenSeller = sellers.find(s => s.id === selectedShiftSellerId);
+    if (!selectedShiftSellerId || !chosenSeller) {
+      alert('Por favor seleccione un vendedor para abrir el turno.');
+      return;
+    }
     
     addShift({
       startTime: new Date().toISOString(),
       openingBalance: parseFloat(openingBalance) || 0,
-      openedById: currentUser.id,
-      openedByName: currentUser.username,
+      openedById: chosenSeller.id,
+      openedByName: chosenSeller.name,
       status: 'Abierto',
       cajaId: selectedCajaId
     });
     setOpeningBalance('0');
     setSelectedCajaId('');
+    setSelectedShiftSellerId('');
   };
 
   const handleCloseShift = (e: React.FormEvent) => {
@@ -149,10 +161,12 @@ export default function ShiftsView({
             <CardContent>
               <form onSubmit={handleOpenShift} className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Caja a Operar</Label>
+                  <Label>Caja a Operar *</Label>
                   <Select value={selectedCajaId} onValueChange={setSelectedCajaId}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar Caja Fìsica" />
+                      <SelectValue placeholder="Seleccionar Caja Física">
+                        {cajas.find(c => c.id === selectedCajaId)?.name || selectedCajaId}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {cajas.map(c => (
@@ -161,8 +175,25 @@ export default function ShiftsView({
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="space-y-2">
-                  <Label>Fondo Inicial (Menudo / Caja Chica)</Label>
+                  <Label>Vendedor Asignado *</Label>
+                  <Select value={selectedShiftSellerId} onValueChange={setSelectedShiftSellerId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar Vendedor">
+                        {sellers.find(s => s.id === selectedShiftSellerId)?.name || selectedShiftSellerId}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sellers.filter(s => s.isActive).map(seller => (
+                        <SelectItem key={seller.id} value={seller.id}>{seller.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Fondo Inicial (Menudo / Caja Chica) *</Label>
                   <Input 
                     type="number" 
                     step="0.01" 
