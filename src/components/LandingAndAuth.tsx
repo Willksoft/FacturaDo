@@ -776,12 +776,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           </header>
 
           {/* Hero Section */}
-          <section className="relative overflow-visible bg-gradient-to-b from-slate-50 via-white to-white pt-16 pb-64 sm:pb-[420px] border-b border-slate-100">
+          <section className="relative overflow-visible bg-gradient-to-b from-slate-50 via-white to-white pt-16 border-b border-slate-100">
             {/* Background decorative elements */}
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-100/40 rounded-full blur-3xl -z-10" />
             <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-50/50 rounded-full blur-3xl -z-10" />
 
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-64 sm:pb-[420px]">
               <div className="flex flex-col items-center text-center space-y-12">
                 
                 {/* Hero Top Info */}
@@ -832,6 +832,13 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     >
                       Iniciar Sesión
                     </button>
+                    <button 
+                      onClick={handleInstallClick}
+                      className="px-8 py-4 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold text-base rounded-2xl transition-colors shadow-sm w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer h-14 hover:-translate-y-0.5 duration-150"
+                    >
+                      <MonitorSmartphone className="w-5 h-5" />
+                      Instalar App (Móvil/Web)
+                    </button>
                   </div>
                   
                   <LiveCounter />
@@ -869,23 +876,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </motion.div>
                 </div>
 
-                {/* Download Direct Buttons below the image */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 mt-8 w-full max-w-4xl"
-                >
 
-
-                  <button 
-                    onClick={handleInstallClick}
-                    className="flex items-center gap-2 px-6 py-3.5 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold text-sm sm:text-base rounded-2xl transition-colors shadow-sm w-full sm:w-auto justify-center"
-                  >
-                    <MonitorSmartphone className="w-5 h-5" />
-                    Instalar App (Móvil/Web)
-                  </button>
-                </motion.div>
 
                 {/* Lightbox Modal */}
                 <AnimatePresence>
