@@ -11,6 +11,7 @@ import {
   initialTickets, initialWarehouses, initialFinancialAccounts, initialPurchaseOrders 
 } from '../dbSeed';
 import { insforge } from '../lib/insforge';
+import { useCatalogStore } from '../stores/useCatalogStore';
 import { useCustomDialog } from '../components/ui/CustomDialogProvider';
 
 // --- Database Mapping Helpers ---
@@ -589,9 +590,19 @@ const mapInventoryMovementToDb = (mv: InventoryMovement) => ({
 export function useInvoiceState() {
   const { showConfirm, showAlert } = useCustomDialog();
   // --- Persistent States ---
-  const [clients, setClients] = useState<Client[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [providers, setProviders] = useState<Provider[]>([]);
+  
+  const clients = useCatalogStore(s => s.clients);
+  const setClients = useCatalogStore(s => s.setClients);
+  const products = useCatalogStore(s => s.products);
+  const setProducts = useCatalogStore(s => s.setProducts);
+  const categories = useCatalogStore(s => s.categories);
+  const setCategories = useCatalogStore(s => s.setCategories);
+  const providers = useCatalogStore(s => s.providers);
+  const setProviders = useCatalogStore(s => s.setProviders);
+  const setCatalogData = useCatalogStore(s => s.setCatalogData);
+
+  
+  
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [ncfSequences, setNcfSequences] = useState<NcfSequence[]>([]);
