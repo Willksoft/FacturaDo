@@ -30,6 +30,7 @@ interface ExpensesViewProps {
   addExpense: (exp: Omit<Expense, 'id'>) => void;
   deleteExpense: (id: string) => void;
   currentUser: { role: string };
+  searchExpenses?: (q: string) => void;
 }
 
 const DGII_CONCEPTS = [
@@ -46,7 +47,7 @@ const DGII_CONCEPTS = [
   '11 - Otros Gastos Indirectas'
 ];
 
-export function ExpensesView({ expenses, addExpense, deleteExpense, currentUser, financialAccounts = [] }: ExpensesViewProps) {
+export function ExpensesView({ expenses, addExpense, deleteExpense, currentUser, financialAccounts = [], searchExpenses }: ExpensesViewProps) {
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
 

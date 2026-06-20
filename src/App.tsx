@@ -255,6 +255,8 @@ export default function App() {
     purgePostgresData,
     loadAllDataFromPostgres,
     searchInvoices,
+    searchReceipts,
+    searchExpenses,
     loadMoreInvoices,
     auditLogs,
     clients,
@@ -1920,6 +1922,7 @@ export default function App() {
 
           {currentTab === 'recibos' && (
             <ReceiptsList
+              searchReceipts={searchReceipts}
               receipts={receipts}
               templateSettings={templateSettings}
               currentUser={currentUser}
@@ -2242,6 +2245,7 @@ export default function App() {
 
           {currentTab === 'gastos' && (
             <ExpensesView
+              searchExpenses={searchExpenses}
               expenses={expenses}
               addExpense={addExpense}
               deleteExpense={deleteExpense}

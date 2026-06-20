@@ -12,6 +12,7 @@ interface ReceiptsListProps {
   templateSettings: TemplateSettings;
   currentUser: any;
   onNavigateToPendingInvoices?: () => void;
+  searchReceipts?: (q: string) => void;
 }
 
 export default function ReceiptsList({
