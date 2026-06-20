@@ -3,7 +3,7 @@ import {
   AppNotification, Client, Product, Provider, Invoice, Receipt, NcfSequence, TemplateSettings, 
   UserPermission, SupportTicket, NcfType, InvoiceItem, PaymentMethod, Warehouse, 
   PurchaseOrder, FinancialAccount, Expense, ClientType, InvoiceType, InvoiceStatus,
-  BankAccountItem, Shift, Seller, AuditLog
+  BankAccountItem, Shift, Seller, AuditLog, InventoryMovement
 } from '../types';
 import { 
   initialClients, initialInvoices, initialNcfSequences, initialProducts, 
@@ -363,6 +363,18 @@ const mapShiftToDb = (sh: Shift) => ({
   is_deleted: false
 });
 
+// For UPDATE operations: excludes 'id' to avoid WITH CHECK policy violations when updating PK
+const mapShiftUpdateToDb = (sh: Partial<Shift>) => ({
+  end_time: sh.endTime || null,
+  closing_balance_expected: sh.closingBalanceExpected ?? null,
+  closing_balance_actual: sh.closingBalanceActual ?? null,
+  discrepancy: sh.discrepancy ?? null,
+  closed_by_id: sh.closedById || null,
+  closed_by_name: sh.closedByName || null,
+  status: sh.status || undefined,
+  is_deleted: false
+});
+
 const mapNcfSequenceFromDb = (db: any): NcfSequence => ({
   type: db.type as NcfType,
   name: db.name,
@@ -463,6 +475,65 @@ const mapSupportTicketToDb = (t: SupportTicket) => ({
   created_at: t.createdAt
 });
 
+const mapSellerFromDb = (db: any): Seller => ({
+  id: db.id,
+  name: db.name,
+  phone: db.phone || undefined,
+  commissionRate: db.commission_rate ? parseFloat(db.commission_rate) : undefined,
+  isActive: db.is_active ?? true,
+  createdAt: db.created_at
+});
+
+const mapSellerToDb = (s: Seller) => ({
+  id: s.id,
+  name: s.name,
+  phone: s.phone || null,
+  commission_rate: s.commissionRate || 0,
+  is_active: s.isActive,
+  created_at: s.createdAt,
+  is_deleted: false
+});
+
+// For UPDATE operations: excludes 'id' to avoid WITH CHECK policy violations when updating PK
+const mapSellerUpdateToDb = (s: Partial<Seller>) => ({
+  name: s.name,
+  phone: s.phone || null,
+  commission_rate: s.commissionRate || 0,
+  is_active: s.isActive,
+  is_deleted: false
+});
+
+const mapInventoryMovementFromDb = (db: any): InventoryMovement => ({
+  id: db.id,
+  productId: db.product_id,
+  productName: db.product_name,
+  type: db.type as 'Entrada' | 'Salida' | 'Ajuste',
+  quantity: parseInt(db.quantity || 0),
+  previousStock: parseInt(db.previous_stock || 0),
+  newStock: parseInt(db.new_stock || 0),
+  referenceType: db.reference_type || undefined,
+  referenceId: db.reference_id || undefined,
+  createdByName: db.created_by_name,
+  notes: db.notes || undefined,
+  createdAt: db.created_at
+});
+
+const mapInventoryMovementToDb = (mv: InventoryMovement) => ({
+  id: mv.id,
+  product_id: mv.productId,
+  product_name: mv.productName,
+  type: mv.type,
+  quantity: mv.quantity,
+  previous_stock: mv.previousStock,
+  new_stock: mv.newStock,
+  reference_type: mv.referenceType || null,
+  reference_id: mv.referenceId || null,
+  created_by_name: mv.createdByName,
+  notes: mv.notes || null,
+  created_at: mv.createdAt,
+  is_deleted: false
+});
+
 export function useInvoiceState() {
   const { showConfirm, showAlert } = useCustomDialog();
   // --- Persistent States ---
@@ -484,6 +555,7 @@ export function useInvoiceState() {
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [activeShift, setActiveShift] = useState<Shift | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [inventoryMovements, setInventoryMovements] = useState<InventoryMovement[]>([]);
   
   // Active App States
   const [currentUser, setCurrentUser] = useState<UserPermission>(defaultUsers[0]);
@@ -869,7 +941,63 @@ export function useInvoiceState() {
       }
       localStorage.setItem('inv_shifts', JSON.stringify(loadedShifts));
 
-      // 14. Fetch audit logs
+      // 14. Fetch sellers from InsForge
+      const { data: dbSellers } = await insforge.database.from('sellers').select('*').or('is_deleted.is.null,is_deleted.eq.false');
+      const userSellers = dbSellers ? dbSellers.filter(s => s.id.startsWith(`${currentUserId}_`)) : [];
+      let loadedSellers: Seller[] = [];
+      const defaultSeller: Seller = {
+        id: 'sel-admin-default',
+        name: 'Administrador',
+        phone: undefined,
+        commissionRate: 0,
+        isActive: true,
+        createdAt: '2026-01-01T00:00:00Z',
+      };
+      if (userSellers.length > 0) {
+        loadedSellers = userSellers.map(s => {
+          const cleaned = mapSellerFromDb(s);
+          cleaned.id = cleaned.id.replace(`${currentUserId}_`, '');
+          return cleaned;
+        });
+        if (!loadedSellers.some(s => s.id === 'sel-admin-default')) {
+          loadedSellers.unshift(defaultSeller);
+          const dbSel = mapSellerToDb(defaultSeller);
+          dbSel.id = `${currentUserId}_${defaultSeller.id}`;
+          await insforge.database.from('sellers').insert([dbSel]);
+        }
+        setSellers(loadedSellers);
+      } else {
+        if (isRealUser) {
+          loadedSellers = [defaultSeller];
+          const dbSel = mapSellerToDb(defaultSeller);
+          dbSel.id = `${currentUserId}_${defaultSeller.id}`;
+          await insforge.database.from('sellers').insert([dbSel]);
+          setSellers(loadedSellers);
+        } else {
+          loadedSellers = [defaultSeller];
+          setSellers(loadedSellers);
+        }
+      }
+      localStorage.setItem('facturado_sellers', JSON.stringify(loadedSellers));
+
+      // 15. Fetch inventory movements (Kardex) from InsForge
+      const { data: dbMovements } = await insforge.database.from('inventory_movements').select('*').or('is_deleted.is.null,is_deleted.eq.false');
+      const userMovements = dbMovements ? dbMovements.filter(m => m.id.startsWith(`${currentUserId}_`)) : [];
+      let loadedMovements: InventoryMovement[] = [];
+      if (userMovements.length > 0) {
+        loadedMovements = userMovements.map(m => {
+          const cleaned = mapInventoryMovementFromDb(m);
+          cleaned.id = cleaned.id.replace(`${currentUserId}_`, '');
+          cleaned.productId = cleaned.productId.replace(`${currentUserId}_`, '');
+          return cleaned;
+        });
+        setInventoryMovements(loadedMovements);
+      } else {
+        setInventoryMovements([]);
+      }
+      localStorage.setItem('facturado_kardex', JSON.stringify(loadedMovements));
+
+      // 16. Fetch audit logs
       try {
         const { data: dbAudit } = await insforge.database.from('audit_logs')
           .select('*')
@@ -1105,6 +1233,13 @@ export function useInvoiceState() {
           const initialSellers = [defaultSeller];
           setSellers(initialSellers);
           localStorage.setItem('facturado_sellers', JSON.stringify(initialSellers));
+        }
+
+        const storedKardex = localStorage.getItem('facturado_kardex');
+        if (storedKardex) {
+          setInventoryMovements(JSON.parse(storedKardex));
+        } else {
+          setInventoryMovements([]);
         }
 
         if (storedActiveUser) {
@@ -1456,8 +1591,75 @@ export function useInvoiceState() {
     return newProduct;
   };
 
+  const addInventoryMovement = (
+    productId: string,
+    type: 'Entrada' | 'Salida' | 'Ajuste',
+    quantity: number,
+    previousStock: number,
+    newStock: number,
+    referenceType?: 'Venta' | 'Compra' | 'Manual' | 'Ajuste',
+    referenceId?: string,
+    notes?: string
+  ) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    const newMv: InventoryMovement = {
+      id: `mv-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      productId,
+      productName: product.name,
+      type,
+      quantity,
+      previousStock,
+      newStock,
+      referenceType,
+      referenceId,
+      createdByName: currentUser?.username || 'Administrador',
+      notes,
+      createdAt: new Date().toISOString()
+    };
+
+    setInventoryMovements(current => {
+      const updated = [newMv, ...current];
+      saveToStorage('facturado_kardex', updated);
+      return updated;
+    });
+
+    const prefix = getDbPrefix();
+    const dbMv = {
+      ...newMv,
+      id: `${prefix}${newMv.id}`,
+      productId: `${prefix}${newMv.productId}`
+    };
+
+    insforge.database.from('inventory_movements').insert([mapInventoryMovementToDb(dbMv as any)]).then(({ error }) => {
+      if (error) {
+        console.error('Database inventory_movements insert error', error);
+      }
+    });
+  };
+
   const updateProduct = async (id: string, updatedFields: Partial<Product>) => {
     const originalProducts = [...products];
+    const originalProduct = originalProducts.find(p => p.id === id);
+
+    if (updatedFields.stock !== undefined && originalProduct && originalProduct.stock !== updatedFields.stock) {
+      const diff = updatedFields.stock - originalProduct.stock;
+      const type = diff > 0 ? 'Entrada' : 'Salida';
+      const notes = (updatedFields as any).notes || (diff > 0 ? 'Ajuste manual de stock (Entrada)' : 'Ajuste manual de stock (Salida)');
+      
+      addInventoryMovement(
+        id,
+        type,
+        Math.abs(diff),
+        originalProduct.stock,
+        updatedFields.stock,
+        'Manual',
+        undefined,
+        notes
+      );
+    }
+
     const updated = products.map(p => p.id === id ? { ...p, ...updatedFields } : p);
     setProducts(updated);
     saveToStorage('inv_products', updated);
@@ -1693,6 +1895,18 @@ export function useInvoiceState() {
           insforge.database.from('products').update({ stock: newStock }).eq('id', `${prefix}${prod.id}`).then(({ error }) => {
             if (error) console.error('Database stock update error', error);
           });
+
+          addInventoryMovement(
+            prod.id,
+            'Salida',
+            itemOrdered.quantity,
+            prod.stock,
+            newStock,
+            'Venta',
+            newDoc.id,
+            `Venta facturada bajo No. ${newDoc.invoiceNumber}`
+          );
+
           return {
             ...prod,
             stock: newStock,
@@ -2181,6 +2395,18 @@ export function useInvoiceState() {
           insforge.database.from('products').update({ stock: newStock }).eq('id', `${prefix}${p.id}`).then(({ error }) => {
             if (error) console.error(error);
           });
+
+          addInventoryMovement(
+            p.id,
+            'Entrada',
+            matchItem.quantity,
+            p.stock,
+            newStock,
+            'Compra',
+            targetPo.id,
+            `Compra recibida según Orden de Compra No. ${targetPo.poNumber}`
+          );
+
           return { ...p, stock: newStock };
         }
         return p;
@@ -2229,6 +2455,13 @@ export function useInvoiceState() {
   // Register New Custom NCF Sequences Visual Admin
   
   const addSeller = async (seller: Omit<Seller, 'id' | 'createdAt'>) => {
+    const prefix = getDbPrefix();
+    if (!prefix) {
+      // Not authenticated yet – show alert, do not save
+      showAlert('Debes iniciar sesión para guardar vendedores. Por favor recarga la página e inténtalo de nuevo.');
+      return;
+    }
+
     const newSeller: Seller = {
       ...seller,
       id: 'sel-' + Date.now().toString(),
@@ -2237,18 +2470,68 @@ export function useInvoiceState() {
     const updated = [...sellers, newSeller];
     setSellers(updated);
     localStorage.setItem('facturado_sellers', JSON.stringify(updated));
+
+    // DB record uses prefixed id for user isolation
+    const dbRecord = mapSellerToDb({ ...newSeller, id: `${prefix}${newSeller.id}` });
+    const { error } = await insforge.database.from('sellers').insert([dbRecord]);
+    if (error) {
+      console.error('Database sellers insert error', error);
+      showAlert(`Error al guardar vendedor en BD: ${error.message}`);
+      // Revert optimistic update
+      setSellers(current => {
+        const reverted = current.filter(s => s.id !== newSeller.id);
+        localStorage.setItem('facturado_sellers', JSON.stringify(reverted));
+        return reverted;
+      });
+    }
   };
 
   const updateSeller = async (id: string, updates: Partial<Seller>) => {
+    const previous = sellers.find(s => s.id === id);
     const updated = sellers.map(s => s.id === id ? { ...s, ...updates } : s);
     setSellers(updated);
     localStorage.setItem('facturado_sellers', JSON.stringify(updated));
+
+    const prefix = getDbPrefix();
+    if (!prefix) return; // Not authenticated
+    const matchSeller = updated.find(s => s.id === id);
+    if (matchSeller) {
+      // Use update-specific mapper to avoid PK updates
+      const dbUpdateRecord = mapSellerUpdateToDb(matchSeller);
+      const { error } = await insforge.database.from('sellers').update(dbUpdateRecord).eq('id', `${prefix}${id}`);
+      if (error) {
+        console.error('Database sellers update error', error);
+        showAlert(`Error al actualizar vendedor en BD: ${error.message}`);
+        setSellers(current => {
+          const reverted = current.map(s => s.id === id ? (previous || s) : s);
+          localStorage.setItem('facturado_sellers', JSON.stringify(reverted));
+          return reverted;
+        });
+      }
+    }
   };
 
   const deleteSeller = async (id: string) => {
+    const confirmed = await showConfirm("¿Está seguro de que desea eliminar este vendedor?");
+    if (!confirmed) return;
+
+    const previous = sellers.find(s => s.id === id);
     const updated = sellers.filter(s => s.id !== id);
     setSellers(updated);
     localStorage.setItem('facturado_sellers', JSON.stringify(updated));
+
+    const prefix = getDbPrefix();
+    if (!prefix) return; // Not authenticated
+    const { error } = await insforge.database.from('sellers').update({ is_deleted: true }).eq('id', `${prefix}${id}`);
+    if (error) {
+      console.error('Database sellers delete error', error);
+      showAlert(`Error al eliminar vendedor en BD: ${error.message}`);
+      setSellers(current => {
+        const reverted = previous ? [...current, previous] : current;
+        localStorage.setItem('facturado_sellers', JSON.stringify(reverted));
+        return reverted;
+      });
+    }
   };
 
   const updateNcfSequences = (seqs: NcfSequence[]) => {
@@ -2443,7 +2726,13 @@ export function useInvoiceState() {
     });
   };
 
-  const addShift = (sh: Omit<Shift, 'id'>) => {
+  const addShift = async (sh: Omit<Shift, 'id'>) => {
+    const prefix = getDbPrefix();
+    if (!prefix) {
+      showAlert('Debes iniciar sesión para abrir un turno. Por favor recarga la página e inténtalo de nuevo.');
+      return;
+    }
+
     const newSh: Shift = {
       ...sh,
       id: `sh-${Date.now()}`
@@ -2453,23 +2742,24 @@ export function useInvoiceState() {
     if (newSh.status === 'Abierto') setActiveShift(newSh);
     saveToStorage('inv_shifts', updated);
 
-    const prefix = getDbPrefix();
-    const dbSh = { ...newSh, id: `${prefix}${newSh.id}` };
-    insforge.database.from('shifts').insert([mapShiftToDb(dbSh)]).then(({ error }) => {
-      if (error) {
-        console.error('Database insertion error for shift', error);
-        showAlert(`Error al guardar turno en BD: ${error.message}`);
-        setShifts(current => {
-          const reverted = current.filter(s => s.id !== newSh.id);
-          saveToStorage('inv_shifts', reverted);
-          if (newSh.status === 'Abierto') setActiveShift(reverted.find(s => s.status === 'Abierto') || null);
-          return reverted;
-        });
-      }
-    });
+    const dbRecord = mapShiftToDb({ ...newSh, id: `${prefix}${newSh.id}` });
+    const { error } = await insforge.database.from('shifts').insert([dbRecord]);
+    if (error) {
+      console.error('Database insertion error for shift', error);
+      showAlert(`Error al guardar turno en BD: ${error.message}`);
+      setShifts(current => {
+        const reverted = current.filter(s => s.id !== newSh.id);
+        saveToStorage('inv_shifts', reverted);
+        if (newSh.status === 'Abierto') setActiveShift(reverted.find(s => s.status === 'Abierto') || null);
+        return reverted;
+      });
+    }
   };
 
   const updateShift = (id: string, updates: Partial<Shift>) => {
+    // Capture the current shift BEFORE state update to avoid stale closure issue
+    const existingShift = shifts.find(s => s.id === id);
+
     setShifts(current => {
       const updated = current.map(sh => sh.id === id ? { ...sh, ...updates } : sh);
       saveToStorage('inv_shifts', updated);
@@ -2485,8 +2775,13 @@ export function useInvoiceState() {
     });
 
     const prefix = getDbPrefix();
-    const updatedFields = mapShiftToDb({ ...shifts.find(s => s.id === id)!, ...updates });
-    insforge.database.from('shifts').update(updatedFields).eq('id', `${prefix}${id}`).then(({ error }) => {
+    if (!prefix) {
+      console.warn('updateShift: no auth prefix, skipping DB update');
+      return;
+    }
+    // Use update-specific mapper (excludes 'id') to avoid RLS WITH CHECK policy violations
+    const dbUpdateRecord = mapShiftUpdateToDb(updates);
+    insforge.database.from('shifts').update(dbUpdateRecord).eq('id', `${prefix}${id}`).then(({ error }) => {
       if (error) {
         console.error('Database update error for shift', error);
         showAlert(`Error al actualizar turno en BD: ${error.message}`);
@@ -2729,5 +3024,7 @@ export function useInvoiceState() {
     addNotification,
     markNotificationRead,
     clearNotifications,
+    inventoryMovements,
+    addInventoryMovement,
   };
 }

@@ -11,7 +11,7 @@ import { Calendar, PlayCircle, StopCircle, Calculator, Clock, AlertTriangle, Che
 interface ShiftsViewProps {
   shifts: Shift[];
   activeShift: Shift | null;
-  addShift: (sh: Omit<Shift, 'id'>) => void;
+  addShift: (sh: Omit<Shift, 'id'>) => void | Promise<void>;
   updateShift: (id: string, updates: Partial<Shift>) => void;
   users: UserPermission[];
   financialAccounts: FinancialAccount[];
@@ -33,6 +33,15 @@ export default function ShiftsView({
   const [openingBalance, setOpeningBalance] = useState('0');
   const [selectedCajaId, setSelectedCajaId] = useState('');
   const [selectedShiftSellerId, setSelectedShiftSellerId] = useState('sel-admin-default');
+
+  // Derived: active sellers list with Administrador always present as fallback
+  const activeSellers = sellers.filter(s => s.isActive);
+  const hasAdminFallback = activeSellers.some(s => s.id === 'sel-admin-default');
+  const displaySellers = hasAdminFallback ? activeSellers : [
+    { id: 'sel-admin-default', name: 'Administrador', isActive: true, commissionRate: 0, createdAt: '' },
+    ...activeSellers
+  ];
+  const selectedSellerName = displaySellers.find(s => s.id === selectedShiftSellerId)?.name || 'Administrador';
 
   // Close Shift Form State
   const [closingBalanceActual, setClosingBalanceActual] = useState('');
@@ -181,11 +190,11 @@ export default function ShiftsView({
                   <Select value={selectedShiftSellerId} onValueChange={setSelectedShiftSellerId}>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccionar Vendedor">
-                        {sellers.find(s => s.id === selectedShiftSellerId)?.name || selectedShiftSellerId}
+                        {selectedSellerName}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                      {sellers.filter(s => s.isActive).map(seller => (
+                      {displaySellers.map(seller => (
                         <SelectItem key={seller.id} value={seller.id}>{seller.name}</SelectItem>
                       ))}
                     </SelectContent>

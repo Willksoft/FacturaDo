@@ -22,7 +22,7 @@ interface POSViewProps {
   addClient: (client: Omit<Client, 'id' | 'createdAt'>) => Client | Promise<Client>;
   templateSettings: TemplateSettings;
   activeShift: Shift | null;
-  addShift: (sh: Omit<Shift, 'id'>) => void;
+  addShift: (sh: Omit<Shift, 'id'>) => void | Promise<void>;
   updateShift: (id: string, updates: Partial<Shift>) => void;
   receipts: Receipt[];
   onNavigateToTurnos?: () => void;
@@ -63,6 +63,15 @@ export default function POSView({
   // Shift helpers and computations
   const cajas = useMemo(() => financialAccounts.filter(acc => acc.type === 'Caja'), [financialAccounts]);
 
+  // Always include fallback Administrador seller so dropdown shows a name even before DB loads
+  const displaySellers = useMemo(() => {
+    const active = sellers.filter(s => s.isActive);
+    const hasAdmin = active.some(s => s.id === 'sel-admin-default');
+    if (hasAdmin) return active;
+    return [{ id: 'sel-admin-default', name: 'Administrador', isActive: true, commissionRate: 0, createdAt: '' }, ...active];
+  }, [sellers]);
+  const selectedShiftSellerName = displaySellers.find(s => s.id === selectedShiftSellerId)?.name || 'Administrador';
+
   const activeShiftCashPayments = useMemo(() => {
     if (!activeShift) return 0;
     return receipts
@@ -86,7 +95,7 @@ export default function POSView({
       alert('Por favor seleccione una caja física para operar.');
       return;
     }
-    const chosenSeller = sellers.find(s => s.id === selectedShiftSellerId);
+    const chosenSeller = displaySellers.find(s => s.id === selectedShiftSellerId) || displaySellers[0];
     if (!selectedShiftSellerId || !chosenSeller) {
       alert('Por favor seleccione un vendedor para abrir el turno.');
       return;
@@ -476,11 +485,11 @@ export default function POSView({
                 <Select value={selectedShiftSellerId} onValueChange={setSelectedShiftSellerId}>
                   <SelectTrigger className="w-full h-10 bg-white border border-neutral-250 font-bold text-neutral-850 focus:ring-1 focus:ring-black">
                     <SelectValue placeholder="Seleccionar Vendedor...">
-                      {sellers.find(s => s.id === selectedShiftSellerId)?.name || selectedShiftSellerId}
+                      {selectedShiftSellerName}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="font-sans text-xs bg-white">
-                    {sellers.filter(s => s.isActive).map(seller => (
+                    {displaySellers.map(seller => (
                       <SelectItem key={seller.id} value={seller.id} className="text-xs font-bold text-neutral-855">
                         {seller.name}
                       </SelectItem>

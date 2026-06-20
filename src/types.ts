@@ -325,3 +325,18 @@ export interface AuditLog {
   createdAt: string;
 }
 
+export interface InventoryMovement {
+  id: string;
+  productId: string;
+  productName: string;
+  type: 'Entrada' | 'Salida' | 'Ajuste';
+  quantity: number;
+  previousStock: number;
+  newStock: number;
+  referenceType?: 'Venta' | 'Compra' | 'Manual' | 'Ajuste';
+  referenceId?: string; // e.g. invoiceId or purchaseOrderId
+  createdByName: string;
+  notes?: string;
+  createdAt: string;
+}
+
