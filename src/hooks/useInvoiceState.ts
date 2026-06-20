@@ -12,6 +12,8 @@ import {
 } from '../dbSeed';
 import { insforge } from '../lib/insforge';
 import { useCatalogStore } from '../stores/useCatalogStore';
+import { useFinanceStore } from '../stores/useFinanceStore';
+import { useConfigStore } from '../stores/useConfigStore';
 import { useCustomDialog } from '../components/ui/CustomDialogProvider';
 
 // --- Database Mapping Helpers ---
@@ -595,29 +597,37 @@ export function useInvoiceState() {
   const setClients = useCatalogStore(s => s.setClients);
   const products = useCatalogStore(s => s.products);
   const setProducts = useCatalogStore(s => s.setProducts);
-  const categories = useCatalogStore(s => s.categories);
-  const setCategories = useCatalogStore(s => s.setCategories);
-  const providers = useCatalogStore(s => s.providers);
+      const providers = useCatalogStore(s => s.providers);
   const setProviders = useCatalogStore(s => s.setProviders);
   const setCatalogData = useCatalogStore(s => s.setCatalogData);
 
   
   
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [receipts, setReceipts] = useState<Receipt[]>([]);
+  const invoices = useFinanceStore(s => s.invoices);
+  const setInvoices = useFinanceStore(s => s.setInvoices);
+  const receipts = useFinanceStore(s => s.receipts);
+  const setReceipts = useFinanceStore(s => s.setReceipts);
   const [ncfSequences, setNcfSequences] = useState<NcfSequence[]>([]);
-  const [templateSettings, setTemplateSettings] = useState<TemplateSettings>(defaultTemplateSettings);
-  const [users, setUsers] = useState<UserPermission[]>(defaultUsers);
+  const _templateSettings = useConfigStore(s => s.templateSettings);
+  const templateSettings = _templateSettings || defaultTemplateSettings;
+  const setTemplateSettings = useConfigStore(s => s.setTemplateSettings);
+  const _users = useConfigStore(s => s.users);
+  const users = _users.length > 0 ? _users : defaultUsers;
+  const setUsers = useConfigStore(s => s.setUsers);
   const [sellers, setSellers] = useState<Seller[]>([]);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
-  const [financialAccounts, setFinancialAccounts] = useState<FinancialAccount[]>([]);
-  const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
+  const financialAccounts = useFinanceStore(s => s.financialAccounts);
+  const setFinancialAccounts = useFinanceStore(s => s.setFinancialAccounts);
+  const purchaseOrders = useFinanceStore(s => s.purchaseOrders);
+  const setPurchaseOrders = useFinanceStore(s => s.setPurchaseOrders);
   const [purchaseOrderPayments, setPurchaseOrderPayments] = useState<PurchaseOrderPayment[]>([]);
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const expenses = useFinanceStore(s => s.expenses);
+  const setExpenses = useFinanceStore(s => s.setExpenses);
   const [expensePayments, setExpensePayments] = useState<ExpensePayment[]>([]);
-  const [shifts, setShifts] = useState<Shift[]>([]);
+  const shifts = useFinanceStore(s => s.shifts);
+  const setShifts = useFinanceStore(s => s.setShifts);
   const [activeShift, setActiveShift] = useState<Shift | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [inventoryMovements, setInventoryMovements] = useState<InventoryMovement[]>([]);
@@ -2360,7 +2370,7 @@ export function useInvoiceState() {
       if (error) {
         console.error('Database insertion error', error);
         showAlert(`Error al guardar cuenta financiera en BD: ${error.message}`);
-        setFinancialAccounts(current => {
+        setFinancialAccounts((current: FinancialAccount[]) => {
           const reverted = current.filter(a => a.id !== newAcc.id);
           saveToStorage('inv_accounts', reverted);
           return reverted;
@@ -2384,7 +2394,7 @@ export function useInvoiceState() {
         if (error) {
           console.error('Database update error', error);
           showAlert(`Error al actualizar cuenta financiera en BD: ${error.message}`);
-          setFinancialAccounts(current => {
+          setFinancialAccounts((current: FinancialAccount[]) => {
             const reverted = current.map(a => a.id === id ? (financialAccounts.find(old => old.id === id) || a) : a);
             saveToStorage('inv_accounts', reverted);
             return reverted;
@@ -2407,7 +2417,7 @@ export function useInvoiceState() {
       if (error && target) {
         console.error('Database delete error', error);
         showAlert(`Error al eliminar cuenta financiera en BD: ${error.message}`);
-        setFinancialAccounts(current => {
+        setFinancialAccounts((current: FinancialAccount[]) => {
           const reverted = [...current, target];
           saveToStorage('inv_accounts', reverted);
           return reverted;
@@ -2458,7 +2468,7 @@ export function useInvoiceState() {
       if (error) {
         console.error('Database insertion error', error);
         showAlert(`Error al guardar orden de compra en BD: ${error.message}`);
-        setPurchaseOrders(current => {
+        setPurchaseOrders((current: PurchaseOrder[]) => {
           const reverted = current.filter(po => po.id !== newPo.id);
           saveToStorage('inv_po', reverted);
           return reverted;
@@ -2529,7 +2539,7 @@ export function useInvoiceState() {
         if (error) {
           console.error('Database update error', error);
           showAlert(`Error al actualizar orden de compra en BD: ${error.message}`);
-          setPurchaseOrders(current => {
+          setPurchaseOrders((current: PurchaseOrder[]) => {
             const reverted = current.map(po => po.id === id ? (purchaseOrders.find(old => old.id === id) || po) : po);
             saveToStorage('inv_po', reverted);
             return reverted;
@@ -3056,7 +3066,7 @@ export function useInvoiceState() {
       if (error && target) {
         console.error('Database deletion error', error);
         showAlert(`Error al eliminar orden de compra en BD: ${error.message}`);
-        setPurchaseOrders(current => {
+        setPurchaseOrders((current: PurchaseOrder[]) => {
           const reverted = [...current, target];
           saveToStorage('inv_po', reverted);
           return reverted;
