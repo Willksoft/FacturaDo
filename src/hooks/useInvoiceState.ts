@@ -650,6 +650,35 @@ export function useInvoiceState() {
   };
 
   // Load from Postgres or seed/LocalStorage fallback
+  
+  const loadMoreInvoices = async () => {
+    try {
+      const currentLength = invoices.length;
+      const { data: dbInvoices } = await insforge.database
+        .from('invoices')
+        .select('*')
+        .or('is_deleted.is.null,is_deleted.eq.false')
+        .range(currentLength, currentLength + 200 - 1);
+        
+      if (dbInvoices && dbInvoices.length > 0) {
+        const currentUserId = authUserIdRef.current;
+        const userInvoices = dbInvoices.filter(i => i.id.startsWith(currentUserId + '_'));
+        if (userInvoices.length > 0) {
+          const mapped = userInvoices.map(db => mapInvoiceFromDb(db, clients)).map(i => ({
+            ...i,
+            id: i.id.replace(currentUserId + '_', '')
+          }));
+          setInvoices((prev: Invoice[]) => {
+            const newItems = mapped.filter(m => !prev.some(p => p.id === m.id));
+            return [...prev, ...newItems];
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Error loading more invoices", e);
+    }
+  };
+
   const loadAllDataFromPostgres = async () => {
     try {
       const { data: authData } = await insforge.auth.getCurrentUser();
@@ -903,7 +932,7 @@ export function useInvoiceState() {
       localStorage.setItem('inv_accounts', JSON.stringify(loadedAccounts));
 
       // 8. Fetch invoices
-      const { data: dbInvoices } = await insforge.database.from('invoices').select('*').or('is_deleted.is.null,is_deleted.eq.false');
+      const { data: dbInvoices } = await insforge.database.from('invoices').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
       const userInvoices = dbInvoices ? dbInvoices.filter(i => i.id.startsWith(`${currentUserId}_`)) : [];
       let loadedInvoices = [];
       if (userInvoices.length > 0) {
@@ -923,7 +952,7 @@ export function useInvoiceState() {
       localStorage.setItem('inv_invoices', JSON.stringify(loadedInvoices));
 
       // 9. Fetch receipts
-      const { data: dbReceipts } = await insforge.database.from('receipts').select('*').or('is_deleted.is.null,is_deleted.eq.false');
+      const { data: dbReceipts } = await insforge.database.from('receipts').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
       const userReceipts = dbReceipts ? dbReceipts.filter(r => r.id.startsWith(`${currentUserId}_`)) : [];
       let loadedReceipts = [];
       if (userReceipts.length > 0) {
@@ -943,7 +972,7 @@ export function useInvoiceState() {
       localStorage.setItem('inv_receipts', JSON.stringify(loadedReceipts));
 
       // 10. Fetch purchase orders
-      const { data: dbPo } = await insforge.database.from('purchase_orders').select('*').or('is_deleted.is.null,is_deleted.eq.false');
+      const { data: dbPo } = await insforge.database.from('purchase_orders').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
       const userPo = dbPo ? dbPo.filter(po => po.id.startsWith(`${currentUserId}_`)) : [];
       let loadedPo = [];
       if (userPo.length > 0) {
@@ -980,7 +1009,7 @@ export function useInvoiceState() {
       localStorage.setItem('inv_tickets', JSON.stringify(loadedTickets));
 
       // 12. Fetch expenses
-      const { data: dbExpenses } = await insforge.database.from('expenses').select('*').or('is_deleted.is.null,is_deleted.eq.false');
+      const { data: dbExpenses } = await insforge.database.from('expenses').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
       const userExpenses = dbExpenses ? dbExpenses.filter(e => e.id.startsWith(`${currentUserId}_`)) : [];
       let loadedExpenses = [];
       if (userExpenses.length > 0) {
@@ -997,7 +1026,7 @@ export function useInvoiceState() {
       localStorage.setItem('inv_expenses', JSON.stringify(loadedExpenses));
 
       // 12.1 Fetch expense payments
-      const { data: dbExpensePayments } = await insforge.database.from('expense_payments').select('*');
+      const { data: dbExpensePayments } = await insforge.database.from('expense_payments').select('*').limit(200);
       const userExpensePayments = dbExpensePayments ? dbExpensePayments.filter(ep => ep.id.startsWith(`${currentUserId}_`)) : [];
       let loadedExpensePayments: ExpensePayment[] = [];
       if (userExpensePayments.length > 0) {
@@ -1014,7 +1043,7 @@ export function useInvoiceState() {
       localStorage.setItem('inv_expense_payments', JSON.stringify(loadedExpensePayments));
 
       // 12.2 Fetch po payments
-      const { data: dbPoPayments } = await insforge.database.from('purchase_order_payments').select('*');
+      const { data: dbPoPayments } = await insforge.database.from('purchase_order_payments').select('*').limit(200);
       const userPoPayments = dbPoPayments ? dbPoPayments.filter(pop => pop.id.startsWith(`${currentUserId}_`)) : [];
       let loadedPoPayments: PurchaseOrderPayment[] = [];
       if (userPoPayments.length > 0) {
@@ -1031,7 +1060,7 @@ export function useInvoiceState() {
       localStorage.setItem('inv_po_payments', JSON.stringify(loadedPoPayments));
 
       // 13. Fetch shifts
-      const { data: dbShifts } = await insforge.database.from('shifts').select('*').or('is_deleted.is.null,is_deleted.eq.false');
+      const { data: dbShifts } = await insforge.database.from('shifts').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
       const userShifts = dbShifts ? dbShifts.filter(sh => sh.id.startsWith(`${currentUserId}_`)) : [];
       let loadedShifts = [];
       if (userShifts.length > 0) {
@@ -1090,7 +1119,7 @@ export function useInvoiceState() {
       localStorage.setItem('facturado_sellers', JSON.stringify(loadedSellers));
 
       // 15. Fetch inventory movements (Kardex) from InsForge
-      const { data: dbMovements } = await insforge.database.from('inventory_movements').select('*').or('is_deleted.is.null,is_deleted.eq.false');
+      const { data: dbMovements } = await insforge.database.from('inventory_movements').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
       const userMovements = dbMovements ? dbMovements.filter(m => m.id.startsWith(`${currentUserId}_`)) : [];
       let loadedMovements: InventoryMovement[] = [];
       if (userMovements.length > 0) {
@@ -3177,6 +3206,7 @@ export function useInvoiceState() {
     setNeedsOnboarding,
     purgePostgresData,
     loadAllDataFromPostgres,
+    loadMoreInvoices,
     logActivity,
     auditLogs,
     clients,
