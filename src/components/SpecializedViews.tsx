@@ -1325,15 +1325,39 @@ export function FinancialBancosView({
 // ==========================================
 // ACCOUNTS RECEIVABLE AGING (COBRAR)
 // ==========================================
-export function AccountsReceivableView({ invoices }: { invoices: any[] }) {
-  const pendingInvoices = invoices.filter(inv => inv.status !== 'Pagada');
-  const outstandingSum = pendingInvoices.reduce((acc, curr) => acc + curr.total, 0);
+export function AccountsReceivableView({ invoices, receipts, payInvoice, financialAccounts }: { invoices: any[]; receipts: any[]; payInvoice: any; financialAccounts: any[] }) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+  const [payAmount, setPayAmount] = useState('');
+  const [payMethod, setPayMethod] = useState('Efectivo');
+  const [accountId, setAccountId] = useState('');
 
-  // Divide into aging categories based on current Date (mock calculations)
+  const mappedInvoices = invoices.filter(inv => inv.paymentCondition !== 'Contado' && inv.status !== 'Pagada').map(inv => {
+    const paid = receipts?.filter(r => r.invoiceId === inv.id).reduce((sum, r) => sum + (r.amountPaid || 0), 0) || 0;
+    const debt = Math.max(0, inv.total - paid);
+    return { ...inv, currentDebt: debt };
+  }).filter(inv => inv.currentDebt > 0);
+
+  const outstandingSum = mappedInvoices.reduce((acc, curr) => acc + curr.currentDebt, 0);
+
+  // Divide into aging categories based on current Date (mock calculations for UI purposes)
   const currentTotal = outstandingSum;
-  const current30Days = pendingInvoices.filter((inv, i) => i % 3 === 0).reduce((acc, curr) => acc + curr.total, 0);
-  const current60Days = pendingInvoices.filter((inv, i) => i % 3 === 1).reduce((acc, curr) => acc + curr.total, 0);
+  const current30Days = mappedInvoices.filter((inv, i) => i % 3 === 0).reduce((acc, curr) => acc + curr.currentDebt, 0);
+  const current60Days = mappedInvoices.filter((inv, i) => i % 3 === 1).reduce((acc, curr) => acc + curr.currentDebt, 0);
   const current90DaysAndOver = currentTotal - current30Days - current60Days;
+
+  const handleOpenModal = (inv: any) => {
+    setSelectedInvoice(inv);
+    setPayAmount(inv.currentDebt.toString());
+    setModalOpen(true);
+  };
+
+  const handleSubmitPayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedInvoice || !payAmount) return;
+    payInvoice(selectedInvoice.id, parseFloat(payAmount), payMethod, undefined, accountId !== 'none' ? accountId : undefined);
+    setModalOpen(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -1346,25 +1370,25 @@ export function AccountsReceivableView({ invoices }: { invoices: any[] }) {
         <Card className="border-neutral-200 bg-white">
           <CardContent className="p-4 flex flex-col justify-center">
             <span className="text-[10px] text-neutral-455 font-bold uppercase tracking-wider block">Total por Cobrar</span>
-            <span className="text-lg font-black text-rose-600 mt-1">RD$ {currentTotal.toLocaleString()}</span>
+            <span className="text-lg font-black text-rose-600 mt-1">RD$ {currentTotal.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
           </CardContent>
         </Card>
         <Card className="border-neutral-200 bg-white">
           <CardContent className="p-4 flex flex-col justify-center">
             <span className="text-[10px] text-neutral-455 font-bold uppercase tracking-wider block">Corriente (0 - 30 Días)</span>
-            <span className="text-lg font-black text-neutral-855 mt-1">RD$ {current30Days.toLocaleString()}</span>
+            <span className="text-lg font-black text-neutral-855 mt-1">RD$ {current30Days.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
           </CardContent>
         </Card>
         <Card className="border-neutral-200 bg-white">
           <CardContent className="p-4 flex flex-col justify-center">
             <span className="text-[10px] text-neutral-455 font-bold uppercase tracking-wider block">Vencido (31 - 60 Días)</span>
-            <span className="text-lg font-black text-amber-900 mt-1">RD$ {current60Days.toLocaleString()}</span>
+            <span className="text-lg font-black text-amber-900 mt-1">RD$ {current60Days.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
           </CardContent>
         </Card>
         <Card className="border-neutral-200 bg-red-50/20 text-red-900">
           <CardContent className="p-4 flex flex-col justify-center">
             <span className="text-[10px] text-red-700 font-bold uppercase tracking-wider block font-sans">Cartera Crítica (61+ Días)</span>
-            <span className="text-lg font-black text-red-650 mt-1">RD$ {current90DaysAndOver.toLocaleString()}</span>
+            <span className="text-lg font-black text-red-650 mt-1">RD$ {current90DaysAndOver.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
           </CardContent>
         </Card>
       </div>
@@ -1375,7 +1399,7 @@ export function AccountsReceivableView({ invoices }: { invoices: any[] }) {
           <span className="text-[10px] text-neutral-500 font-medium">Ordenado por balance pendiente</span>
         </CardHeader>
         <CardContent className="p-0 overflow-x-auto text-xs font-sans">
-          {pendingInvoices.length === 0 ? (
+          {mappedInvoices.length === 0 ? (
             <div className="p-12 text-center text-neutral-400">Excelente! No tiene cuentas por cobrar pendientes.</div>
           ) : (
             <table className="w-full text-left">
@@ -1387,21 +1411,21 @@ export function AccountsReceivableView({ invoices }: { invoices: any[] }) {
                   <th className="p-3">Vencimiento</th>
                   <th className="p-3 text-right">Monto Original</th>
                   <th className="p-3 text-right">Balance Pendiente</th>
-                  <th className="p-3 text-right">Recordatorios</th>
+                  <th className="p-3 text-right">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100">
-                {pendingInvoices.map((inv, idx) => (
+                {mappedInvoices.map((inv, idx) => (
                   <tr key={idx} className="hover:bg-neutral-50/45">
                     <td className="p-3 font-bold text-neutral-800">{inv.invoiceNumber}</td>
                     <td className="p-3 font-semibold text-neutral-855">{inv.client?.name}</td>
                     <td className="p-3 font-mono text-neutral-500">{inv.client?.rncOrCedula}</td>
-                    <td className="p-3 font-mono text-neutral-400">{inv.date}</td>
-                    <td className="p-3 text-right text-neutral-600">RD$ {inv.total.toLocaleString()}</td>
-                    <td className="p-3 text-right font-black text-rose-600">RD$ {inv.total.toLocaleString()}</td>
+                    <td className="p-3 font-mono text-neutral-400">{inv.createdAt?.split('T')[0]}</td>
+                    <td className="p-3 text-right text-neutral-600">RD$ {inv.total.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                    <td className="p-3 text-right font-black text-rose-600">RD$ {inv.currentDebt.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
                     <td className="p-3 text-right">
-                      <Button size="sm" variant="outline" className="text-[10px] h-7 px-2 border-neutral-200 text-rose-650 hover:text-rose-700 bg-white">
-                        <span>Reclamar Cobro</span>
+                      <Button onClick={() => handleOpenModal(inv)} size="sm" variant="outline" className="text-[10px] h-7 px-2 border-neutral-200 text-rose-650 hover:text-rose-700 bg-white">
+                        <span>Abonar / Cobrar</span>
                       </Button>
                     </td>
                   </tr>
@@ -1411,6 +1435,63 @@ export function AccountsReceivableView({ invoices }: { invoices: any[] }) {
           )}
         </CardContent>
       </Card>
+
+      {modalOpen && selectedInvoice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-neutral-100 bg-neutral-50 flex justify-between items-center">
+              <h3 className="font-bold text-neutral-900">Registrar Pago / Abono</h3>
+              <Button variant="ghost" size="icon" onClick={() => setModalOpen(false)} className="h-6 w-6"><X className="w-4 h-4" /></Button>
+            </div>
+            <form onSubmit={handleSubmitPayment} className="p-4 space-y-4">
+              <div className="text-xs text-neutral-600 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                Factura: <span className="font-bold">{selectedInvoice.invoiceNumber}</span><br />
+                Cliente: <span className="font-bold">{selectedInvoice.client?.name}</span><br />
+                Balance Pendiente: <span className="font-bold text-rose-600">RD$ {selectedInvoice.currentDebt.toLocaleString()}</span>
+              </div>
+
+              <div>
+                <Label className="text-xs font-bold text-neutral-700">Monto a Abonar (RD$)</Label>
+                <Input
+                  type="number" step="0.01" max={selectedInvoice.currentDebt}
+                  value={payAmount} onChange={e => setPayAmount(e.target.value)} required
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label className="text-xs font-bold text-neutral-700">Método de Pago</Label>
+                <Select value={payMethod} onValueChange={setPayMethod}>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Efectivo">Efectivo</SelectItem>
+                    <SelectItem value="Transferencia">Transferencia</SelectItem>
+                    <SelectItem value="Tarjeta">Tarjeta / Verifone</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label className="text-xs font-bold text-neutral-700">Cuenta de Destino (Opcional)</Label>
+                <Select value={accountId} onValueChange={setAccountId}>
+                  <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccione una cuenta para ingreso..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">-- No registrar en cuentas --</SelectItem>
+                    {financialAccounts?.map((acc: any) => (
+                      <SelectItem key={acc.id} value={acc.id}>{acc.name} - {acc.type}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <Button type="button" variant="outline" className="mr-2" onClick={() => setModalOpen(false)}>Cancelar</Button>
+                <Button type="submit" className="bg-black text-white hover:bg-neutral-800">Registrar Pago</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1418,41 +1499,79 @@ export function AccountsReceivableView({ invoices }: { invoices: any[] }) {
 // ==========================================
 // ACCOUNTS PAYABLE TO SUPPLIERS (PAGAR)
 // ==========================================
-export function AccountsPayableView({ purchaseOrders, expenses }: { purchaseOrders?: any[]; expenses?: any[] }) {
+export function AccountsPayableView({ 
+  purchaseOrders, 
+  expenses,
+  expensePayments,
+  purchaseOrderPayments,
+  addExpensePayment,
+  addPurchaseOrderPayment,
+  financialAccounts
+}: { 
+  purchaseOrders?: any[]; 
+  expenses?: any[];
+  expensePayments?: any[];
+  purchaseOrderPayments?: any[];
+  addExpensePayment?: any;
+  addPurchaseOrderPayment?: any;
+  financialAccounts?: any[];
+}) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedDebt, setSelectedDebt] = useState<any>(null);
+  const [payAmount, setPayAmount] = useState('');
+  const [payMethod, setPayMethod] = useState('Transferencia');
+  const [accountId, setAccountId] = useState('');
+
   // Build debts from pending purchase orders and unpaid expenses
-  const poDebts = (purchaseOrders || []).filter(po => po.status === 'Pendiente' || po.status === 'Aprobada').map(po => ({
-    id: po.poNumber || po.id,
-    supplier: po.providerName || 'Suplidor General',
-    docType: 'Orden de Compra',
-    rnc: '',
-    originalAmount: po.total || 0,
-    currentDebt: po.total || 0,
-    date: po.createdAt?.split('T')[0] || '',
-    limitDate: ''
-  }));
+  const poDebts = (purchaseOrders || [])
+    .map(po => {
+      const debt = Math.max(0, po.total - (po.amountPaid || 0));
+      return {
+        id: po.id,
+        refNumber: po.poNumber,
+        supplier: po.providerName || 'Suplidor General',
+        docType: 'Orden de Compra',
+        originalAmount: po.total || 0,
+        currentDebt: debt,
+        date: po.createdAt?.split('T')[0] || ''
+      };
+    }).filter(d => d.currentDebt > 0);
 
-  const expDebts = (expenses || []).filter(e => e.status === 'Pendiente').map(e => ({
-    id: e.id,
-    supplier: e.vendor || e.description || 'Gasto pendiente',
-    docType: 'Gasto Operativo',
-    rnc: e.rnc || '',
-    originalAmount: e.amount || 0,
-    currentDebt: e.amount || 0,
-    date: e.date?.split('T')[0] || '',
-    limitDate: e.dueDate || ''
-  }));
+  const expDebts = (expenses || [])
+    .filter(e => e.status !== 'Pagada')
+    .map(e => {
+      const debt = Math.max(0, e.amount - (e.amountPaid || 0));
+      return {
+        id: e.id,
+        refNumber: e.ncf || e.id.substring(0, 8),
+        supplier: e.providerName || 'Proveedor',
+        docType: 'Gasto Operativo',
+        originalAmount: e.amount || 0,
+        currentDebt: debt,
+        date: e.date?.split('T')[0] || ''
+      };
+    }).filter(d => d.currentDebt > 0);
 
-  const [debts, setDebts] = useState([...poDebts, ...expDebts]);
-
+  const debts = [...poDebts, ...expDebts];
   const outstandingPagarSum = debts.reduce((acc, curr) => acc + curr.currentDebt, 0);
 
-  const handlePayDebt = (id: string, amount: number) => {
-    setDebts(debts.map(d => {
-      if (d.id === id) {
-        return { ...d, currentDebt: Math.max(0, d.currentDebt - amount) };
-      }
-      return d;
-    }).filter(d => d.currentDebt > 0));
+  const handleOpenModal = (debt: any) => {
+    setSelectedDebt(debt);
+    setPayAmount(debt.currentDebt.toString());
+    setModalOpen(true);
+  };
+
+  const handleSubmitPayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedDebt || !payAmount) return;
+    
+    if (selectedDebt.docType === 'Orden de Compra') {
+      addPurchaseOrderPayment?.(selectedDebt.id, parseFloat(payAmount), payMethod, accountId !== 'none' ? accountId : undefined);
+    } else {
+      addExpensePayment?.(selectedDebt.id, parseFloat(payAmount), payMethod, accountId !== 'none' ? accountId : undefined);
+    }
+    
+    setModalOpen(false);
   };
 
   return (
@@ -1466,7 +1585,7 @@ export function AccountsPayableView({ purchaseOrders, expenses }: { purchaseOrde
         <Card className="border-neutral-200 bg-white">
           <CardContent className="p-4 flex flex-col justify-center">
             <span className="text-[10px] text-neutral-450 font-bold uppercase tracking-wider block">Total por Pagar Proveedores</span>
-            <span className="text-base font-black text-amber-900 mt-1">RD$ {outstandingPagarSum.toLocaleString()}</span>
+            <span className="text-base font-black text-amber-900 mt-1">RD$ {outstandingPagarSum.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
           </CardContent>
         </Card>
         <Card className="border-neutral-200 bg-white">
@@ -1488,7 +1607,7 @@ export function AccountsPayableView({ purchaseOrders, expenses }: { purchaseOrde
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-neutral-50/70 border-b border-neutral-100 text-[10px] uppercase font-bold text-neutral-450">
-                  <th className="p-3">Código Suplidor</th>
+                  <th className="p-3">Referencia</th>
                   <th className="p-3">Proveedor</th>
                   <th className="p-3">Tipo Documento</th>
                   <th className="p-3 text-right">Importe Inic.</th>
@@ -1499,15 +1618,15 @@ export function AccountsPayableView({ purchaseOrders, expenses }: { purchaseOrde
               <tbody className="divide-y divide-neutral-100">
                 {debts.map((d, index) => (
                   <tr key={index} className="hover:bg-neutral-50/45">
-                    <td className="p-3 font-mono text-neutral-400 font-bold">{d.id}</td>
+                    <td className="p-3 font-mono text-neutral-800 font-bold">{d.refNumber}</td>
                     <td className="p-3 font-bold text-neutral-850">{d.supplier}</td>
                     <td className="p-3 text-neutral-500">{d.docType}</td>
-                    <td className="p-3 text-right text-neutral-600">RD$ {d.originalAmount.toLocaleString()}</td>
-                    <td className="p-3 text-right font-bold text-amber-900">RD$ {d.currentDebt.toLocaleString()}</td>
+                    <td className="p-3 text-right text-neutral-600">RD$ {d.originalAmount.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                    <td className="p-3 text-right font-bold text-amber-900">RD$ {d.currentDebt.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
                     <td className="p-3 text-right">
                       <Button
                         size="sm"
-                        onClick={() => handlePayDebt(d.id, d.currentDebt)}
+                        onClick={() => handleOpenModal(d)}
                         className="text-[10px] h-7 px-2 border-neutral-200 bg-neutral-900 font-bold text-white hover:bg-neutral-800"
                       >
                         <span>Liquidar Deuda</span>
@@ -1520,6 +1639,64 @@ export function AccountsPayableView({ purchaseOrders, expenses }: { purchaseOrde
           )}
         </CardContent>
       </Card>
+
+      {modalOpen && selectedDebt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-neutral-100 bg-neutral-50 flex justify-between items-center">
+              <h3 className="font-bold text-neutral-900">Registrar Liquidación</h3>
+              <Button variant="ghost" size="icon" onClick={() => setModalOpen(false)} className="h-6 w-6"><X className="w-4 h-4" /></Button>
+            </div>
+            <form onSubmit={handleSubmitPayment} className="p-4 space-y-4">
+              <div className="text-xs text-neutral-600 bg-amber-50 p-3 rounded-lg border border-amber-100">
+                Documento: <span className="font-bold">{selectedDebt.refNumber} ({selectedDebt.docType})</span><br />
+                Proveedor: <span className="font-bold">{selectedDebt.supplier}</span><br />
+                Balance Adeudado: <span className="font-bold text-amber-900">RD$ {selectedDebt.currentDebt.toLocaleString()}</span>
+              </div>
+
+              <div>
+                <Label className="text-xs font-bold text-neutral-700">Monto a Liquidar (RD$)</Label>
+                <Input
+                  type="number" step="0.01" max={selectedDebt.currentDebt}
+                  value={payAmount} onChange={e => setPayAmount(e.target.value)} required
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label className="text-xs font-bold text-neutral-700">Método de Pago</Label>
+                <Select value={payMethod} onValueChange={setPayMethod}>
+                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Efectivo">Efectivo</SelectItem>
+                    <SelectItem value="Transferencia">Transferencia</SelectItem>
+                    <SelectItem value="Tarjeta">Tarjeta de Crédito Corporativa</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label className="text-xs font-bold text-neutral-700">Cuenta de Origen (Opcional)</Label>
+                <Select value={accountId} onValueChange={setAccountId}>
+                  <SelectTrigger className="mt-1"><SelectValue placeholder="Seleccione una cuenta para retirar..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">-- No descontar de cuentas --</SelectItem>
+                    {financialAccounts?.map((acc: any) => (
+                      <SelectItem key={acc.id} value={acc.id}>{acc.name} - RD$ {acc.balance.toLocaleString()}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-[10px] text-neutral-400 mt-1 leading-none">Si selecciona una cuenta, el monto se descontará del balance automáticamente.</p>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <Button type="button" variant="outline" className="mr-2" onClick={() => setModalOpen(false)}>Cancelar</Button>
+                <Button type="submit" className="bg-amber-600 text-white hover:bg-amber-700 font-bold border-none">Registrar Pago a Suplidor</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

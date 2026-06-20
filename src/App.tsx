@@ -294,9 +294,11 @@ export default function App() {
     handleLoginSuccessUser,
     addTicket,
     expenses,
+    expensePayments,
     addExpense,
     updateExpense,
     deleteExpense,
+    addExpensePayment,
     warehouses,
     addWarehouse,
     updateWarehouse,
@@ -306,9 +308,11 @@ export default function App() {
     updateFinancialAccount,
     deleteFinancialAccount,
     purchaseOrders,
+    purchaseOrderPayments,
     createPurchaseOrder,
     updatePurchaseOrder,
     deletePurchaseOrder,
+    addPurchaseOrderPayment,
     updateUserAvatar,
     shifts,
     activeShift,
@@ -2044,11 +2048,24 @@ export default function App() {
           )}
 
           {currentTab === 'cobrar' && (
-            <AccountsReceivableView invoices={invoices} />
+            <AccountsReceivableView 
+              invoices={invoices} 
+              receipts={receipts}
+              payInvoice={payInvoice}
+              financialAccounts={financialAccounts}
+            />
           )}
 
           {currentTab === 'pagar' && (
-            <AccountsPayableView purchaseOrders={purchaseOrders} expenses={expenses} />
+            <AccountsPayableView 
+              purchaseOrders={purchaseOrders} 
+              expenses={expenses}
+              expensePayments={expensePayments}
+              purchaseOrderPayments={purchaseOrderPayments}
+              addExpensePayment={addExpensePayment}
+              addPurchaseOrderPayment={addPurchaseOrderPayment}
+              financialAccounts={financialAccounts}
+            />
           )}
 
           {currentTab === 'compras-hist' && (

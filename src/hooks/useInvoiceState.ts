@@ -3,7 +3,7 @@ import {
   AppNotification, Client, Product, Provider, Invoice, Receipt, NcfSequence, TemplateSettings, 
   UserPermission, SupportTicket, NcfType, InvoiceItem, PaymentMethod, Warehouse, 
   PurchaseOrder, FinancialAccount, Expense, ClientType, InvoiceType, InvoiceStatus,
-  BankAccountItem, Shift, Seller, AuditLog, InventoryMovement
+  BankAccountItem, Shift, Seller, AuditLog, InventoryMovement, ExpensePayment, PurchaseOrderPayment
 } from '../types';
 import { 
   initialClients, initialInvoices, initialNcfSequences, initialProducts, 
@@ -224,6 +224,58 @@ const mapReceiptToDb = (rec: Receipt) => ({
   account_id: rec.accountId || null,
   account_name: rec.accountName || null,
   is_deleted: false
+});
+
+const mapExpensePaymentFromDb = (db: any): ExpensePayment => ({
+  id: db.id,
+  expenseId: db.expense_id,
+  expenseConcept: db.expense_concept,
+  providerName: db.provider_name,
+  amountPaid: parseFloat(db.amount_paid || 0),
+  paymentMethod: db.payment_method as PaymentMethod,
+  date: db.date,
+  notes: db.notes || undefined,
+  accountId: db.account_id || undefined,
+  accountName: db.account_name || undefined
+});
+
+const mapExpensePaymentToDb = (ep: ExpensePayment) => ({
+  id: ep.id,
+  expense_id: ep.expenseId || null,
+  expense_concept: ep.expenseConcept,
+  provider_name: ep.providerName,
+  amount_paid: ep.amountPaid,
+  payment_method: ep.paymentMethod,
+  date: ep.date,
+  notes: ep.notes || null,
+  account_id: ep.accountId || null,
+  account_name: ep.accountName || null
+});
+
+const mapPurchaseOrderPaymentFromDb = (db: any): PurchaseOrderPayment => ({
+  id: db.id,
+  poId: db.po_id,
+  poNumber: db.po_number,
+  providerName: db.provider_name,
+  amountPaid: parseFloat(db.amount_paid || 0),
+  paymentMethod: db.payment_method as PaymentMethod,
+  date: db.date,
+  notes: db.notes || undefined,
+  accountId: db.account_id || undefined,
+  accountName: db.account_name || undefined
+});
+
+const mapPurchaseOrderPaymentToDb = (pop: PurchaseOrderPayment) => ({
+  id: pop.id,
+  po_id: pop.poId || null,
+  po_number: pop.poNumber,
+  provider_name: pop.providerName,
+  amount_paid: pop.amountPaid,
+  payment_method: pop.paymentMethod,
+  date: pop.date,
+  notes: pop.notes || null,
+  account_id: pop.accountId || null,
+  account_name: pop.accountName || null
 });
 
 const mapWarehouseFromDb = (db: any): Warehouse => ({
@@ -551,7 +603,9 @@ export function useInvoiceState() {
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [financialAccounts, setFinancialAccounts] = useState<FinancialAccount[]>([]);
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
+  const [purchaseOrderPayments, setPurchaseOrderPayments] = useState<PurchaseOrderPayment[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [expensePayments, setExpensePayments] = useState<ExpensePayment[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [activeShift, setActiveShift] = useState<Shift | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
@@ -920,6 +974,40 @@ export function useInvoiceState() {
         setExpenses([]);
       }
       localStorage.setItem('inv_expenses', JSON.stringify(loadedExpenses));
+
+      // 12.1 Fetch expense payments
+      const { data: dbExpensePayments } = await insforge.database.from('expense_payments').select('*');
+      const userExpensePayments = dbExpensePayments ? dbExpensePayments.filter(ep => ep.id.startsWith(`${currentUserId}_`)) : [];
+      let loadedExpensePayments: ExpensePayment[] = [];
+      if (userExpensePayments.length > 0) {
+        loadedExpensePayments = userExpensePayments.map(ep => {
+          const cleaned = mapExpensePaymentFromDb(ep);
+          cleaned.id = cleaned.id.replace(`${currentUserId}_`, '');
+          cleaned.expenseId = cleaned.expenseId.replace(`${currentUserId}_`, '');
+          return cleaned;
+        });
+        setExpensePayments(loadedExpensePayments);
+      } else {
+        setExpensePayments([]);
+      }
+      localStorage.setItem('inv_expense_payments', JSON.stringify(loadedExpensePayments));
+
+      // 12.2 Fetch po payments
+      const { data: dbPoPayments } = await insforge.database.from('purchase_order_payments').select('*');
+      const userPoPayments = dbPoPayments ? dbPoPayments.filter(pop => pop.id.startsWith(`${currentUserId}_`)) : [];
+      let loadedPoPayments: PurchaseOrderPayment[] = [];
+      if (userPoPayments.length > 0) {
+        loadedPoPayments = userPoPayments.map(pop => {
+          const cleaned = mapPurchaseOrderPaymentFromDb(pop);
+          cleaned.id = cleaned.id.replace(`${currentUserId}_`, '');
+          cleaned.poId = cleaned.poId.replace(`${currentUserId}_`, '');
+          return cleaned;
+        });
+        setPurchaseOrderPayments(loadedPoPayments);
+      } else {
+        setPurchaseOrderPayments([]);
+      }
+      localStorage.setItem('inv_po_payments', JSON.stringify(loadedPoPayments));
 
       // 13. Fetch shifts
       const { data: dbShifts } = await insforge.database.from('shifts').select('*').or('is_deleted.is.null,is_deleted.eq.false');
@@ -2726,6 +2814,119 @@ export function useInvoiceState() {
     });
   };
 
+  const addExpensePayment = (expenseId: string, amount: number, paymentMethod: PaymentMethod, accountId?: string, notes?: string) => {
+    const expense = expenses.find(e => e.id === expenseId);
+    if (!expense) return;
+
+    const previousPaid = expense.amountPaid || 0;
+    const newTotalPaid = previousPaid + amount;
+    const newStatus = newTotalPaid >= (expense.amount - 0.1) ? 'Pagada' : 'Pendiente';
+
+    updateExpense(expenseId, { status: newStatus, amountPaid: newTotalPaid });
+
+    let selectedAccountName = '';
+    if (accountId) {
+      const accIndex = financialAccounts.findIndex(acc => acc.id === accountId);
+      if (accIndex !== -1) {
+        selectedAccountName = financialAccounts[accIndex].name;
+        const updatedAccounts = [...financialAccounts];
+        // For expenses, we subtract from balance
+        updatedAccounts[accIndex].balance = Number((updatedAccounts[accIndex].balance - amount).toFixed(2));
+        setFinancialAccounts(updatedAccounts);
+        saveToStorage('inv_accounts', updatedAccounts);
+
+        const accPrefix = getDbPrefix();
+        insforge.database.from('financial_accounts').update({ balance: updatedAccounts[accIndex].balance }).eq('id', `${accPrefix}${accountId}`).then(({ error }) => {
+          if (error) console.error('Database update balance error', error);
+        });
+      }
+    }
+
+    const newPayment: ExpensePayment = {
+      id: `exp-pay-${Date.now()}`,
+      expenseId,
+      expenseConcept: expense.concept,
+      providerName: expense.providerName,
+      amountPaid: amount,
+      paymentMethod,
+      accountId,
+      accountName: selectedAccountName || undefined,
+      date: new Date().toISOString(),
+      notes,
+    };
+
+    const updatedPayments = [newPayment, ...expensePayments];
+    setExpensePayments(updatedPayments);
+    saveToStorage('inv_expense_payments', updatedPayments);
+
+    const prefix = getDbPrefix();
+    const dbPayment = {
+      ...newPayment,
+      id: `${prefix}${newPayment.id}`,
+      expenseId: newPayment.expenseId ? `${prefix}${newPayment.expenseId}` : null,
+      accountId: newPayment.accountId ? `${prefix}${newPayment.accountId}` : null
+    };
+    insforge.database.from('expense_payments').insert([mapExpensePaymentToDb(dbPayment as any)]).then(({ error }) => {
+      if (error) console.error('Database expense_payments insert error', error);
+    });
+  };
+
+  const addPurchaseOrderPayment = (poId: string, amount: number, paymentMethod: PaymentMethod, accountId?: string, notes?: string) => {
+    const po = purchaseOrders.find(p => p.id === poId);
+    if (!po) return;
+
+    const previousPaid = po.amountPaid || 0;
+    const newTotalPaid = previousPaid + amount;
+
+    updatePurchaseOrder(poId, { amountPaid: newTotalPaid });
+
+    let selectedAccountName = '';
+    if (accountId) {
+      const accIndex = financialAccounts.findIndex(acc => acc.id === accountId);
+      if (accIndex !== -1) {
+        selectedAccountName = financialAccounts[accIndex].name;
+        const updatedAccounts = [...financialAccounts];
+        // For purchase orders, we subtract from balance
+        updatedAccounts[accIndex].balance = Number((updatedAccounts[accIndex].balance - amount).toFixed(2));
+        setFinancialAccounts(updatedAccounts);
+        saveToStorage('inv_accounts', updatedAccounts);
+
+        const accPrefix = getDbPrefix();
+        insforge.database.from('financial_accounts').update({ balance: updatedAccounts[accIndex].balance }).eq('id', `${accPrefix}${accountId}`).then(({ error }) => {
+          if (error) console.error('Database update balance error', error);
+        });
+      }
+    }
+
+    const newPayment: PurchaseOrderPayment = {
+      id: `po-pay-${Date.now()}`,
+      poId,
+      poNumber: po.poNumber,
+      providerName: po.providerName,
+      amountPaid: amount,
+      paymentMethod,
+      accountId,
+      accountName: selectedAccountName || undefined,
+      date: new Date().toISOString(),
+      notes,
+    };
+
+    const updatedPayments = [newPayment, ...purchaseOrderPayments];
+    setPurchaseOrderPayments(updatedPayments);
+    saveToStorage('inv_po_payments', updatedPayments);
+
+    const prefix = getDbPrefix();
+    const dbPayment = {
+      ...newPayment,
+      id: `${prefix}${newPayment.id}`,
+      poId: newPayment.poId ? `${prefix}${newPayment.poId}` : null,
+      accountId: newPayment.accountId ? `${prefix}${newPayment.accountId}` : null
+    };
+    insforge.database.from('purchase_order_payments').insert([mapPurchaseOrderPaymentToDb(dbPayment as any)]).then(({ error }) => {
+      if (error) console.error('Database purchase_order_payments insert error', error);
+    });
+  };
+
   const addShift = async (sh: Omit<Shift, 'id'>) => {
     const prefix = getDbPrefix();
     if (!prefix) {
@@ -2967,9 +3168,11 @@ export function useInvoiceState() {
     users,
     tickets,
     expenses,
+    expensePayments,
     addExpense,
     updateExpense,
     deleteExpense,
+    addExpensePayment,
     shifts,
     activeShift,
     addShift,
@@ -3013,9 +3216,11 @@ export function useInvoiceState() {
     updateFinancialAccount,
     deleteFinancialAccount,
     purchaseOrders,
+    purchaseOrderPayments,
     createPurchaseOrder,
     updatePurchaseOrder,
     deletePurchaseOrder,
+    addPurchaseOrderPayment,
     sellers,
     addSeller,
     updateSeller,

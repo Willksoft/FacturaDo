@@ -155,6 +155,20 @@ export interface PurchaseOrder {
   createdAt: string;
   deliveryDate?: string;
   notes?: string;
+  amountPaid?: number;
+}
+
+export interface PurchaseOrderPayment {
+  id: string;
+  poId: string;
+  poNumber: string;
+  providerName: string;
+  amountPaid: number;
+  paymentMethod: PaymentMethod;
+  date: string;
+  notes?: string;
+  accountId?: string;
+  accountName?: string;
 }
 
 export interface FinancialAccount {
@@ -301,6 +315,21 @@ export interface Expense {
   accountId?: string;
   attachmentUrl?: string;
   notes?: string;
+  status?: 'Pagada' | 'Pendiente' | 'Anulada';
+  amountPaid?: number;
+}
+
+export interface ExpensePayment {
+  id: string;
+  expenseId: string;
+  expenseConcept: string;
+  providerName: string;
+  amountPaid: number;
+  paymentMethod: PaymentMethod;
+  date: string;
+  notes?: string;
+  accountId?: string;
+  accountName?: string;
 }
 
 
