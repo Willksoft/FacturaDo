@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
 import { CustomDialogProvider } from './components/ui/CustomDialogProvider.tsx';
-import { ErrorBoundary } from './components/ErrorBoundary.tsx';
+import { ErrorBoundary } from './features/core/ErrorBoundary';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
