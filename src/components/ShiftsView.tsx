@@ -17,6 +17,7 @@ interface ShiftsViewProps {
   financialAccounts: FinancialAccount[];
   currentUser: UserPermission;
   sellers?: Seller[];
+  receipts?: any[];
 }
 
 export default function ShiftsView({
@@ -27,7 +28,8 @@ export default function ShiftsView({
   users,
   financialAccounts,
   currentUser,
-  sellers = []
+  sellers = [],
+  receipts = []
 }: ShiftsViewProps) {
   // Open Shift Form State
   const [openingBalance, setOpeningBalance] = useState('0');
@@ -47,6 +49,23 @@ export default function ShiftsView({
   const [closingBalanceActual, setClosingBalanceActual] = useState('');
 
   const cajas = financialAccounts.filter(acc => acc.type === 'Caja');
+
+  const activeShiftCashPayments = React.useMemo(() => {
+    if (!activeShift) return 0;
+    return receipts
+      .filter(r => {
+        const isAfterStart = new Date(r.date) >= new Date(activeShift.startTime);
+        const isCash = r.paymentMethod === 'Efectivo';
+        const isThisCaja = r.accountId === activeShift.cajaId;
+        return isAfterStart && isCash && isThisCaja;
+      })
+      .reduce((sum, r) => sum + r.amountPaid, 0);
+  }, [activeShift, receipts]);
+
+  const expectedClosingBalance = React.useMemo(() => {
+    if (!activeShift) return 0;
+    return activeShift.openingBalance + activeShiftCashPayments;
+  }, [activeShift, activeShiftCashPayments]);
 
   const handleOpenShift = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +100,7 @@ export default function ShiftsView({
     // Real implementation should sum all payments associated with this shift
     // For now we ask the user for the real balance in register
     const actual = parseFloat(closingBalanceActual) || 0;
-    const expected = activeShift.openingBalance; // In a real scenario, + ventas - egresos
+    const expected = expectedClosingBalance;
     const discrepancy = actual - expected;
 
     updateShift(activeShift.id, {
@@ -134,6 +153,17 @@ export default function ShiftsView({
                   <div>
                     <p className="text-xs text-neutral-500 font-semibold mb-1">Fondo Inicial</p>
                     <p className="font-medium">${activeShift.openingBalance.toLocaleString()}</p>
+                  </div>
+                </div>
+
+                <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200 grid grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-xs text-neutral-500 font-semibold mb-1">Ventas/Ingresos (Efvo.)</p>
+                    <p className="font-medium text-emerald-600">+ ${activeShiftCashPayments.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-neutral-500 font-semibold mb-1">Efectivo Esperado</p>
+                    <p className="font-bold text-blue-700">${expectedClosingBalance.toLocaleString()}</p>
                   </div>
                 </div>
 
@@ -240,6 +270,7 @@ export default function ShiftsView({
                     <TableHead>Cierre</TableHead>
                     <TableHead>Vendedor (Abre)</TableHead>
                     <TableHead className="text-right">Fondo Inicial</TableHead>
+                    <TableHead className="text-right">Ingresos (Efvo)</TableHead>
                     <TableHead className="text-right">Esperado</TableHead>
                     <TableHead className="text-right">Real</TableHead>
                     <TableHead className="text-right">Descuadre</TableHead>
@@ -257,6 +288,9 @@ export default function ShiftsView({
                       <TableCell className="text-xs">{sh.endTime ? new Date(sh.endTime).toLocaleString() : '-'}</TableCell>
                       <TableCell>{sh.openedByName}</TableCell>
                       <TableCell className="text-right">${sh.openingBalance.toLocaleString()}</TableCell>
+                      <TableCell className="text-right font-medium">
+                        {sh.closingBalanceExpected !== undefined ? `$${(sh.closingBalanceExpected - sh.openingBalance).toLocaleString()}` : '-'}
+                      </TableCell>
                       <TableCell className="text-right">
                         {sh.closingBalanceExpected !== undefined ? `$${sh.closingBalanceExpected.toLocaleString()}` : '-'}
                       </TableCell>

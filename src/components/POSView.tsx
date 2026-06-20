@@ -192,8 +192,9 @@ export default function POSView({
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [paymentCash, setPaymentCash] = useState<number>(0);
   const [paymentCard, setPaymentCard] = useState<number>(0);
-  const [paymentTransfer, setPaymentTransfer] = useState<number>(0);
-  const [cashReceived, setCashReceived] = useState<number>(0);
+  const [paymentTransfer, setPaymentTransfer] = useState(0);
+  const [selectedBankAccountId, setSelectedBankAccountId] = useState('');
+  const [cashReceived, setCashReceived] = useState(0);
 
   // Completed document review
   const [completedDoc, setCompletedDoc] = useState<any | null>(null);
@@ -357,6 +358,7 @@ export default function POSView({
       setPaymentCash(total);
       setPaymentCard(0);
       setPaymentTransfer(0);
+      setSelectedBankAccountId('');
       setCashReceived(total);
       setShowCheckoutModal(true);
     }
@@ -411,7 +413,7 @@ export default function POSView({
     // Select accounts by type or id
     const cashAccount = financialAccounts.find(a => a.type === 'Caja' || a.id === 'acc-1') || financialAccounts[0];
     const cardAccount = financialAccounts.find(a => a.type === 'Verifone' || a.id === 'acc-3') || financialAccounts[0];
-    const bankAccount = financialAccounts.find(a => a.type === 'Banco' || a.id === 'acc-2') || financialAccounts[0];
+    const bankAccount = financialAccounts.find(a => a.id === selectedBankAccountId) || financialAccounts.find(a => a.type === 'Banco') || financialAccounts[0];
 
     const actualPaymentsRecorded: { method: string; amount: number; account: string }[] = [];
 
@@ -425,7 +427,7 @@ export default function POSView({
     }
     if (paymentTransfer > 0) {
       payInvoice(newDoc.id, paymentTransfer, 'Transferencia', paymentNotes, bankAccount?.id);
-      actualPaymentsRecorded.push({ method: 'Transferencia', amount: paymentTransfer, account: bankAccount?.name || 'Popular Pesos' });
+      actualPaymentsRecorded.push({ method: 'Transferencia', amount: paymentTransfer, account: bankAccount?.name || 'Transferencia' });
     }
 
     // Set complete status for printable invoice ticket
@@ -716,8 +718,20 @@ export default function POSView({
 
                   {/* Bank Transfer split */}
                   <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl space-y-1">
-                    <label className="font-bold text-[10px] text-neutral-500 uppercase block">Transferencia Popular</label>
-                    <div className="relative">
+                    <div className="flex justify-between items-center h-[14px] mb-1">
+                      <label className="font-bold text-[10px] text-neutral-500 uppercase block">Transferencia</label>
+                      <select 
+                        className="text-[9px] bg-transparent font-bold text-neutral-600 outline-none w-20 overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer"
+                        value={selectedBankAccountId}
+                        onChange={(e) => setSelectedBankAccountId(e.target.value)}
+                      >
+                        <option value="">(Sel. Cuenta)</option>
+                        {financialAccounts.map(acc => (
+                          <option key={acc.id} value={acc.id}>{acc.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="relative mt-1">
                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 font-mono font-semibold text-neutral-450">RD$</span>
                       <input
                         type="number"

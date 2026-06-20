@@ -2003,6 +2003,7 @@ export default function App() {
               financialAccounts={financialAccounts}
               currentUser={currentUser}
               sellers={sellers}
+              receipts={receipts}
             />
           )}
 
