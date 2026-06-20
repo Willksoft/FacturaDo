@@ -375,6 +375,7 @@ export default function App() {
 
   // Header Search & Actions states
   const [headerSearch, setHeaderSearch] = useState('');
+  const [headerSearchFocused, setHeaderSearchFocused] = useState(false);
   const [headerResults, setHeaderResults] = useState<any[]>([]);
   const [headerCreateOpen, setHeaderCreateOpen] = useState(false);
 
@@ -1257,9 +1258,41 @@ export default function App() {
                 placeholder="Buscar rápido..."
                 value={headerSearch}
                 onChange={(e) => handleHeaderSearch(e.target.value)}
+                onFocus={() => setHeaderSearchFocused(true)}
+                onBlur={() => setTimeout(() => setHeaderSearchFocused(false), 200)}
                 className="pl-8 h-8.5 w-full bg-neutral-50 border-neutral-200 text-xs rounded-lg focus-visible:ring-neutral-400 shadow-xs"
               />
               
+              {/* Header Search Suggestions (Empty State) */}
+              {headerSearchFocused && !headerSearch.trim() && (
+                <>
+                  <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setHeaderSearchFocused(false)} />
+                  <div id="header-search-suggestions" className="absolute top-10 left-1/2 -translate-x-1/2 w-72 md:w-80 bg-white border border-neutral-200 rounded-xl shadow-xl z-50 p-2 font-sans text-xs">
+                    <div className="px-2 py-1 mb-1 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Sugerencias de Búsqueda</div>
+                    <div className="divide-y divide-neutral-100">
+                      {[
+                        { title: 'Crear nueva factura', action: () => setCurrentTab('pos'), type: 'Acción' },
+                        { title: 'Ver mis clientes', action: () => setCurrentTab('clientes'), type: 'Módulo' },
+                        { title: 'Reporte 606 (DGII)', action: () => setCurrentTab('rep-606'), type: 'Fiscal' },
+                        { title: 'Inventario de productos', action: () => setCurrentTab('inventario'), type: 'Módulo' },
+                      ].map((sug, i) => (
+                        <button
+                          key={i}
+                          onClick={() => {
+                            sug.action();
+                            setHeaderSearchFocused(false);
+                          }}
+                          className="w-full text-left p-2 hover:bg-neutral-50 flex items-center justify-between text-[11.5px] transition-colors rounded-lg border-0 bg-transparent cursor-pointer"
+                        >
+                          <span className="font-semibold text-neutral-800">{sug.title}</span>
+                          <span className="text-[9px] bg-neutral-100 text-neutral-500 px-1.5 py-0.5 rounded font-extrabold uppercase shrink-0">{sug.type}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
               {/* Header Search Results dropdown */}
               {headerSearch.trim() && headerResults.length > 0 && (
                 <>
