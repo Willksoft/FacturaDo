@@ -27,10 +27,14 @@ interface InvoiceListProps {
   onNavigateToPos?: () => void;
   onViewDocument?: (invoice: Invoice) => void;
   onEditDocument?: (invoice: Invoice) => void;
+  searchInvoices?: (q: string) => void;
+  loadMoreInvoices?: () => void;
 }
 
 export default function InvoiceList({
   invoices,
+  searchInvoices,
+  loadMoreInvoices,
   clients,
   receipts,
   updateInvoice,
@@ -91,6 +95,19 @@ export default function InvoiceList({
   const [emailSending, setEmailSending] = useState(false);
   const [emailSentLogs, setEmailSentLogs] = useState<string[]>([]);
   const [emailCustomRec, setEmailCustomRec] = useState('');
+
+  
+  // Server-Side Search Debounce
+  React.useEffect(() => {
+    if (listSearch.trim().length >= 2) {
+      const handler = setTimeout(() => {
+        if (searchInvoices) {
+          searchInvoices(listSearch.trim());
+        }
+      }, 500);
+      return () => clearTimeout(handler);
+    }
+  }, [listSearch, searchInvoices]);
 
   // Filtering Logic
   const filtered = invoices.filter(inv => {

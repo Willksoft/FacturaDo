@@ -254,6 +254,8 @@ export default function App() {
     setNeedsOnboarding,
     purgePostgresData,
     loadAllDataFromPostgres,
+    searchInvoices,
+    loadMoreInvoices,
     auditLogs,
     clients,
     products,
@@ -1751,6 +1753,8 @@ export default function App() {
 
           {currentTab === 'facturas' && (
             <InvoiceList
+              searchInvoices={searchInvoices}
+              loadMoreInvoices={loadMoreInvoices}
               invoices={invoices}
               clients={clients}
               receipts={receipts}
@@ -1781,6 +1785,8 @@ export default function App() {
 
           {currentTab === 'cotizaciones' && (
             <InvoiceList
+              searchInvoices={searchInvoices}
+              loadMoreInvoices={loadMoreInvoices}
               invoices={invoices}
               clients={clients}
               receipts={receipts}

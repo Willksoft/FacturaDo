@@ -662,8 +662,8 @@ export function useInvoiceState() {
         
       if (dbInvoices && dbInvoices.length > 0) {
         const currentUserId = authUserIdRef.current;
-        const userInvoices = dbInvoices.filter(i => i.id.startsWith(currentUserId + '_'));
-        if (userInvoices.length > 0) {
+        const userInvoices = dbInvoices || [];
+        if (userInvoices && userInvoices.length > 0) {
           const mapped = userInvoices.map(db => mapInvoiceFromDb(db, clients)).map(i => ({
             ...i,
             id: i.id.replace(currentUserId + '_', '')
@@ -676,6 +676,36 @@ export function useInvoiceState() {
       }
     } catch (e) {
       console.error("Error loading more invoices", e);
+    }
+  };
+
+  
+  const searchInvoices = async (query: string) => {
+    if (!query || query.length < 2) return;
+    try {
+      const { data: dbInvoices } = await insforge.database
+        .from('invoices')
+        .select('*')
+        .or('is_deleted.is.null,is_deleted.eq.false')
+        .ilike('invoice_number', `%${query}%`)
+        .limit(50);
+        
+      if (dbInvoices && dbInvoices.length > 0) {
+        const mapped = dbInvoices.map(db => mapInvoiceFromDb(db, clients)).map(i => ({
+          ...i,
+          id: i.id.replace(getDbPrefix(), '')
+        }));
+        
+        setInvoices((prev: Invoice[]) => {
+          const newItems = mapped.filter(m => !prev.some(p => p.id === m.id));
+          if (newItems.length > 0) {
+            return [...prev, ...newItems];
+          }
+          return prev;
+        });
+      }
+    } catch (e) {
+      console.error("Error searching invoices", e);
     }
   };
 
@@ -738,7 +768,7 @@ export function useInvoiceState() {
       // 2. Fetch clients
       const { data: dbClients } = await insforge.database.from('clients').select('*').or('is_deleted.is.null,is_deleted.eq.false');
       let loadedClients: Client[] = [];
-      const userClients = dbClients ? dbClients.filter(c => c.id.startsWith(`${currentUserId}_`)) : [];
+      const userClients = dbClients || [];
       if (userClients.length > 0) {
         loadedClients = userClients.map(mapClientFromDb).map(c => ({
           ...c,
@@ -792,7 +822,7 @@ export function useInvoiceState() {
 
       // 3. Fetch NCF sequences
       const { data: dbNcf } = await insforge.database.from('ncf_sequences').select('*');
-      const userNcf = dbNcf ? dbNcf.filter(n => n.type.startsWith(`${currentUserId}_`)) : [];
+      const userNcf = dbNcf || [];
       let loadedNcfSequences = [];
       if (userNcf.length > 0) {
         loadedNcfSequences = userNcf.map(mapNcfSequenceFromDb).map(n => ({
@@ -820,7 +850,7 @@ export function useInvoiceState() {
 
       // 4. Fetch providers
       const { data: dbProviders } = await insforge.database.from('providers').select('*').or('is_deleted.is.null,is_deleted.eq.false');
-      const userProviders = dbProviders ? dbProviders.filter(p => p.id.startsWith(`${currentUserId}_`)) : [];
+      const userProviders = dbProviders || [];
       let loadedProviders = [];
       if (userProviders.length > 0) {
         loadedProviders = userProviders.map(mapProviderFromDb).map(p => ({
@@ -843,7 +873,7 @@ export function useInvoiceState() {
 
       // 5. Fetch warehouses
       const { data: dbWarehouses } = await insforge.database.from('warehouses').select('*').or('is_deleted.is.null,is_deleted.eq.false');
-      const userWarehouses = dbWarehouses ? dbWarehouses.filter(w => w.id.startsWith(`${currentUserId}_`)) : [];
+      const userWarehouses = dbWarehouses || [];
       let loadedWarehouses = [];
       if (userWarehouses.length > 0) {
         loadedWarehouses = userWarehouses.map(mapWarehouseFromDb).map(w => ({
@@ -877,7 +907,7 @@ export function useInvoiceState() {
 
       // 6. Fetch products
       const { data: dbProducts } = await insforge.database.from('products').select('*').or('is_deleted.is.null,is_deleted.eq.false');
-      const userProducts = dbProducts ? dbProducts.filter(p => p.id.startsWith(`${currentUserId}_`)) : [];
+      const userProducts = dbProducts || [];
       let loadedProducts = [];
       if (userProducts.length > 0) {
         loadedProducts = userProducts.map(mapProductFromDb).map(p => ({
@@ -902,7 +932,7 @@ export function useInvoiceState() {
 
       // 7. Fetch financial accounts
       const { data: dbAccounts } = await insforge.database.from('financial_accounts').select('*').or('is_deleted.is.null,is_deleted.eq.false');
-      const userAccounts = dbAccounts ? dbAccounts.filter(a => a.id.startsWith(`${currentUserId}_`)) : [];
+      const userAccounts = dbAccounts || [];
       let loadedAccounts = [];
       if (userAccounts.length > 0) {
         loadedAccounts = userAccounts.map(mapFinancialAccountFromDb).map(a => ({
@@ -933,9 +963,9 @@ export function useInvoiceState() {
 
       // 8. Fetch invoices
       const { data: dbInvoices } = await insforge.database.from('invoices').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
-      const userInvoices = dbInvoices ? dbInvoices.filter(i => i.id.startsWith(`${currentUserId}_`)) : [];
+      const userInvoices = dbInvoices || [];
       let loadedInvoices = [];
-      if (userInvoices.length > 0) {
+      if (userInvoices && userInvoices.length > 0) {
         loadedInvoices = userInvoices.map(inv => {
           const cleaned = mapInvoiceFromDb(inv, loadedClients);
           cleaned.id = cleaned.id.replace(`${currentUserId}_`, '');
@@ -953,7 +983,7 @@ export function useInvoiceState() {
 
       // 9. Fetch receipts
       const { data: dbReceipts } = await insforge.database.from('receipts').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
-      const userReceipts = dbReceipts ? dbReceipts.filter(r => r.id.startsWith(`${currentUserId}_`)) : [];
+      const userReceipts = dbReceipts || [];
       let loadedReceipts = [];
       if (userReceipts.length > 0) {
         loadedReceipts = userReceipts.map(r => {
@@ -973,7 +1003,7 @@ export function useInvoiceState() {
 
       // 10. Fetch purchase orders
       const { data: dbPo } = await insforge.database.from('purchase_orders').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
-      const userPo = dbPo ? dbPo.filter(po => po.id.startsWith(`${currentUserId}_`)) : [];
+      const userPo = dbPo || [];
       let loadedPo = [];
       if (userPo.length > 0) {
         loadedPo = userPo.map(po => {
@@ -993,7 +1023,7 @@ export function useInvoiceState() {
 
       // 11. Fetch support tickets
       const { data: dbTickets } = await insforge.database.from('support_tickets').select('*');
-      const userTickets = dbTickets ? dbTickets.filter(t => t.id.startsWith(`${currentUserId}_`)) : [];
+      const userTickets = dbTickets || [];
       let loadedTickets = [];
       if (userTickets.length > 0) {
         loadedTickets = userTickets.map(t => {
@@ -1010,7 +1040,7 @@ export function useInvoiceState() {
 
       // 12. Fetch expenses
       const { data: dbExpenses } = await insforge.database.from('expenses').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
-      const userExpenses = dbExpenses ? dbExpenses.filter(e => e.id.startsWith(`${currentUserId}_`)) : [];
+      const userExpenses = dbExpenses || [];
       let loadedExpenses = [];
       if (userExpenses.length > 0) {
         loadedExpenses = userExpenses.map(e => {
@@ -1027,7 +1057,7 @@ export function useInvoiceState() {
 
       // 12.1 Fetch expense payments
       const { data: dbExpensePayments } = await insforge.database.from('expense_payments').select('*').limit(200);
-      const userExpensePayments = dbExpensePayments ? dbExpensePayments.filter(ep => ep.id.startsWith(`${currentUserId}_`)) : [];
+      const userExpensePayments = dbExpensePayments || [];
       let loadedExpensePayments: ExpensePayment[] = [];
       if (userExpensePayments.length > 0) {
         loadedExpensePayments = userExpensePayments.map(ep => {
@@ -1044,7 +1074,7 @@ export function useInvoiceState() {
 
       // 12.2 Fetch po payments
       const { data: dbPoPayments } = await insforge.database.from('purchase_order_payments').select('*').limit(200);
-      const userPoPayments = dbPoPayments ? dbPoPayments.filter(pop => pop.id.startsWith(`${currentUserId}_`)) : [];
+      const userPoPayments = dbPoPayments || [];
       let loadedPoPayments: PurchaseOrderPayment[] = [];
       if (userPoPayments.length > 0) {
         loadedPoPayments = userPoPayments.map(pop => {
@@ -1061,7 +1091,7 @@ export function useInvoiceState() {
 
       // 13. Fetch shifts
       const { data: dbShifts } = await insforge.database.from('shifts').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
-      const userShifts = dbShifts ? dbShifts.filter(sh => sh.id.startsWith(`${currentUserId}_`)) : [];
+      const userShifts = dbShifts || [];
       let loadedShifts = [];
       if (userShifts.length > 0) {
         loadedShifts = userShifts.map(sh => {
@@ -1081,7 +1111,7 @@ export function useInvoiceState() {
 
       // 14. Fetch sellers from InsForge
       const { data: dbSellers } = await insforge.database.from('sellers').select('*').or('is_deleted.is.null,is_deleted.eq.false');
-      const userSellers = dbSellers ? dbSellers.filter(s => s.id.startsWith(`${currentUserId}_`)) : [];
+      const userSellers = dbSellers || [];
       let loadedSellers: Seller[] = [];
       const defaultSeller: Seller = {
         id: 'sel-admin-default',
@@ -1120,7 +1150,7 @@ export function useInvoiceState() {
 
       // 15. Fetch inventory movements (Kardex) from InsForge
       const { data: dbMovements } = await insforge.database.from('inventory_movements').select('*').or('is_deleted.is.null,is_deleted.eq.false').limit(200);
-      const userMovements = dbMovements ? dbMovements.filter(m => m.id.startsWith(`${currentUserId}_`)) : [];
+      const userMovements = dbMovements || [];
       let loadedMovements: InventoryMovement[] = [];
       if (userMovements.length > 0) {
         loadedMovements = userMovements.map(m => {
@@ -3207,6 +3237,7 @@ export function useInvoiceState() {
     purgePostgresData,
     loadAllDataFromPostgres,
     loadMoreInvoices,
+    searchInvoices,
     logActivity,
     auditLogs,
     clients,
