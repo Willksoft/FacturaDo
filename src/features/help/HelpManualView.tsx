@@ -61,6 +61,13 @@ export default function HelpManualView({ onBackToLanding, isInsideApp = false }:
       color: 'text-sky-600 bg-sky-50 border-sky-100'
     },
     {
+      id: 'informal',
+      title: 'Modo Negocio Informal',
+      description: 'Cálculo de precios finales sin RNC ni ITBIS desglosado.',
+      icon: TrendingUp,
+      color: 'text-violet-600 bg-violet-50 border-violet-100'
+    },
+    {
       id: 'seguridad',
       title: 'Seguridad y Ciberseguridad',
       description: 'Nuestras capas de blindaje: anti-fuerza bruta, rate-limiting y frameguard.',
@@ -368,6 +375,36 @@ export default function HelpManualView({ onBackToLanding, isInsideApp = false }:
                     <strong className="text-neutral-900">2. Múltiples Almacenes & Ajuste Financiero:</strong>
                     <p className="text-neutral-500 text-[11px] leading-relaxed">
                       Si posees una sucursal o una bodega de distribución principal, puedes transferir inventario entre almacenes sin alterar tus costos unitarios promedio habituales, y realizar ajustes manuales por daños físicos o mermas con un supervisor autorizado.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Negocio Informal */}
+            {activeTopic === 'informal' && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="flex items-center gap-2 pb-3 border-b border-neutral-100">
+                  <div className="p-2 bg-violet-50 text-violet-700 rounded-lg"><TrendingUp className="w-5 h-5" /></div>
+                  <h2 className="text-lg font-extrabold text-neutral-900 uppercase tracking-wide">Facturación para Negocios sin RNC (Informal)</h2>
+                </div>
+
+                <p className="text-neutral-600 text-xs leading-relaxed">
+                  FacturaDo se adapta perfectamente a emprendedores, profesionales independientes y negocios emergentes que aún no están formalizados ante la DGII o que no declaran impuestos con RNC.
+                </p>
+
+                <div className="space-y-4">
+                  <div className="p-4 rounded-xl border border-neutral-150 space-y-1.5 text-xs bg-neutral-50/50">
+                    <strong className="text-neutral-900">1. Precios Finales siempre iguales:</strong>
+                    <p className="text-neutral-500 text-[11px] leading-relaxed">
+                      Cuando configuras tu negocio marcando que <strong>no posees RNC</strong> o estás en <strong>Régimen Informal</strong>, el sistema ocultará y omitirá todos los cálculos de ITBIS desglosado. El precio que registras en tu catálogo será siempre el precio de venta final.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl border border-neutral-150 space-y-1.5 text-xs bg-neutral-50/50">
+                    <strong className="text-neutral-900">2. Transición Transparente:</strong>
+                    <p className="text-neutral-500 text-[11px] leading-relaxed">
+                      Al crear un producto, puedes indicar si "el precio ya incluye ITBIS". Mientras seas informal, FacturaDo asume el valor final. El día que decidas registrar tu RNC y formalizarte, el sistema automáticamente detectará qué productos tenían el ITBIS incluido y comenzará a desglosarlo para tus clientes con NCF, manteniendo tu precio de venta final inalterado.
                     </p>
                   </div>
                 </div>

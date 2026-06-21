@@ -246,19 +246,91 @@ export default function InvoiceCreator({
   // Load client details instantly on client change
   const selectedClient = clients.find(c => c.id === selectedClientId);
 
-  // Update starting unit prices automatically when item selected
+  // Update starting unit prices automatically when item selected or NCF changes
   useEffect(() => {
     if (!isCustomProductMode) {
       const prod = products.find(p => p.id === currentProductId);
       if (prod) {
-        setCurrentPrice(prod.price);
-        setCurrentTax(prod.taxRate);
+        const isInformal = templateSettings?.informalMode || !templateSettings?.businessRNC || docType === 'Cotizacion' || (docType === 'Factura' && selectedNcfType === 'SIN');
+        let basePrice = prod.price;
+        let tax = prod.taxRate;
+        
+        if (isInformal) {
+          if (prod.priceIncludesTax !== false) {
+            basePrice = prod.price;
+          } else {
+            basePrice = prod.price * (1 + prod.taxRate / 100);
+          }
+          tax = 0;
+        } else {
+          if (prod.priceIncludesTax !== false) {
+            basePrice = prod.price / (1 + prod.taxRate / 100);
+          } else {
+            basePrice = prod.price;
+          }
+          tax = prod.taxRate;
+        }
+
+        setCurrentPrice(parseFloat(basePrice.toFixed(2)));
+        setCurrentTax(tax);
         setCustomItemName(prod.name);
       } else {
         setCustomItemName('');
       }
     }
-  }, [currentProductId, products, isCustomProductMode]);
+  }, [currentProductId, products, isCustomProductMode, docType, selectedNcfType]);
+
+  // Recalculate existing items if NCF or DocType changes
+  useEffect(() => {
+    setItems(prevItems => {
+      if (prevItems.length === 0) return prevItems;
+      const isInformal = templateSettings?.informalMode || !templateSettings?.businessRNC || docType === 'Cotizacion' || (docType === 'Factura' && selectedNcfType === 'SIN');
+      
+      let changed = false;
+      const newItems = prevItems.map(it => {
+        const prod = products.find(p => p.id === it.productId);
+        if (!prod) return it; // skip custom
+
+        let basePrice = prod.price;
+        let tax = prod.taxRate;
+        
+        if (isInformal) {
+          if (prod.priceIncludesTax !== false) {
+            basePrice = prod.price;
+          } else {
+            basePrice = prod.price * (1 + prod.taxRate / 100);
+          }
+          tax = 0;
+        } else {
+          if (prod.priceIncludesTax !== false) {
+            basePrice = prod.price / (1 + prod.taxRate / 100);
+          } else {
+            basePrice = prod.price;
+          }
+          tax = prod.taxRate;
+        }
+
+        basePrice = parseFloat(basePrice.toFixed(2));
+        if (it.price === basePrice && it.taxRate === tax) return it; // no change
+        changed = true;
+
+        const subNoDisc = it.quantity * basePrice;
+        const discountAm = subNoDisc * ((it.discount || 0) / 100);
+        const suball = subNoDisc - discountAm;
+        const taxAmount = suball * (tax / 100);
+
+        return {
+          ...it,
+          price: basePrice,
+          taxRate: tax,
+          taxAmount: parseFloat(taxAmount.toFixed(2)),
+          total: parseFloat((suball + taxAmount).toFixed(2))
+        };
+      });
+
+      return changed ? newItems : prevItems;
+    });
+  }, [docType, selectedNcfType, products]);
 
   // Next NCF sequence helper
   const getNextNcfPreview = () => {

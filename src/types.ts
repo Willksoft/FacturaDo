@@ -50,6 +50,7 @@ export interface Product {
   price: number;
   cost: number;
   taxRate: number; // e.g. 18 for 18% ITBIS, 0 for exempt
+  priceIncludesTax?: boolean; // Whether the base price already includes the ITBIS
   stock: number;
   minStock: number;
   providerId?: string; // linked supplier

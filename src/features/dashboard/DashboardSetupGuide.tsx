@@ -54,7 +54,7 @@ export default function DashboardSetupGuide({
       icon: <Building className="w-5 h-5" />,
       isCompleted: true, 
       actionLabel: 'Ver Configuración',
-      action: () => { setCurrentTab('settings'); setShowModal(false); },
+      action: () => { setCurrentTab('cfg-datos'); setShowModal(false); },
     },
     {
       id: 2, level: 1, xp: 50,
@@ -63,7 +63,7 @@ export default function DashboardSetupGuide({
       icon: <PieChart className="w-5 h-5" />,
       isCompleted: true, 
       actionLabel: 'Gestionar Cajas',
-      action: () => { setCurrentTab('finanzas'); setShowModal(false); },
+      action: () => { setCurrentTab('caja'); setShowModal(false); },
     },
     {
       id: 3, level: 1, xp: 100,
@@ -72,7 +72,7 @@ export default function DashboardSetupGuide({
       icon: <ShoppingBag className="w-5 h-5" />,
       isCompleted: products.length > 0,
       actionLabel: 'Crear Producto',
-      action: () => { setCurrentTab('directories'); setShowModal(false); },
+      action: () => { setCurrentTab('productos'); setShowModal(false); },
     },
     {
       id: 4, level: 1, xp: 100,
@@ -81,7 +81,7 @@ export default function DashboardSetupGuide({
       icon: <Users className="w-5 h-5" />,
       isCompleted: clients.length > 0,
       actionLabel: 'Crear Cliente',
-      action: () => { setCurrentTab('directories'); setShowModal(false); },
+      action: () => { setCurrentTab('clientes'); setShowModal(false); },
     },
     {
       id: 5, level: 2, xp: 150,
@@ -90,7 +90,7 @@ export default function DashboardSetupGuide({
       icon: <FileSignature className="w-5 h-5" />,
       isCompleted: hasCotizaciones,
       actionLabel: 'Crear Cotización',
-      action: () => { setCurrentTab('invoices'); setShowModal(false); },
+      action: () => { setCurrentTab('cotizaciones'); setShowModal(false); },
     },
     {
       id: 6, level: 2, xp: 200,
@@ -99,7 +99,7 @@ export default function DashboardSetupGuide({
       icon: <FileText className="w-5 h-5" />,
       isCompleted: hasFacturas,
       actionLabel: 'Crear Factura',
-      action: () => { setCurrentTab('invoices'); setShowModal(false); },
+      action: () => { setCurrentTab('facturas'); setShowModal(false); },
     },
     {
       id: 7, level: 2, xp: 100,
@@ -108,7 +108,7 @@ export default function DashboardSetupGuide({
       icon: <UserPlus className="w-5 h-5" />,
       isCompleted: false, 
       actionLabel: 'Agregar Vendedor',
-      action: () => { setCurrentTab('settings'); setShowModal(false); },
+      action: () => { setCurrentTab('vendedores'); setShowModal(false); },
     },
     {
       id: 8, level: 3, xp: 150,
@@ -117,7 +117,7 @@ export default function DashboardSetupGuide({
       icon: <CreditCard className="w-5 h-5" />,
       isCompleted: expenses.length > 0,
       actionLabel: 'Registrar Gasto',
-      action: () => { setCurrentTab('finanzas'); setShowModal(false); },
+      action: () => { setCurrentTab('gastos'); setShowModal(false); },
     },
     {
       id: 9, level: 3, xp: 200,
@@ -126,7 +126,7 @@ export default function DashboardSetupGuide({
       icon: <ReceiptIcon className="w-5 h-5" />,
       isCompleted: receipts.length > 0,
       actionLabel: 'Registrar Abono',
-      action: () => { setCurrentTab('finanzas'); setShowModal(false); },
+      action: () => { setCurrentTab('recibos'); setShowModal(false); },
     },
     {
       id: 10, level: 3, xp: 300,
@@ -135,7 +135,7 @@ export default function DashboardSetupGuide({
       icon: <PieChart className="w-5 h-5" />,
       isCompleted: false, 
       actionLabel: 'Ver Reportes',
-      action: () => { setCurrentTab('reports'); setShowModal(false); },
+      action: () => { setCurrentTab('rep-dgii'); setShowModal(false); },
     }
   ];
 

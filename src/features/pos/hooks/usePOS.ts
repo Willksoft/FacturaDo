@@ -242,11 +242,40 @@ export function usePOS({
 
   const removeFromCart = (productId: string) => setCart(prev => prev.filter(i => i.product.id !== productId));
 
+  const buildCalculatedItems = () => {
+    const isInformal = templateSettings?.informalMode || !templateSettings?.businessRNC || docType === 'Cotizacion' || (docType === 'Factura' && selectedNcfType === 'SIN');
+    return cart.map(i => {
+      let basePrice = i.product.price;
+      let itemTaxRate = i.product.taxRate;
+      const includesTax = i.product.priceIncludesTax !== false; // Default true for legacy compatibility
+
+      if (isInformal) {
+        if (!includesTax) {
+           basePrice = i.product.price * (1 + itemTaxRate / 100);
+        }
+        itemTaxRate = 0;
+      } else {
+        if (includesTax) {
+           basePrice = i.product.price / (1 + itemTaxRate / 100);
+        }
+      }
+      
+      return { 
+        productId: i.product.id, 
+        productName: i.product.name, 
+        quantity: i.quantity, 
+        price: parseFloat(basePrice.toFixed(2)), 
+        taxRate: itemTaxRate 
+      };
+    });
+  };
+
   const { subtotal, tax, total } = useMemo(() => {
-    const sub = cart.reduce((acc, item) => acc + (item.product.price * item.quantity), 0);
-    const tx = cart.reduce((acc, item) => acc + ((item.product.price * item.quantity) * (item.product.taxRate / 100)), 0);
+    const calcItems = buildCalculatedItems();
+    const sub = calcItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const tx = calcItems.reduce((acc, item) => acc + ((item.price * item.quantity) * (item.taxRate / 100)), 0);
     return { subtotal: sub, tax: tx, total: sub + tx };
-  }, [cart]);
+  }, [cart, docType, selectedNcfType]);
 
   // Checkout
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
@@ -263,7 +292,7 @@ export function usePOS({
     if (!selectedClientId) return alert('Seleccione un cliente.');
 
     if (docType === 'Cotizacion') {
-      const items = cart.map(i => ({ productId: i.product.id, productName: i.product.name, quantity: i.quantity, price: i.product.price, taxRate: i.product.taxRate }));
+      const items = buildCalculatedItems();
       const newDoc = createInvoiceOrQuote({ clientId: selectedClientId, sellerId: selectedSellerId, type: 'Cotizacion', items, discount: 0, notes: paymentNotes });
       if (newDoc) {
         setCompletedDoc({ ...newDoc, paymentMethod: 'Cotización', totalPaid: 0, accountName: 'N/A' });
@@ -280,7 +309,7 @@ export function usePOS({
     if (Math.abs(totalPayments - total) > 0.05) return alert('La suma de pagos debe igualar al total.');
     if (paymentCash > 0 && cashReceived < paymentCash) return alert('Efectivo entregado es menor al pago en efectivo.');
 
-    const items = cart.map(i => ({ productId: i.product.id, productName: i.product.name, quantity: i.quantity, price: i.product.price, taxRate: i.product.taxRate }));
+    const items = buildCalculatedItems();
     const newDoc = createInvoiceOrQuote({ clientId: selectedClientId, sellerId: selectedSellerId, type: 'Factura', ncfType: selectedNcfType, items, discount: 0, notes: paymentNotes });
     if (!newDoc) return alert('Error al generar factura.');
 

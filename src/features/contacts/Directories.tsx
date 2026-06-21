@@ -160,6 +160,7 @@ export default function Directories({
   const [prodPrice, setProdPrice] = useState('0');
   const [prodCost, setProdCost] = useState('0');
   const [prodTax, setProdTax] = useState('18');
+  const [prodPriceIncludesTax, setProdPriceIncludesTax] = useState(true);
   const [prodStock, setProdStock] = useState('0');
   const [prodMinStock, setProdMinStock] = useState('0');
   const [prodProviderId, setProdProviderId] = useState('');
@@ -351,6 +352,7 @@ export default function Directories({
       price: Number(prodPrice) || 0,
       cost: Number(prodCost) || 0,
       taxRate: Number(prodTax) || 0,
+      priceIncludesTax: prodPriceIncludesTax,
       stock: prodType === 'Servicio' ? 0 : Number(prodStock) || 0,
       minStock: Number(prodMinStock) || 0,
       providerId: prodProviderId && prodProviderId !== 'none_selected' ? prodProviderId : undefined,
@@ -381,6 +383,7 @@ export default function Directories({
     setProdPrice('0');
     setProdCost('0');
     setProdTax('18');
+    setProdPriceIncludesTax(true);
     setProdStock('0');
     setProdMinStock('0');
     setProdProviderId('');
@@ -475,6 +478,7 @@ export default function Directories({
     setProdPrice(String(p.price));
     setProdCost(String(p.cost));
     setProdTax(String(p.taxRate));
+    setProdPriceIncludesTax(p.priceIncludesTax !== false);
     setProdStock(String(p.stock));
     setProdMinStock(String(p.minStock));
     setProdProviderId(p.providerId || '');
@@ -1462,6 +1466,19 @@ export default function Directories({
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-2 px-1 mt-1">
+                  <input 
+                    type="checkbox" 
+                    id="p-price-includes-tax" 
+                    checked={prodPriceIncludesTax}
+                    onChange={(e) => setProdPriceIncludesTax(e.target.checked)}
+                    className="rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900 w-4 h-4"
+                  />
+                  <Label htmlFor="p-price-includes-tax" className="text-[11px] text-neutral-600 font-medium cursor-pointer">
+                    El precio de venta digitado ya incluye el ITBIS (Recomendado)
+                  </Label>
                 </div>
 
                 {/* LIVE PROFIT MARGIN WIDGET */}
