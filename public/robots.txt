@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://facturadord.com/sitemap.xml
+# Bloquear la indexación de rutas privadas (no queremos que Google pierda tiempo buscando aquí)
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /onboarding
+
+Sitemap: https://www.facturadord.com/sitemap.xml
