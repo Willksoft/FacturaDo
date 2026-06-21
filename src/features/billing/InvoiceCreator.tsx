@@ -642,6 +642,54 @@ export default function InvoiceCreator({
 
   const isRoleAuthorized = currentUser.permissions.canCreateInvoice;
 
+  const handleSaveDraft = () => {
+    if (!selectedClientId) {
+      alert('Favor seleccionar un cliente para procesar la transacci\u00f3n.');
+      return;
+    }
+    if (items.length === 0) {
+      alert('Debe agregar al menos un art\u00edculo o servicio al documento.');
+      return;
+    }
+    const draftDoc = createInvoiceOrQuote({
+      type: docType,
+      client: selectedClient!,
+      items,
+      paymentMethod,
+      ncfType: docType === 'Cotizacion' ? 'SIN' : selectedNcfType,
+      customSequenceNumber: overrideSequence && customSequenceNum ? Number(customSequenceNum) - 1 : undefined,
+      notes,
+      dueDate,
+      createdAt: new Date(issueDate + "T12:00:00Z").toISOString(),
+      currency,
+      paymentCondition,
+      discountRate,
+      status: 'Borrador',
+      isDraft: true,
+      sellerId: selectedSellerId || undefined,
+      sellerName: selectedSellerId ? sellers.find(s => s.id === selectedSellerId)?.name : undefined,
+      shiftId: activeShift ? activeShift.id : undefined,
+    });
+
+    if (initialPrefilledDoc && initialPrefilledDoc.status === 'Borrador' && deleteInvoice) {
+      deleteInvoice(initialPrefilledDoc.id);
+    }
+
+    localStorage.removeItem('inv_creator_draft');
+    setSuccessAnimationMessage('Borrador Guardado');
+    setShowSuccessAnimation(true);
+    
+    setTimeout(() => {
+      setShowSuccessAnimation(false);
+      setSelectedClientId('');
+      setItems([]);
+      setPayments([]);
+      setNotes('');
+      setHasRestoredDraft(false);
+      onSuccess(draftDoc);
+    }, 1500);
+  };
+
   const handleCreateDocument = async () => {
     if (!selectedClientId) {
       alert('Favor seleccionar un cliente para procesar la transacción.');
@@ -650,56 +698,7 @@ export default function InvoiceCreator({
     if (items.length === 0) {
       alert('Debe cargar por lo menos una línea de productos o servicios antes de facturar.');
       return;
-      return;
     }
-
-    const handleSaveDraft = () => {
-      if (!selectedClientId) {
-        alert('Favor seleccionar un cliente para procesar la transacci\u00f3n.');
-        return;
-      }
-      if (items.length === 0) {
-        alert('Debe agregar al menos un art\u00edculo o servicio al documento.');
-        return;
-      }
-      const draftDoc = createInvoiceOrQuote({
-        type: docType,
-        client: selectedClient!,
-        items,
-        paymentMethod,
-        ncfType: docType === 'Cotizacion' ? 'SIN' : selectedNcfType,
-        customSequenceNumber: overrideSequence && customSequenceNum ? Number(customSequenceNum) - 1 : undefined,
-        notes,
-        dueDate,
-        createdAt: new Date(issueDate + "T12:00:00Z").toISOString(),
-        currency,
-        paymentCondition,
-        discountRate,
-        status: 'Borrador',
-        isDraft: true,
-        sellerId: selectedSellerId || undefined,
-        sellerName: selectedSellerId ? sellers.find(s => s.id === selectedSellerId)?.name : undefined,
-        shiftId: activeShift ? activeShift.id : undefined,
-      });
-
-      if (initialPrefilledDoc && initialPrefilledDoc.status === 'Borrador' && deleteInvoice) {
-        deleteInvoice(initialPrefilledDoc.id);
-      }
-
-      localStorage.removeItem('inv_creator_draft');
-      setSuccessAnimationMessage('Borrador Guardado');
-      setShowSuccessAnimation(true);
-      
-      setTimeout(() => {
-        setShowSuccessAnimation(false);
-        setSelectedClientId('');
-        setItems([]);
-        setPayments([]);
-        setNotes('');
-        setHasRestoredDraft(false);
-        onSuccess(draftDoc);
-      }, 1500);
-    };
 
     setIsEmitting(true);
 
