@@ -3,6 +3,15 @@
   <head>
     <!-- CookieYes -->
     <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/86655d40a262b0027d9b8851/script.js"></script>
+    <style>
+      /* Ocultar el botón flotante de CookieYes que arruina la UI */
+      .cky-revisit-bottom-left, .cky-revisit-bottom-right, .cky-btn-revisit-wrapper, #cky-btn-revisit-wrapper {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    </style>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SVV18EE1YQ"></script>
     <script>
