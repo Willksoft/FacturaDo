@@ -129,7 +129,7 @@ function StatCounters() {
           { label: 'Ahorro en Contador', value: 85, prefix: '', suffix: '%' },
           { label: 'Uptime Sistema', value: 99, suffix: '.9%' }
         ].map((stat, idx) => (
-          <div key={idx} className="flex flex-col items-center justify-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 text-center hover:shadow-md transition-shadow">
+          <div key={idx} className="flex flex-col items-center justify-center bg-transparent p-6 text-center hover:-translate-y-1 transition-transform duration-300">
             <div className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-blue-700 font-heading mb-2">
               <AnimatedNumber target={stat.value} suffix={stat.suffix} prefix={stat.prefix} duration={2500 + (idx * 300)} />
             </div>
