@@ -1409,7 +1409,7 @@ export default function Directories({
                   <div className="space-y-1 col-span-2">
                     <Label htmlFor="p-code" className="text-xs">Código Corto / SKU / Código de Barras</Label>
                     <div className="flex gap-1.5">
-                      <Input id="p-code" placeholder="Ej. VAR-12 o escanea 📷" value={prodCode} onChange={(e) => setProdCode(e.target.value)} className="font-mono" />
+                      <Input id="p-code" placeholder="Ej. VAR-12 o escanea" value={prodCode} onChange={(e) => setProdCode(e.target.value)} className="font-mono" />
                       <button
                         type="button"
                         onClick={handleScanBarcode}
@@ -1421,7 +1421,7 @@ export default function Directories({
                       </button>
                     </div>
                     {isScanningBarcode && (
-                      <p className="text-[10px] text-blue-600 animate-pulse font-medium">📷 Apunta la cámara al código de barras del producto...</p>
+                      <p className="text-[10px] text-blue-600 animate-pulse font-medium">Apunta la cámara al código de barras del producto...</p>
                     )}
                   </div>
                 </div>
@@ -1521,7 +1521,7 @@ export default function Directories({
                       }}
                       className="text-[10px] text-blue-600 hover:text-blue-800 font-extrabold bg-transparent border-0 cursor-pointer"
                     >
-                      {isCustomCategory ? "Seleccionar de la lista 📋" : "🆕 Crear Nueva"}
+                      {isCustomCategory ? "Seleccionar de la lista" : "+ Crear Nueva"}
                     </button>
                   </div>
 
