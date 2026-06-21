@@ -850,16 +850,16 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           <StatCounters />
 
           {/* Hero Section */}
-          <section className="relative overflow-visible bg-gradient-to-b from-white via-white to-white pt-10 border-b border-slate-100">
+          <section className="relative overflow-hidden bg-gradient-to-b from-white via-white to-white pt-10 border-b border-slate-100">
             {/* Background decorative elements */}
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-100/40 rounded-full blur-3xl -z-10" />
             <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-50/50 rounded-full blur-3xl -z-10" />
 
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-64 sm:pb-[420px]">
-              <div className="flex flex-col items-center text-center space-y-12">
+            <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pb-32 sm:pb-48">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
                 
                 {/* Hero Top Info */}
-                <div className="w-full max-w-4xl flex flex-col items-center relative min-h-[450px] sm:min-h-[380px] lg:min-h-[360px]">
+                <div className="w-full lg:w-[500px] xl:w-[600px] shrink-0 flex flex-col items-center lg:items-start text-center lg:text-left relative min-h-[450px] sm:min-h-[380px] lg:min-h-[360px]">
 
                   
                   <div className="relative w-full flex-1 min-h-[380px] sm:min-h-[280px]">
@@ -870,7 +870,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.5, ease: "easeInOut" }}
-                        className="flex flex-col items-center w-full"
+                        className="flex flex-col items-center lg:items-start w-full"
                       >
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-heading font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
                           {heroSlides[currentSlide].title[0]} <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-blue-600 block sm:inline">{heroSlides[currentSlide].title[1]}</span>
@@ -880,7 +880,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                           {heroSlides[currentSlide].description}
                         </p>
 
-                        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-slate-700 font-semibold text-sm">
+                        <div className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 text-slate-700 font-semibold text-sm">
                           {heroSlides[currentSlide].badges.map((badge, idx) => (
                             <div key={idx} className="flex items-center gap-2">
                               <span className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs border border-emerald-100 shrink-0">✓</span>
@@ -897,7 +897,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
 
                   {/* Slider Controls */}
-                  <div className="flex justify-center gap-2 mt-8 z-10">
+                  <div className="flex justify-center lg:justify-start gap-2 mt-8 z-10 w-full">
                     {heroSlides.map((_, idx) => (
                       <button
                         key={idx}
@@ -910,26 +910,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               </div>
 
                 {/* Hero Bottom Visuals - Dashboard Image */}
-                <div className="sticky top-24 sm:top-28 z-10 flex justify-center w-full mt-12 max-w-5xl relative">
-                  
-                  {/* Floating Badge (Left) */}
-                  <motion.div 
-                    initial={{ opacity: 0, x: -30, y: 20 }}
-                    animate={{ opacity: 1, x: 0, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                    className="hidden lg:flex absolute -left-16 top-1/3 z-20 flex-col gap-3 bg-white/95 backdrop-blur-xl p-5 rounded-2xl shadow-2xl border border-slate-200/60 transform hover:-translate-y-1 transition-transform"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-inner">
-                        <Sparkles className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="text-left">
-                        <h4 className="font-extrabold text-slate-900 text-sm uppercase tracking-wide">Interfaz Intuitiva</h4>
-                        <p className="text-xs text-slate-500 font-semibold mt-0.5">Flujo de trabajo ultrarrápido</p>
-                      </div>
-                    </div>
-                  </motion.div>
-
+                <div className="w-full lg:w-[900px] xl:w-[1024px] shrink-0 sticky top-24 sm:top-28 z-10 flex justify-center lg:justify-end relative mt-12 lg:mt-0">
                   <div className="absolute inset-0 bg-sky-200/30 rounded-full blur-3xl transform rotate-3 -z-10" />
                   <motion.div
                     className="relative w-full drop-shadow-2xl"
@@ -941,7 +922,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                       src={heroSlides[currentSlide].image} 
                       alt="FacturaDo Dashboard" 
                       onClick={() => setIsLightboxOpen(true)}
-                      className="w-full h-auto object-contain rounded-xl sm:rounded-3xl shadow-2xl ring-1 ring-slate-900/5 cursor-pointer hover:opacity-95 transition-opacity"
+                      className="w-full h-auto object-contain rounded-xl sm:rounded-3xl shadow-2xl ring-1 ring-slate-900/5 cursor-pointer hover:opacity-95 transition-opacity lg:-mr-16 xl:-mr-24"
                     />
                   </motion.div>
                 </div>
