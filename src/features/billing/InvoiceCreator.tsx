@@ -1085,7 +1085,13 @@ export default function InvoiceCreator({
                   </div>
                   <Select value={selectedClientId} onValueChange={(val) => setSelectedClientId(val)}>
                     <SelectTrigger id="inv-sel-client" className="w-full h-9 bg-white border border-neutral-250 rounded-lg text-xs font-semibold text-neutral-900 focus:ring-1 focus:ring-neutral-950 shadow-xs">
-                      <SelectValue placeholder="Seleccione un cliente..." />
+                      {selectedClientId ? (
+                        <span className="flex flex-1 text-left line-clamp-1">
+                          {clients.find(c => c.id === selectedClientId)?.name || selectedClientId}
+                        </span>
+                      ) : (
+                        <SelectValue placeholder="Seleccione un cliente..." />
+                      )}
                     </SelectTrigger>
                     <SelectContent className="text-xs">
                       <SelectItem value="cli-consumo" className="text-xs hidden" disabled>Seleccione un cliente...</SelectItem>
@@ -1147,7 +1153,15 @@ export default function InvoiceCreator({
                   <Label htmlFor="inv-seller" className="text-xs font-semibold text-neutral-700">Vendedor</Label>
                   <Select value={selectedSellerId} onValueChange={setSelectedSellerId}>
                     <SelectTrigger id="inv-seller" className="h-9 border-neutral-250 text-xs">
-                      <SelectValue placeholder="Seleccionar Vendedor" />
+                      {selectedSellerId && selectedSellerId !== 'sel-admin-default' ? (
+                        <span className="flex flex-1 text-left line-clamp-1">
+                          {sellers.find(s => s.id === selectedSellerId)?.name || selectedSellerId}
+                        </span>
+                      ) : selectedSellerId === 'sel-admin-default' ? (
+                        <span className="flex flex-1 text-left line-clamp-1 text-neutral-500">Administrador (Predeterminado)</span>
+                      ) : (
+                        <SelectValue placeholder="Seleccionar Vendedor" />
+                      )}
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="" className="text-xs text-neutral-500">Sin Vendedor Asignado</SelectItem>
@@ -1752,7 +1766,13 @@ export default function InvoiceCreator({
                       <Label className="text-[10px] font-bold text-neutral-500">Cuenta de Destino</Label>
                       <Select value={newPayAccountId || "none"} onValueChange={(val) => setNewPayAccountId(val === "none" ? "" : val)}>
                         <SelectTrigger className="h-8 border-neutral-250 bg-white text-xs">
-                          <SelectValue placeholder="Seleccionar cuenta contable (Opcional)" />
+                          {newPayAccountId && newPayAccountId !== "none" ? (
+                            <span className="flex flex-1 text-left line-clamp-1">
+                              {financialAccounts?.find((a: any) => a.id === newPayAccountId)?.name || newPayAccountId}
+                            </span>
+                          ) : (
+                            <SelectValue placeholder="Seleccionar cuenta contable (Opcional)" />
+                          )}
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none" className="text-[11px] text-neutral-400">Seleccionar cuenta contable (Opcional)</SelectItem>

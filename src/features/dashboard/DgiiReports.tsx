@@ -1041,7 +1041,13 @@ export default function DgiiReports({ invoices, providers, currentUser, initialR
                 <Label htmlFor="pur-prov" className="text-xs">Proveedor Suplidor *</Label>
                 <Select value={pProviderId} onValueChange={(val) => setPProviderId(val)} required>
                   <SelectTrigger id="pur-prov">
-                    <SelectValue placeholder="Seleccione suplidor legal" />
+                    {pProviderId ? (
+                      <span className="flex flex-1 text-left line-clamp-1">
+                        {providers.find(p => p.id === pProviderId)?.name || pProviderId}
+                      </span>
+                    ) : (
+                      <SelectValue placeholder="Seleccione suplidor legal" />
+                    )}
                   </SelectTrigger>
                   <SelectContent className="text-xs">
                     {providers.map(p => (

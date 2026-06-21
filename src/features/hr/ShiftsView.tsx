@@ -203,9 +203,13 @@ export default function ShiftsView({
                   <Label>Caja a Operar *</Label>
                   <Select value={selectedCajaId} onValueChange={setSelectedCajaId}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar Caja Física">
-                        {cajas.find(c => c.id === selectedCajaId)?.name || selectedCajaId}
-                      </SelectValue>
+                      {selectedCajaId ? (
+                        <span className="flex flex-1 text-left line-clamp-1">
+                          {cajas.find(c => c.id === selectedCajaId)?.name || selectedCajaId}
+                        </span>
+                      ) : (
+                        <SelectValue placeholder="Seleccionar Caja Física" />
+                      )}
                     </SelectTrigger>
                     <SelectContent>
                       {cajas.map(c => (
@@ -214,14 +218,17 @@ export default function ShiftsView({
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div className="space-y-2">
                   <Label>Vendedor Asignado *</Label>
                   <Select value={selectedShiftSellerId} onValueChange={setSelectedShiftSellerId}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar Vendedor">
-                        {selectedSellerName}
-                      </SelectValue>
+                      {selectedShiftSellerId ? (
+                        <span className="flex flex-1 text-left line-clamp-1">
+                          {selectedSellerName || selectedShiftSellerId}
+                        </span>
+                      ) : (
+                        <SelectValue placeholder="Seleccionar Vendedor" />
+                      )}
                     </SelectTrigger>
                     <SelectContent>
                       {displaySellers.map(seller => (
