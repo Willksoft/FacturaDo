@@ -1783,6 +1783,66 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             </div>
           </section>
 
+          {/* Comparativa Section (SEO & Conversion) */}
+          <section id="comparativa" className="py-16 sm:py-24 bg-slate-50 border-t border-slate-200 overflow-hidden relative">
+            <div className="absolute top-1/2 left-0 w-96 h-96 bg-sky-100/40 rounded-full blur-3xl -z-10 -ml-20 -mt-20" />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
+              <div className="max-w-3xl mx-auto text-center space-y-4">
+                <span className="text-sky-600 font-bold uppercase tracking-widest text-xs sm:text-sm block">Análisis Competitivo</span>
+                <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900 tracking-tight">La mejor alternativa a QuickBooks, Alegra y Odoo en RD</h2>
+                <p className="text-base sm:text-lg text-slate-500">
+                  Descubre por qué cientos de pymes locales están migrando a FacturaDo, el único software diseñado 100% en torno al cumplimiento fiscal de la DGII.
+                </p>
+              </div>
+
+              {/* Comparison Table for Desktop, Stacked Cards for Mobile */}
+              <div className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[700px]">
+                  <thead>
+                    <tr className="border-b border-slate-100">
+                      <th className="p-6 text-sm font-bold text-slate-900 uppercase tracking-wide bg-slate-50 rounded-tl-3xl">Característica</th>
+                      <th className="p-6 text-sm font-extrabold text-sky-700 bg-sky-50 border-x border-sky-100 text-center">FacturaDo</th>
+                      <th className="p-6 text-sm font-bold text-slate-500 text-center">QuickBooks / Odoo</th>
+                      <th className="p-6 text-sm font-bold text-slate-500 text-center rounded-tr-3xl">Alegra / Cashflow</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    <tr className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-5 text-sm font-semibold text-slate-800">Costo Mensual Base</td>
+                      <td className="p-5 text-center font-extrabold text-emerald-600 bg-sky-50/30 border-x border-sky-100/50">RD$ 0 (Gratis)</td>
+                      <td className="p-5 text-center text-sm text-slate-500">$30+ USD al mes</td>
+                      <td className="p-5 text-center text-sm text-slate-500">$25+ USD al mes</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-5 text-sm font-semibold text-slate-800">Formatos DGII 606 y 607 Nativos</td>
+                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Automático</span></td>
+                      <td className="p-5 text-center text-sm text-slate-500"><span className="text-red-500">Módulo Externo</span></td>
+                      <td className="p-5 text-center text-sm text-slate-500">Incluido</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-5 text-sm font-semibold text-slate-800">Punto de Venta (POS) Ilimitado</td>
+                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Sí</span></td>
+                      <td className="p-5 text-center text-sm text-slate-500">Costo Extra</td>
+                      <td className="p-5 text-center text-sm text-slate-500">Límites por Plan</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-5 text-sm font-semibold text-slate-800">Validación RNC en Tiempo Real</td>
+                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Sí</span></td>
+                      <td className="p-5 text-center text-sm text-slate-500"><span className="text-red-500">No soportado</span></td>
+                      <td className="p-5 text-center text-sm text-slate-500">Sí</td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50 transition-colors border-b border-slate-100">
+                      <td className="p-5 text-sm font-semibold text-slate-800 rounded-bl-3xl">Límites de Emisión de Facturas</td>
+                      <td className="p-5 text-center font-bold text-slate-900 bg-sky-50 border-x border-sky-100">Ilimitado</td>
+                      <td className="p-5 text-center text-sm text-slate-500">Según Plan</td>
+                      <td className="p-5 text-center text-sm text-slate-500 rounded-br-3xl">Límite de Documentos</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
           {/* CTA Footer Form */}
           <section className="py-16 bg-[#1A2732] text-white text-center space-y-6">
             <div className="max-w-3xl mx-auto px-4 space-y-4">
