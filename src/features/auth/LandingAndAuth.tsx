@@ -839,9 +839,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               type="button"
             >
               <img 
-                src="https://res.cloudinary.com/dap38hi9l/image/upload/v1782018265/banner_2_znlyym.png" 
+                src="https://res.cloudinary.com/dap38hi9l/image/upload/f_auto,q_auto/v1782018265/banner_2_znlyym.png" 
                 alt="Promoción Especial FacturaDo - Tu software contable en República Dominicana con NCF" 
                 title="Promoción Exclusiva FacturaDo"
+                fetchPriority="high"
+                loading="eager"
                 className="w-full h-auto object-contain rounded-2xl shadow-sm border border-slate-200/50"
               />
             </button>
@@ -922,6 +924,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                       src={heroSlides[currentSlide].image} 
                       alt="FacturaDo Dashboard" 
                       onClick={() => setIsLightboxOpen(true)}
+                      fetchPriority="high"
+                      loading="eager"
                       className="w-full h-auto object-contain rounded-xl sm:rounded-3xl shadow-2xl ring-1 ring-slate-900/5 cursor-pointer hover:opacity-95 transition-opacity lg:-mr-16 xl:-mr-24"
                     />
                   </motion.div>
