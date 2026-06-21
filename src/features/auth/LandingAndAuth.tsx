@@ -940,7 +940,26 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               </div>
 
                 {/* Hero Bottom Visuals - Dashboard Image */}
-                <div className="sticky top-24 sm:top-28 z-10 flex justify-center w-full mt-12 max-w-5xl">
+                <div className="sticky top-24 sm:top-28 z-10 flex justify-center w-full mt-12 max-w-5xl relative">
+                  
+                  {/* Floating Badge (Left) */}
+                  <motion.div 
+                    initial={{ opacity: 0, x: -30, y: 20 }}
+                    animate={{ opacity: 1, x: 0, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                    className="hidden lg:flex absolute -left-16 top-1/3 z-20 flex-col gap-3 bg-white/95 backdrop-blur-xl p-5 rounded-2xl shadow-2xl border border-slate-200/60 transform hover:-translate-y-1 transition-transform"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-inner">
+                        <Sparkles className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="font-extrabold text-slate-900 text-sm uppercase tracking-wide">Interfaz Intuitiva</h4>
+                        <p className="text-xs text-slate-500 font-semibold mt-0.5">Flujo de trabajo ultrarrápido</p>
+                      </div>
+                    </div>
+                  </motion.div>
+
                   <div className="absolute inset-0 bg-sky-200/30 rounded-full blur-3xl transform rotate-3 -z-10" />
                   <motion.div
                     className="relative w-full drop-shadow-2xl"
