@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Invoice, Client, Product, Receipt, Expense } from '../../types';
+import DashboardSetupGuide from './DashboardSetupGuide';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -317,48 +318,14 @@ export default function Dashboard({
   return (
     <div className="space-y-6" id="dashboard-stage">
       {/* Guía de Bienvenida para Nuevos Usuarios */}
-      {invoices.length === 0 && clients.length === 0 && (
-        <div className="bg-[#FAFADA]/40 border border-neutral-200 p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-center justify-between font-sans shadow-xs animate-fade-in text-left">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#1A2732]/5 text-[#1A2732] text-[11px] font-extrabold uppercase rounded-full tracking-wider">
-              Guía de Inicio Rápido para Nuevos Comercios
-            </div>
-            <h3 className="text-lg font-extrabold text-neutral-900 font-heading">¡Tu terminal comercial de FacturaDo está activa y lista!</h3>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              Sigue estos 3 pasos sencillos para configurar tu negocio y emitir tu primer comprobante de pago oficial:
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs text-neutral-700">
-              <div className="p-3 bg-white/60 rounded-xl space-y-1 border">
-                <strong className="block text-[#1A2732] font-extrabold">1. Registra un Cliente</strong>
-                <span className="text-neutral-500">Ve al directorio y añade un cliente con RNC dominicano o cédula.</span>
-              </div>
-              <div className="p-3 bg-white/60 rounded-xl space-y-1 border">
-                <strong className="block text-emerald-700 font-extrabold">2. Configura Comprobantes NCF</strong>
-                <span className="text-neutral-500">En la barra lateral de timbres fiscales, revisa tus secuencias B01, B02, etc.</span>
-              </div>
-              <div className="p-3 bg-white/60 rounded-xl space-y-1 border">
-                <strong className="block text-indigo-700 font-extrabold">3. Genera tu Factura</strong>
-                <span className="text-neutral-500">Haz clic en "Nueva Factura", selecciona el cliente, ítems de venta y listo.</span>
-              </div>
-            </div>
-          </div>
-          <div className="shrink-0 space-y-2 w-full md:w-auto flex flex-col sm:flex-row md:flex-col gap-2">
-            <Button 
-              className="w-full md:w-auto bg-[#1A2732] hover:bg-neutral-800 text-white font-extrabold rounded-xl py-3 text-xs uppercase"
-              onClick={() => setCurrentTab('directories')}
-            >
-              Registrar Cliente
-            </Button>
-            <Button 
-              variant="outline"
-              className="w-full md:w-auto bg-white hover:bg-neutral-50 text-[#1A2732] font-bold rounded-xl py-3 border-neutral-300 text-xs uppercase"
-              onClick={() => setCurrentTab('invoices')}
-            >
-              Crear Factura Directa
-            </Button>
-          </div>
-        </div>
-      )}
+      <DashboardSetupGuide
+        clients={clients}
+        products={products}
+        invoices={invoices}
+        receipts={receipts}
+        expenses={expenses}
+        setCurrentTab={setCurrentTab}
+      />
 
         {/* RATED HIGHER METRIC CARDS (8 CARDS WITH GRADIENTS AND INCREASED SIZE) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" id="supreme-metric-tiles">
