@@ -6,6 +6,7 @@ import HelpManualView from '../help/HelpManualView';
 import UserManual from '../help/UserManual';
 import CompetitorComparison from './CompetitorComparison';
 import * as OTPAuth from 'otpauth';
+import { startAuthentication } from '@simplewebauthn/browser';
 import { 
   Infinity,
   Eye,
@@ -686,6 +687,39 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
       }
     } catch (err: any) {
       setLoginError(err.message || 'Error al completar los datos de registro.');
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePasskeyLogin = async () => {
+    setIsSubmitting(true);
+    setLoginError('');
+    try {
+      const { data: resData, error: invokeErr } = await insforge.functions.invoke('passkey-verify', {
+        body: { action: 'generate' }
+      });
+      if (invokeErr || !resData) throw new Error(invokeErr?.message || 'Error contactando servidor de Passkeys');
+      if (resData.error) throw new Error(resData.error);
+
+      const asseResp = await startAuthentication({ optionsJSON: resData.options });
+
+      const { data: verifyData, error: verifyErr } = await insforge.functions.invoke('passkey-verify', {
+        body: { action: 'verify', response: asseResp }
+      });
+      
+      if (verifyErr || !verifyData || verifyData.error) throw new Error(verifyErr?.message || verifyData?.error || 'Huella no reconocida');
+
+      const { error: otpError } = await insforge.auth.verifyOtp({
+        email: verifyData.email,
+        token: verifyData.magicToken,
+        type: 'magiclink'
+      });
+
+      if (otpError) throw new Error('Error al intercambiar el token biométrico de inicio de sesión.');
+      
+    } catch (err: any) {
+      console.error('Passkey login error:', err);
+      setLoginError(err.message || 'No se pudo iniciar sesión con biometría.');
       setIsSubmitting(false);
     }
   };
@@ -2230,6 +2264,18 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     </svg>
                     <span>{view === 'register' ? 'Registrarse con Apple' : 'Iniciar con Apple'}</span>
                   </button>
+
+                  {/* Passkey Login Button (Only visible in login view) */}
+                  {view === 'login' && (
+                    <button
+                      type="button"
+                      onClick={handlePasskeyLogin}
+                      className="w-full h-12 bg-neutral-900 hover:bg-black border border-neutral-800 text-white font-bold rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
+                    >
+                      <ShieldCheck className="w-5 h-5 text-white shrink-0" />
+                      <span>Iniciar con Huella / Rostro</span>
+                    </button>
+                  )}
 
                   {/* Email Login Button */}
                   <button

@@ -23,6 +23,7 @@
     "@fontsource-variable/geist": "^5.2.9",
     "@google/genai": "^2.4.0",
     "@insforge/sdk": "^1.4.0",
+    "@simplewebauthn/browser": "^13.3.0",
     "@tailwindcss/postcss": "^4.3.1",
     "ai": "^6.0.204",
     "canvas-confetti": "^1.9.4",

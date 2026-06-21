@@ -10,6 +10,7 @@ import {
 import { UserPermission } from '../../types';
 import { insforge } from '../../lib/insforge';
 import * as OTPAuth from 'otpauth';
+import { startRegistration } from '@simplewebauthn/browser';
 
 const generateBase32Secret = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -94,6 +95,44 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
   useEffect(() => {
     localStorage.setItem(`inv_sessions_${currentUser.id}`, JSON.stringify(sessions));
   }, [sessions, currentUser.id]);
+
+  const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
+
+  const handleRegisterPasskey = async () => {
+    setIsRegisteringPasskey(true);
+    try {
+      const { data: resData, error: invokeErr } = await insforge.functions.invoke('passkey-register', {
+        body: { action: 'generate' }
+      });
+      if (invokeErr || !resData) throw new Error(invokeErr?.message || 'Error contactando el servidor de Passkeys');
+      if (resData.error) throw new Error(resData.error);
+
+      const attResp = await startRegistration({ optionsJSON: resData.options });
+
+      const { data: verifyData, error: verifyErr } = await insforge.functions.invoke('passkey-register', {
+        body: { action: 'verify', response: attResp }
+      });
+      
+      if (verifyErr || !verifyData || verifyData.error) throw new Error(verifyErr?.message || verifyData?.error || 'Error verificando huella');
+
+      addNotification({
+        title: 'Dispositivo Vinculado',
+        message: 'Tu huella/rostro ha sido registrado exitosamente para iniciar sesión sin contraseña.',
+        type: 'success'
+      });
+
+      logActivity('SEGURIDAD', 'users', currentUser.id, { action: 'registrar_passkey', email: currentUser.email });
+    } catch (err: any) {
+      console.error('Passkey registration error:', err);
+      addNotification({
+        title: 'Error de Passkey',
+        message: err.message || 'No se pudo registrar el dispositivo o el usuario canceló.',
+        type: 'error'
+      });
+    } finally {
+      setIsRegisteringPasskey(false);
+    }
+  };
 
   const handlePasswordChangeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -537,6 +576,39 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
               <p className="text-[10px] text-neutral-500 leading-normal">
                 Esta configuración es de carácter local para esta terminal. Si el temporizador expira sin movimiento de mouse, el sistema exigirá las credenciales de acceso nuevamente.
               </p>
+            </CardContent>
+          </Card>
+
+          {/* Passkeys Card */}
+          <Card className="border-neutral-200 shadow-none rounded-2xl overflow-hidden bg-white">
+            <CardHeader className="py-4 border-b border-neutral-100 bg-neutral-50/50">
+              <CardTitle className="text-sm font-bold text-neutral-900 flex items-center gap-2">
+                <Shield className="w-4.5 h-4.5 text-neutral-500" />
+                Inicios de Sesión Biométricos (Passkeys)
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Inicie sesión usando la huella o el reconocimiento facial de su dispositivo sin contraseñas.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-5 space-y-4">
+              <div className="flex flex-col gap-3">
+                <Button 
+                  type="button" 
+                  onClick={handleRegisterPasskey}
+                  disabled={isRegisteringPasskey}
+                  className="w-full text-xs h-9.5 bg-neutral-900 hover:bg-black text-white flex items-center justify-center gap-2"
+                >
+                  {isRegisteringPasskey ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <ShieldCheck className="w-4 h-4" />
+                  )}
+                  {isRegisteringPasskey ? 'Registrando Dispositivo...' : 'Añadir Dispositivo (Huella/Rostro)'}
+                </Button>
+                <p className="text-[10px] text-neutral-500 text-center leading-normal">
+                  Al registrar este dispositivo, podrá acceder rápidamente con su biometría en el futuro.
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
