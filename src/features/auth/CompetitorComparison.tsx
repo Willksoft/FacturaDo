@@ -101,7 +101,7 @@ export default function CompetitorComparison() {
                 {competitors.map((comp, i) => (
                   <th 
                     key={i} 
-                    className={\`p-4 sm:p-6 border-b border-slate-200 text-center \${comp.isOurs ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-50 text-slate-900'}\`}
+                    className={`p-4 sm:p-6 border-b border-slate-200 text-center ${comp.isOurs ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-50 text-slate-900'}`}
                   >
                     <div className="text-lg font-extrabold">{comp.name}</div>
                     {comp.isOurs && <div className="text-xs font-medium text-indigo-200 mt-1 uppercase tracking-widest">Nuestra App</div>}
@@ -125,11 +125,11 @@ export default function CompetitorComparison() {
                   {competitors.map((comp, i) => (
                     <td 
                       key={i} 
-                      className={\`p-4 sm:p-6 text-center \${comp.isOurs ? 'bg-indigo-50/30 border-l border-r border-indigo-100' : ''}\`}
+                      className={`p-4 sm:p-6 text-center ${comp.isOurs ? 'bg-indigo-50/30 border-l border-r border-indigo-100' : ''}`}
                     >
-                      <div className={\`inline-flex items-center justify-center font-medium \${comp.isOurs ? 'text-indigo-700' : 'text-slate-600'}\`}>
+                      <div className={`inline-flex items-center justify-center font-medium ${comp.isOurs ? 'text-indigo-700' : 'text-slate-600'}`}>
                         {comp[feature.key as keyof typeof comp] === 'Sí' ? (
-                          <Check className={\`w-5 h-5 mr-1.5 \${comp.isOurs ? 'text-indigo-600' : 'text-emerald-500'}\`} />
+                          <Check className={`w-5 h-5 mr-1.5 ${comp.isOurs ? 'text-indigo-600' : 'text-emerald-500'}`} />
                         ) : comp[feature.key as keyof typeof comp] === 'No' ? (
                           <X className="w-5 h-5 mr-1.5 text-rose-500" />
                         ) : null}
