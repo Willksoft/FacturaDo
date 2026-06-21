@@ -1444,7 +1444,11 @@ export default function Directories({
                     <Label htmlFor="p-tax" className="text-xs">Tasa ITBIS</Label>
                     <Select value={prodTax} onValueChange={(val) => setProdTax(val)}>
                       <SelectTrigger id="p-tax" className="h-9">
-                        <SelectValue />
+                        {prodTax === '18' ? <span className="flex flex-1 text-left line-clamp-1">18% ITBIS</span> :
+                         prodTax === '16' ? <span className="flex flex-1 text-left line-clamp-1">16% ITBIS</span> :
+                         prodTax === '8' ? <span className="flex flex-1 text-left line-clamp-1">8% ITBIS</span> :
+                         prodTax === '0' ? <span className="flex flex-1 text-left line-clamp-1">0% (Exento)</span> :
+                         <SelectValue placeholder="Seleccione tasa" />}
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="18">18% (Estándar)</SelectItem>
@@ -1596,7 +1600,13 @@ export default function Directories({
                       <Label htmlFor="p-warehouse" className="text-xs font-semibold text-neutral-800">Almacén (Ubicación de Stock)</Label>
                       <Select value={prodWarehouseId} onValueChange={(val) => setProdWarehouseId(val)}>
                         <SelectTrigger id="p-warehouse" className="h-9">
-                          <SelectValue placeholder="Seleccione un Almacén" />
+                          {prodWarehouseId ? (
+                            <span className="flex flex-1 text-left line-clamp-1">
+                              {warehouses.find(w => w.id === prodWarehouseId)?.name || prodWarehouseId}
+                            </span>
+                          ) : (
+                            <SelectValue placeholder="Seleccione un Almacén" />
+                          )}
                         </SelectTrigger>
                         <SelectContent>
                           {warehouses.map(wh => (
@@ -1641,8 +1651,16 @@ export default function Directories({
                     </div>
                   ) : (
                     <Select value={prodProviderId} onValueChange={(val) => setProdProviderId(val)}>
-                      <SelectTrigger id="p-prov" className="h-9">
-                        <SelectValue placeholder="Seleccione un proveedor (Opcional)" />
+                      <SelectTrigger className="h-9">
+                        {prodProviderId && prodProviderId !== 'none_selected' ? (
+                          <span className="flex flex-1 text-left line-clamp-1">
+                            {providers.find(p => p.id === prodProviderId)?.name || prodProviderId}
+                          </span>
+                        ) : prodProviderId === 'none_selected' ? (
+                          <span className="flex flex-1 text-left line-clamp-1 text-neutral-500 italic">-- Sin proveedor --</span>
+                        ) : (
+                          <SelectValue placeholder="Seleccione un proveedor (Opcional)" />
+                        )}
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none_selected">Ninguno</SelectItem>
