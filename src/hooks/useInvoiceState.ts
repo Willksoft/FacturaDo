@@ -829,9 +829,7 @@ export function useInvoiceState() {
         setTemplateSettings(finalSettings);
         if (
           !userSettings.business_name || 
-          userSettings.business_name === 'Mi Comercio Nuevo' || 
-          !userSettings.business_rnc ||
-          userSettings.business_rnc === '130998877'
+          userSettings.business_name === 'Mi Comercio Nuevo'
         ) {
           isNewUser = true;
           setNeedsOnboarding(true);
