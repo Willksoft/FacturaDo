@@ -267,126 +267,167 @@ export default function DocumentDetailsView({
         <div className="w-full">
           <div className="bg-white p-8 md:p-12 rounded-xl border border-neutral-200 shadow-sm space-y-6 mx-auto w-full md:max-w-[8.5in] md:min-h-[11in] flex flex-col justify-between" id="printable-commercial-sheet" style={{ fontFamily: templateSettings.fontFamily || "Inter" }}>
             <div className="space-y-6">
-            {/* BRANDING SECTION */}
-            <div className="flex flex-col sm:flex-row justify-between items-start border-b border-neutral-150 pb-5 gap-4">
-              <div className="space-y-2 flex items-start gap-4">
-                {templateSettings.logoUrl ? (
-                  <img
-                    src={templateSettings.logoUrl}
-                    alt="Logo"
-                    className="h-12 w-auto object-contain rounded border border-neutral-100 bg-white"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div 
-                    className="w-11 h-11 rounded-xl text-white flex items-center justify-center p-2 shadow-xs shrink-0"
-                    style={{ backgroundColor: templateSettings.primaryColor || '#171717' }}
-                  >
-                    <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                      <path d="M2 17l10 5 10-5" />
-                      <path d="M2 12l10 5 10-5" />
-                    </svg>
-                  </div>
-                )}
-                <div>
-                  <h4 className="text-[13px] font-extrabold text-neutral-950">{templateSettings.businessName}</h4>
-                  <p className="text-[9px] text-neutral-550">RNC: {templateSettings.businessRNC}</p>
-                  <p className="text-[9px] text-neutral-550">{templateSettings.businessAddress}</p>
-                  <p className="text-[9px] text-neutral-550">Tel: {templateSettings.businessPhone} | {templateSettings.businessEmail}</p>
-                </div>
-              </div>
-              <div className="text-left sm:text-right space-y-1.5">
-                <span 
-                  className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-extrabold tracking-wider uppercase ${isQuote ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'text-white'}`}
-                  style={!isQuote ? { backgroundColor: templateSettings.primaryColor || '#171717' } : undefined}
-                >
-                  {isQuote ? 'Cotización' : 'Factura Comercial'}
-                </span>
-                <p className="text-[13px] font-black text-neutral-950 block leading-none">{invoice.invoiceNumber}</p>
-                <p className="text-[9px] text-neutral-500">Fecha de Emisión: {new Date(invoice.createdAt).toLocaleDateString('es-DO')}</p>
-              </div>
-            </div>
+            {/* DYNAMIC STYLES BLOCK */}
+            {(() => {
+              const style = templateSettings.templateStyle || 'Moderno';
+              const primaryColor = templateSettings.primaryColor || '#171717';
+              
+              const isCorporate = style === 'Corporativo';
+              const isClassic = style === 'Clásico';
+              const isMinimal = style === 'Minimalista';
+              const isTech = style === 'Tecnológico';
+              const isElegant = style === 'Elegante';
+              
+              let headerClasses = "flex flex-col sm:flex-row justify-between items-start border-b border-neutral-150 pb-5 gap-4";
+              let headerBg = "transparent";
+              let headerTextColor = "text-neutral-950";
+              let headerSubTextColor = "text-neutral-550";
+              let titleAlignClasses = "text-left sm:text-right space-y-1.5";
+              let logoAlignClasses = "space-y-2 flex items-start gap-4";
+              
+              if (isCorporate) {
+                headerClasses = "flex flex-col sm:flex-row justify-between items-center pb-5 gap-4 rounded-t-xl p-6";
+                headerBg = primaryColor;
+                headerTextColor = "text-white";
+                headerSubTextColor = "text-white/80";
+              } else if (isClassic) {
+                headerClasses = "flex flex-col items-center text-center border-b-[3px] border-double border-neutral-800 pb-5 gap-4";
+                titleAlignClasses = "text-center space-y-1.5 w-full";
+                logoAlignClasses = "flex flex-col items-center gap-3";
+              }
+              
+              let tableHeaderStyle = { backgroundColor: primaryColor, color: '#ffffff' };
+              let tableHeaderClasses = "text-[9px] uppercase tracking-wider";
+              let dividerClass = "border border-neutral-200 rounded-lg overflow-hidden";
+              
+              if (isMinimal || isClassic || isElegant) {
+                tableHeaderStyle = { backgroundColor: 'transparent', color: '#171717', borderBottom: '2px solid #171717' };
+                dividerClass = "border-none rounded-none";
+                tableHeaderClasses = "text-[9px] uppercase tracking-wider border-b-2 border-neutral-800";
+              }
 
-            {/* CLIENT & TERMS INFO BLOCK */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1.5 bg-neutral-50 p-3 rounded-lg border border-neutral-150">
-                <span className="text-[8.5px] text-neutral-400 uppercase font-bold tracking-wider">Cliente Receptor</span>
-                <div className="font-bold text-[11px] text-neutral-900 leading-tight">{invoice.client.name}</div>
-                {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.rncOrCedula && invoice.client.rncOrCedula.trim() !== '')) && (
-                  <div className="text-[9.5px] text-neutral-550">
-                    {invoice.client.type === 'Empresa' ? 'RNC Fiscal' : 'Cédula de Identidad'}: {invoice.client.rncOrCedula || 'N/D'}
+              return (
+                <>
+                  {/* BRANDING SECTION */}
+                  <div className={headerClasses} style={{ backgroundColor: headerBg }}>
+                    <div className={logoAlignClasses}>
+                      {templateSettings.logoUrl ? (
+                        <img
+                          src={templateSettings.logoUrl}
+                          alt="Logo"
+                          className="h-12 w-auto object-contain rounded border border-neutral-100 bg-white"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <div 
+                          className="w-11 h-11 rounded-xl text-white flex items-center justify-center p-2 shadow-xs shrink-0"
+                          style={{ backgroundColor: isCorporate ? 'rgba(255,255,255,0.2)' : primaryColor }}
+                        >
+                          <svg className="w-full h-full text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                            <path d="M2 17l10 5 10-5" />
+                            <path d="M2 12l10 5 10-5" />
+                          </svg>
+                        </div>
+                      )}
+                      <div>
+                        <h4 className={`text-[13px] font-extrabold ${headerTextColor}`}>{templateSettings.businessName}</h4>
+                        <p className={`text-[9px] ${headerSubTextColor}`}>RNC: {templateSettings.businessRNC}</p>
+                        <p className={`text-[9px] ${headerSubTextColor}`}>{templateSettings.businessAddress}</p>
+                        <p className={`text-[9px] ${headerSubTextColor}`}>Tel: {templateSettings.businessPhone} | {templateSettings.businessEmail}</p>
+                      </div>
+                    </div>
+                    <div className={titleAlignClasses}>
+                      <span 
+                        className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-extrabold tracking-wider uppercase ${isQuote ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'text-white'}`}
+                        style={!isQuote ? { backgroundColor: isCorporate ? 'rgba(0,0,0,0.3)' : primaryColor } : undefined}
+                      >
+                        {isQuote ? 'Cotización' : 'Factura Comercial'}
+                      </span>
+                      <p className={`text-[13px] font-black block leading-none ${headerTextColor}`}>{invoice.invoiceNumber}</p>
+                      <p className={`text-[9px] ${headerSubTextColor}`}>Fecha de Emisión: {new Date(invoice.createdAt).toLocaleDateString('es-DO')}</p>
+                    </div>
                   </div>
-                )}
-                {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.phone?.trim() || invoice.client.email?.trim())) && (
-                  <div className="text-[9.5px] text-neutral-550">
-                    Tel: {invoice.client.phone || 'N/D'} | Correo: {invoice.client.email || 'N/D'}
+
+                  {/* CLIENT & TERMS INFO BLOCK */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className={`space-y-1.5 p-3 rounded-lg ${isMinimal ? '' : 'bg-neutral-50 border border-neutral-150'}`}>
+                      <span className="text-[8.5px] text-neutral-400 uppercase font-bold tracking-wider">Cliente Receptor</span>
+                      <div className="font-bold text-[11px] text-neutral-900 leading-tight">{invoice.client.name}</div>
+                      {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.rncOrCedula && invoice.client.rncOrCedula.trim() !== '')) && (
+                        <div className="text-[9.5px] text-neutral-550">
+                          {invoice.client.type === 'Empresa' ? 'RNC Fiscal' : 'Cédula de Identidad'}: {invoice.client.rncOrCedula || 'N/D'}
+                        </div>
+                      )}
+                      {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.phone?.trim() || invoice.client.email?.trim())) && (
+                        <div className="text-[9.5px] text-neutral-550">
+                          Tel: {invoice.client.phone || 'N/D'} | Correo: {invoice.client.email || 'N/D'}
+                        </div>
+                      )}
+                      {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.address && invoice.client.address.trim() !== '')) && (
+                        <div className="text-[9.5px] text-neutral-550">Dirección: {invoice.client.address || 'N/D'}</div>
+                      )}
+                    </div>
+
+                    <div className={`space-y-1.5 p-3 rounded-lg ${isMinimal ? '' : 'bg-neutral-50 border border-neutral-150'}`}>
+                      <span className="text-[8.5px] text-neutral-400 uppercase font-bold tracking-wider">Términos de la Operación</span>
+                      {!isQuote && (
+                        <div><span className="font-medium text-neutral-500">Condición de Pago: </span> <span className="font-bold text-slate-900">{invoice.paymentCondition || 'Contado'}</span></div>
+                      )}
+                      <div><span className="font-medium text-neutral-500">Moneda Emisión: </span> <span className="font-bold text-slate-900">{invoice.currency || 'DOP'}</span></div>
+                      {!isQuote && (
+                        <div><span className="font-medium text-neutral-500">Comprobante Fiscal: </span> <span className="font-bold text-blue-800">{`${invoice.ncfType} (${invoice.ncf})`}</span></div>
+                      )}
+                      {!isQuote && (
+                        <div><span className="font-medium text-neutral-500">Vía de Liquidación: </span> <span className="text-neutral-900 font-medium">{invoice.paymentMethod}</span></div>
+                      )}
+                      <div><span className="font-medium text-neutral-500">Vence / Vencimiento: </span> <span className="text-neutral-550 font-medium">{new Date(invoice.dueDate).toLocaleDateString('es-DO')}</span></div>
+                    </div>
                   </div>
-                )}
-                {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.address && invoice.client.address.trim() !== '')) && (
-                  <div className="text-[9.5px] text-neutral-550">Dirección: {invoice.client.address || 'N/D'}</div>
-                )}
-              </div>
 
-              <div className="space-y-1.5 bg-neutral-50 p-3 rounded-lg border border-neutral-150">
-                <span className="text-[8.5px] text-neutral-400 uppercase font-bold tracking-wider">Términos de la Operación</span>
-                {!isQuote && (
-                  <div><span className="font-medium text-neutral-500">Condición de Pago: </span> <span className="font-bold text-slate-900">{invoice.paymentCondition || 'Contado'}</span></div>
-                )}
-                <div><span className="font-medium text-neutral-500">Moneda Emisión: </span> <span className="font-bold text-slate-900">{invoice.currency || 'DOP'}</span></div>
-                {!isQuote && (
-                  <div><span className="font-medium text-neutral-500">Comprobante Fiscal: </span> <span className="font-bold text-blue-800">{`${invoice.ncfType} (${invoice.ncf})`}</span></div>
-                )}
-                {!isQuote && (
-                  <div><span className="font-medium text-neutral-500">Vía de Liquidación: </span> <span className="text-neutral-900 font-medium">{invoice.paymentMethod}</span></div>
-                )}
-                <div><span className="font-medium text-neutral-500">Vence / Vencimiento: </span> <span className="text-neutral-550 font-medium">{new Date(invoice.dueDate).toLocaleDateString('es-DO')}</span></div>
-              </div>
-            </div>
-
-            {/* QUOTE AND INVOICE LINKING BAR */}
-            {(invoice.originalQuoteNo || invoice.convertedToInvoiceNo) && (
-              <div className="bg-blue-50 border border-blue-150 p-3 py-2.5 rounded-lg flex items-center justify-between text-xs" id="invoice-quote-relationship-ribbon-subview">
-                <div className="flex items-center space-x-1.5 text-blue-900 leading-tight">
-                  <span className="font-bold text-blue-700">⛓️ Relación Comercial:</span>
-                  {invoice.type === 'Factura' && invoice.originalQuoteNo && (
-                    <span>Generada a partir de la cotización <span className="font-bold text-neutral-900 bg-white px-1.5 py-0.5 rounded border border-neutral-200">{invoice.originalQuoteNo}</span></span>
+                  {/* QUOTE AND INVOICE LINKING BAR */}
+                  {(invoice.originalQuoteNo || invoice.convertedToInvoiceNo) && (
+                    <div className="bg-blue-50 border border-blue-150 p-3 py-2.5 rounded-lg flex items-center justify-between text-xs" id="invoice-quote-relationship-ribbon-subview">
+                      <div className="flex items-center space-x-1.5 text-blue-900 leading-tight">
+                        <span className="font-bold text-blue-700">⛓️ Relación Comercial:</span>
+                        {invoice.type === 'Factura' && invoice.originalQuoteNo && (
+                          <span>Generada a partir de la cotización <span className="font-bold text-neutral-900 bg-white px-1.5 py-0.5 rounded border border-neutral-200">{invoice.originalQuoteNo}</span></span>
+                        )}
+                        {invoice.type === 'Cotizacion' && invoice.convertedToInvoiceNo && (
+                          <span>Procesada y emitida en la factura <span className="font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">{invoice.convertedToInvoiceNo}</span></span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const targetNo = invoice.type === 'Factura' ? invoice.originalQuoteNo : invoice.convertedToInvoiceNo;
+                          const related = invoices.find(inv => inv.invoiceNumber === targetNo);
+                          if (related) {
+                            onNavigateToDocument(related);
+                          } else {
+                            alert(`El documento ${targetNo} no pudo ser cargado.`);
+                          }
+                        }}
+                        className="text-[10px] font-extrabold text-blue-700 bg-white hover:bg-blue-100 hover:text-blue-900 border border-blue-250 px-2.5 py-1 rounded-md transition-all shadow-xs shrink-0"
+                      >
+                        Ver Relación
+                      </button>
+                    </div>
                   )}
-                  {invoice.type === 'Cotizacion' && invoice.convertedToInvoiceNo && (
-                    <span>Procesada y emitida en la factura <span className="font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">{invoice.convertedToInvoiceNo}</span></span>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const targetNo = invoice.type === 'Factura' ? invoice.originalQuoteNo : invoice.convertedToInvoiceNo;
-                    const related = invoices.find(inv => inv.invoiceNumber === targetNo);
-                    if (related) {
-                      onNavigateToDocument(related);
-                    } else {
-                      alert(`El documento ${targetNo} no pudo ser cargado.`);
-                    }
-                  }}
-                  className="text-[10px] font-extrabold text-blue-700 bg-white hover:bg-blue-100 hover:text-blue-900 border border-blue-250 px-2.5 py-1 rounded-md transition-all shadow-xs shrink-0"
-                >
-                  Ver Relación
-                </button>
-              </div>
-            )}
 
-            {/* CONCEPTS DETAILED TABLE */}
-            <div className="border border-neutral-200 rounded-lg overflow-hidden">
-              <table className="w-full text-left text-[10px] divide-y divide-neutral-200">
-                <thead className="text-[9px] text-white uppercase tracking-wider" style={{ backgroundColor: templateSettings.primaryColor || '#171717' }}>
-                  <tr className="divide-x divide-white/20">
-                    <th className="px-3 py-2.5 font-bold text-center w-12 text-white">Cant.</th>
-                    <th className="px-3 py-2.5 font-bold text-white">Concepto / Descripción</th>
-                    <th className="px-3 py-2.5 font-bold text-right w-24 text-white">P. Unitario</th>
-                    <th className="px-3 py-2.5 font-bold text-center w-16 text-white">Desc. %</th>
-                    <th className="px-3 py-2.5 font-bold text-center w-14 text-white">ITBIS %</th>
-                    <th className="px-3 py-2.5 font-bold text-right w-24 text-white">Suma Neto</th>
-                  </tr>
-                </thead>
+                  {/* CONCEPTS DETAILED TABLE */}
+                  <div className={dividerClass}>
+                    <table className="w-full text-left text-[10px] divide-y divide-neutral-200">
+                      <thead className={tableHeaderClasses} style={tableHeaderStyle}>
+                        <tr className={isMinimal || isClassic || isElegant ? '' : 'divide-x divide-white/20'}>
+                          <th className={`px-3 py-2.5 font-bold text-center w-12 ${isMinimal || isClassic || isElegant ? '' : 'text-white'}`}>Cant.</th>
+                          <th className={`px-3 py-2.5 font-bold ${isMinimal || isClassic || isElegant ? '' : 'text-white'}`}>Concepto / Descripción</th>
+                          <th className={`px-3 py-2.5 font-bold text-right w-24 ${isMinimal || isClassic || isElegant ? '' : 'text-white'}`}>P. Unitario</th>
+                          <th className={`px-3 py-2.5 font-bold text-center w-16 ${isMinimal || isClassic || isElegant ? '' : 'text-white'}`}>Desc. %</th>
+                          <th className={`px-3 py-2.5 font-bold text-center w-14 ${isMinimal || isClassic || isElegant ? '' : 'text-white'}`}>ITBIS %</th>
+                          <th className={`px-3 py-2.5 font-bold text-right w-24 ${isMinimal || isClassic || isElegant ? '' : 'text-white'}`}>Suma Neto</th>
+                        </tr>
+                      </thead>
                 <tbody className="divide-y divide-neutral-200 bg-white text-[10px]">
                   {invoice.items.map((it, idx) => (
                     <tr key={idx} className="divide-x divide-neutral-150 hover:bg-neutral-50/25">
@@ -476,6 +517,9 @@ export default function DocumentDetailsView({
                 </div>
               </div>
             </div>
+            </>
+            );
+            })()}
           </div>
 
             {/* CONDITIONS FOOTNOTE ACCENT */}
