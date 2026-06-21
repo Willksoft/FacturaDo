@@ -712,6 +712,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
               {/* Desktop Nav Actions */}
               <nav className="hidden lg:flex items-center space-x-4 xl:space-x-8 text-[13px] xl:text-sm font-semibold text-slate-600">
+                <button onClick={() => navigate('/blog')} className="hover:text-sky-600 transition-colors cursor-pointer font-semibold bg-transparent border-0 p-0 text-[13px] xl:text-sm whitespace-nowrap">Blog</button>
                 <a href="#funcionalidades" className="hover:text-sky-600 transition-colors whitespace-nowrap">Funcionalidades</a>
                 <a href="#testimonios" className="hover:text-sky-600 transition-colors whitespace-nowrap">Opiniones</a>
                 <button onClick={() => setView('ayuda')} className="hover:text-sky-600 transition-colors cursor-pointer font-semibold bg-transparent border-0 p-0 text-[13px] xl:text-sm whitespace-nowrap">Centro de Ayuda</button>
@@ -786,6 +787,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     >
                       Opiniones
                     </a>
+                    <button 
+                      onClick={() => navigate('/blog')} 
+                      className="text-left text-sm font-bold text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100 cursor-pointer w-full"
+                    >
+                      Blog
+                    </button>
                     <button 
                       onClick={() => setView('ayuda')} 
                       className="text-left text-sm font-bold text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100 cursor-pointer w-full"
