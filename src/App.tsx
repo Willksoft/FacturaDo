@@ -24,6 +24,7 @@ const AppearanceSettingsView = React.lazy(() => import('./features/settings/Appe
 const ShiftsView = React.lazy(() => import('./features/hr/ShiftsView'));
 const UserPermissions = React.lazy(() => import('./features/settings/UserPermissions'));
 const SupportSection = React.lazy(() => import('./features/help/SupportSection'));
+const UserManual = React.lazy(() => import('./features/help/UserManual'));
 const ReceiptsList = React.lazy(() => import('./features/billing/ReceiptsList'));
 const POSView = React.lazy(() => import('./features/pos/POSView'));
 const WarehousesView = React.lazy(() => import('./features/inventory/WarehousesView'));
@@ -1723,6 +1724,8 @@ export default function App() {
       <main id="applet-primary-stage" className="flex-1 p-4 md:p-8 overflow-y-auto relative">
         {/* DYNAMIC TAB SWITCH RENDERER */}
         <div className="max-w-7xl mx-auto space-y-6">
+          {currentTab === 'user-manual' && <UserManual />}
+          
           {currentTab === 'dashboard' && (
             <Dashboard
               invoices={invoices}

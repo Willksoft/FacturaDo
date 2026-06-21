@@ -696,7 +696,7 @@ export default function Dashboard({
                 <div className="text-[10px] font-mono font-bold text-orange-950">{(agingData.days90 / 1000).toFixed(1)}k</div>
               </div>
               <div className="bg-red-50 rounded p-2 border border-red-100">
-                <div className="text-[9px] text-red-800 font-bold uppercase mb-1">> 90 Días</div>
+                <div className="text-[9px] text-red-800 font-bold uppercase mb-1">&gt; 90 Días</div>
                 <div className="text-[10px] font-mono font-bold text-red-950">{(agingData.days90Plus / 1000).toFixed(1)}k</div>
               </div>
             </div>
