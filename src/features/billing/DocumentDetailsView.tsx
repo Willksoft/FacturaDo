@@ -301,7 +301,7 @@ export default function DocumentDetailsView({
                   className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-extrabold tracking-wider uppercase ${isQuote ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'text-white'}`}
                   style={!isQuote ? { backgroundColor: templateSettings.primaryColor || '#171717' } : undefined}
                 >
-                  {isQuote ? 'Presupuesto / Cotización' : 'Factura Comercial'}
+                  {isQuote ? 'Cotización' : 'Factura Comercial'}
                 </span>
                 <p className="text-[13px] font-black text-neutral-950 block leading-none">{invoice.invoiceNumber}</p>
                 <p className="text-[9px] text-neutral-500">Fecha de Emisión: {new Date(invoice.createdAt).toLocaleDateString('es-DO')}</p>

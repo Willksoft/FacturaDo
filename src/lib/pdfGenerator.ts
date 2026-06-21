@@ -218,7 +218,7 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
   applyFont(doc, 'bold');
   doc.setFontSize(15);
   doc.setTextColor(0, 0, 0);
-  doc.text(isQuote ? 'COTIZACIÓN / PROFORMA' : 'FACTURA DE VENTA', leftMargin, y);
+  doc.text(isQuote ? 'COTIZACIÓN' : 'FACTURA DE VENTA', leftMargin, y);
 
   applyFont(doc, 'bold');
   doc.setFontSize(9.5);

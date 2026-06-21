@@ -1160,7 +1160,7 @@ export default function InvoiceCreator({
             className="text-xs h-8 rounded-md transition-all font-medium py-0"
             onClick={() => setDocType('Cotizacion')}
           >
-            Cotización / Proforma
+            Cotización
           </Button>
         </div>
       </div>
