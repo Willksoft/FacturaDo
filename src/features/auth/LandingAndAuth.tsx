@@ -126,7 +126,7 @@ function StatCounters() {
         {[
           { label: 'Facturas Emitidas', value: 2542000, suffix: '+' },
           { label: 'Negocios Activos', value: 10500, suffix: '+' },
-          { label: 'Ahorro en Contador', value: 85, prefix: '', suffix: '%' },
+          { label: 'Ahorro de Tiempo', value: 85, prefix: '', suffix: '%' },
           { label: 'Uptime Sistema', value: 99, suffix: '.9%' }
         ].map((stat, idx) => (
           <div key={idx} className="flex flex-col items-center justify-center bg-transparent p-6 text-center hover:-translate-y-1 transition-transform duration-300">
