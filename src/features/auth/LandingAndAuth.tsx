@@ -1431,27 +1431,20 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </button>
                 </div>
 
-                {/* Right Column - Stats Cards */}
-                <div className="grid grid-cols-2 gap-4 sm:gap-5">
-                  {[
-                    { value: '100%', label: 'Gratis para siempre', color: 'from-emerald-500/20 to-emerald-600/10', border: 'border-emerald-500/20', textColor: 'text-emerald-400' },
-                    { value: '<2 min', label: 'Tiempo de registro', color: 'from-sky-500/20 to-sky-600/10', border: 'border-sky-500/20', textColor: 'text-sky-400' },
-                    { value: '24/7', label: 'Acceso desde cualquier lugar', color: 'from-violet-500/20 to-violet-600/10', border: 'border-violet-500/20', textColor: 'text-violet-400' },
-                    { value: '0 RD$', label: 'Sin cuotas mensuales', color: 'from-amber-500/20 to-amber-600/10', border: 'border-amber-500/20', textColor: 'text-amber-400' },
-                  ].map((stat, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: idx * 0.1 }}
-                      className={`bg-gradient-to-br ${stat.color} border ${stat.border} rounded-2xl p-6 sm:p-7 text-center hover:scale-105 transition-transform duration-300`}
-                    >
-                      <div className={`text-3xl sm:text-4xl font-extrabold font-heading ${stat.textColor} mb-1.5`}>{stat.value}</div>
-                      <div className="text-xs sm:text-sm text-slate-400 font-medium">{stat.label}</div>
-                    </motion.div>
-                  ))}
-                </div>
+                {/* Right Column - Image Banner */}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="flex justify-center lg:justify-end w-full"
+                >
+                  <img 
+                    src="https://res.cloudinary.com/dap38hi9l/image/upload/v1782018933/banner4x4_wntjic.png" 
+                    alt="Beneficios para emprendedores: 100% Gratis, Registro en 2 mins, Acceso 24/7 y cero cuotas" 
+                    className="w-full max-w-md lg:max-w-full h-auto object-contain"
+                  />
+                </motion.div>
               </div>
             </div>
           </motion.section>
