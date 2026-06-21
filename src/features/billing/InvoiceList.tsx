@@ -51,7 +51,7 @@ export default function InvoiceList({
   onEditDocument,
 }: InvoiceListProps) {
   const [docFilter, setDocFilter] = useState<'Todas' | 'Factura' | 'Cotizacion'>('Todas');
-  const [statusFilter, setStatusFilter] = useState<'Todas' | 'Pagada' | 'Pendiente' | 'Anulada'>('Todas');
+  const [statusFilter, setStatusFilter] = useState<'Todas' | 'Pagada' | 'Pendiente' | 'Anulada' | 'Parcial'>('Todas');
   const [listSearch, setListSearch] = useState('');
   const [mobileViewMode, setMobileViewMode] = useState<'list' | 'grid'>('list');
 
@@ -265,6 +265,7 @@ export default function InvoiceList({
               <SelectItem value="Todas">Todos los Estados</SelectItem>
               <SelectItem value="Pagada">Pagadas</SelectItem>
               <SelectItem value="Pendiente">Pendientes</SelectItem>
+              <SelectItem value="Parcial">Parciales</SelectItem>
               <SelectItem value="Anulada">Anuladas</SelectItem>
             </SelectContent>
           </Select>

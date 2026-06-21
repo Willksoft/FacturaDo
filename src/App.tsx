@@ -61,6 +61,7 @@ const ReportClientsView = React.lazy(() => Specialized.then(m => ({ default: m.R
 const ReportExcelView = React.lazy(() => Specialized.then(m => ({ default: m.ReportExcelView })));
 const ConfigUsuariosView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigUsuariosView })));
 const ConfigRolesView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigRolesView })));
+const BankReconciliationView = React.lazy(() => import('./features/accounting/BankReconciliationView').then(m => ({ default: m.BankReconciliationView })));
 
 const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout'));
 
@@ -162,7 +163,9 @@ type TabType =
   | 'cfg-audit'
   | 'cfg-seguridad'
   | 'cfg-soporte'
-  | 'estado-negocio';
+  | 'estado-negocio'
+  | 'conciliacion'
+  | 'user-manual';
 
 const sidebarCategories = [
   {
@@ -212,6 +215,7 @@ const sidebarCategories = [
       { id: 'caja', name: 'Caja', icon: Landmark },
       { id: 'turnos', name: 'Turnos', icon: Landmark },
       { id: 'bancos', name: 'Bancos', icon: Landmark },
+      { id: 'conciliacion', name: 'Conciliación Bancaria', icon: FileSpreadsheet },
       { id: 'cobrar', name: 'Cuentas por cobrar', icon: ReceiptIcon },
       { id: 'pagar', name: 'Cuentas por pagar', icon: Landmark },
     ]

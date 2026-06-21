@@ -2423,7 +2423,11 @@ export function useInvoiceState() {
 
     const previousPaid = receipts.filter(r => r.invoiceId === invoiceId).reduce((sum, r) => sum + r.amountPaid + (r.retainedItbis || 0) + (r.retainedIsr || 0), 0);
     const newTotalPaid = previousPaid + amount + (retainedItbis || 0) + (retainedIsr || 0);
-    const newStatus = newTotalPaid >= (invoice.total - 0.1) ? 'Pagada' : 'Pendiente';
+    const newStatus = newTotalPaid >= (invoice.total - 0.1) 
+      ? 'Pagada' 
+      : newTotalPaid > 0 
+        ? 'Parcial' 
+        : 'Pendiente';
 
     updateInvoice(invoiceId, { status: newStatus });
 

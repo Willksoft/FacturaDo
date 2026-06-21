@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useMemo } from 'react';
 import { Product, Client, Seller, Shift, Receipt, PaymentMethod, FinancialAccount } from '../../../types';
 import { getDgiiAutocomplete, validateDgiiRnc } from '../../../lib/dgiiApi';

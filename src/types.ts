@@ -1,6 +1,6 @@
 export type ClientType = 'Fisica' | 'Empresa';
 export type InvoiceType = 'Factura' | 'Cotizacion';
-export type InvoiceStatus = 'Pagada' | 'Pendiente' | 'Anulada';
+export type InvoiceStatus = 'Pagada' | 'Pendiente' | 'Anulada' | 'Parcial';
 export type PaymentMethod = 'Efectivo' | 'Transferencia' | 'Tarjeta' | 'Crédito';
 export type NcfType = 'B01' | 'B02' | 'B14' | 'B15' | 'SIN' | 'E31' | 'E32' | 'E33' | 'E34' | 'E44' | 'E45'; // B*: Clásicos, E*: Electrónicos
 
@@ -65,9 +65,13 @@ export interface Product {
 }
 
 export interface PaymentDetail {
+  id?: string;
   method: PaymentMethod;
   amount: number;
   accountId?: string;
+  date?: string;
+  notes?: string;
+  receiptId?: string;
 }
 
 export interface InvoiceItem {
@@ -223,6 +227,19 @@ export interface BankAccountItem {
   type: string;
   holder: string;
   currency: string;
+}
+
+export interface BankTransaction {
+  id: string;
+  accountId: string;
+  date: string;
+  description: string;
+  amount: number;
+  reference?: string;
+  isReconciled: boolean;
+  matchedEntityType?: 'receipt' | 'expense' | null;
+  matchedEntityId?: string | null;
+  createdAt: string;
 }
 
 export interface TemplateSettings {
