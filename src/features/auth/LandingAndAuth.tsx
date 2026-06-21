@@ -806,8 +806,18 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             </AnimatePresence>
           </header>
 
+          {/* Promotional Banner */}
+          <div className="w-full bg-slate-50 pt-24 pb-4 px-4 sm:px-6 lg:px-8 flex justify-center border-b border-slate-100/50">
+            <img 
+              src="https://res.cloudinary.com/dap38hi9l/image/upload/v1782018265/banner_2_znlyym.png" 
+              alt="Promoción Especial FacturaDo - Tu software contable en República Dominicana con NCF" 
+              title="Promoción Exclusiva FacturaDo"
+              className="w-full max-w-7xl h-auto object-contain rounded-2xl shadow-sm border border-slate-200/50"
+            />
+          </div>
+
           {/* Hero Section */}
-          <section className="relative overflow-visible bg-gradient-to-b from-slate-50 via-white to-white pt-16 border-b border-slate-100">
+          <section className="relative overflow-visible bg-gradient-to-b from-white via-white to-white pt-10 border-b border-slate-100">
             {/* Background decorative elements */}
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-100/40 rounded-full blur-3xl -z-10" />
             <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-50/50 rounded-full blur-3xl -z-10" />
