@@ -2039,10 +2039,54 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               {authStage === 'methods' && !registerSuccess && (
                 <div className="space-y-4 animate-fade-in text-sm font-sans">
                   
+                  {view === 'register' && (
+                    <div className="flex items-start gap-2.5 font-sans text-xs text-neutral-600 py-2 select-none bg-neutral-50 p-3 rounded-xl border border-neutral-100 mb-4">
+                      <input
+                        type="checkbox"
+                        id="agree-checkbox-methods"
+                        checked={registerForm.agree}
+                        onChange={(e) => {
+                          setRegisterForm({ ...registerForm, agree: e.target.checked });
+                          setLoginError('');
+                        }}
+                        className="w-5 h-5 accent-[#1A2732] shrink-0 mt-0.5 cursor-pointer"
+                      />
+                      <label htmlFor="agree-checkbox-methods" className="cursor-pointer leading-relaxed">
+                        Acepto los{' '}
+                        <span
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setShowTermsModal(true);
+                          }}
+                          className="text-[#1A2732] font-semibold hover:underline cursor-pointer"
+                        >
+                          términos y condiciones
+                        </span>{' '}
+                        y las{' '}
+                        <span
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setShowPrivacyModal(true);
+                          }}
+                          className="text-[#1A2732] font-semibold hover:underline cursor-pointer"
+                        >
+                          políticas de privacidad
+                        </span>{' '}
+                        de FacturaDo.
+                      </label>
+                    </div>
+                  )}
+
                   {/* Google Login Button */}
                   <button
                     type="button"
                     onClick={async () => {
+                      if (view === 'register' && !registerForm.agree) {
+                        setLoginError('Debes aceptar los Términos y Condiciones para registrarte.');
+                        return;
+                      }
                       setIsSubmitting(true);
                       setLoginError('');
                       try {
@@ -2073,6 +2117,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <button
                     type="button"
                     onClick={async () => {
+                      if (view === 'register' && !registerForm.agree) {
+                        setLoginError('Debes aceptar los Términos y Condiciones para registrarte.');
+                        return;
+                      }
                       setIsSubmitting(true);
                       setLoginError('');
                       try {
@@ -2100,8 +2148,13 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <button
                     type="button"
                     onClick={() => {
+                      if (view === 'register' && !registerForm.agree) {
+                        setLoginError('Debes aceptar los Términos y Condiciones para registrarte.');
+                        return;
+                      }
                       setAuthStage('email_credentials');
                       setIsEmailRegisterMode(view === 'register');
+                      setLoginError('');
                     }}
                     className="w-full h-12 bg-white hover:bg-neutral-55 border border-neutral-250 text-[#1A2732] font-bold rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
                   >
@@ -2285,56 +2338,22 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     </div>
 
                     {isEmailRegisterMode && (
-                      <>
-                        <div className="space-y-1">
-                          <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Confirmar Clave de Acceso *</label>
-                          <div className="relative">
-                            <input
-                              type={showConfirmPassword ? "text" : "password"}
-                              placeholder="••••••••"
-                              value={confirmPassword}
-                              onChange={(e) => setConfirmPassword(e.target.value)}
-                              className="w-full h-12 pl-3.5 pr-10 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
-                              required
-                            />
-                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-neutral-600 cursor-pointer">
-                              {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-2.5 font-sans text-xs text-neutral-600 py-1 mt-2 select-none">
+                      <div className="space-y-1">
+                        <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Confirmar Clave de Acceso *</label>
+                        <div className="relative">
                           <input
-                            type="checkbox"
-                            id="agree-checkbox-email"
-                            checked={registerForm.agree}
-                            onChange={(e) => setRegisterForm({ ...registerForm, agree: e.target.checked })}
-                            className="w-5 h-5 accent-[#1A2732] shrink-0 mt-0.5"
+                            type={showConfirmPassword ? "text" : "password"}
+                            placeholder="••••••••"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full h-12 pl-3.5 pr-10 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
+                            required
                           />
-                          <label htmlFor="agree-checkbox-email" className="cursor-pointer leading-relaxed">
-                            Acepto los{' '}
-                            <span
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setShowTermsModal(true);
-                              }}
-                              className="text-[#1A2732] font-semibold hover:underline cursor-pointer"
-                            >
-                              términos y condiciones
-                            </span>{' '}
-                            y las{' '}
-                            <span
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setShowPrivacyModal(true);
-                              }}
-                              className="text-[#1A2732] font-semibold hover:underline cursor-pointer"
-                            >
-                              políticas de privacidad
-                            </span>
-                          </label>
+                          <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-neutral-600 cursor-pointer">
+                            {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                          </button>
                         </div>
-                      </>
+                      </div>
                     )}
 
                     <button
