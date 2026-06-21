@@ -1272,7 +1272,7 @@ export default function InvoiceCreator({
                               <SelectItem value="B14" className="text-xs">Regímenes Especiales (B14)</SelectItem>
                               <SelectItem value="B15" className="text-xs">Gubernamental (B15)</SelectItem>
                               <SelectItem value="B01" className="text-xs">Crédito Fiscal (B01)</SelectItem>
-                              <SelectItem value="SIN" className="text-xs">Gastos Menores / Sin NCF (SIN)</SelectItem>
+                              <SelectItem value="SIN" className="text-xs">Factura sin Comprobante Fiscal (SIN)</SelectItem>
                             </>
                           ) : (
                             <>

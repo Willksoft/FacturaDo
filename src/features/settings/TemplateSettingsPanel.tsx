@@ -35,6 +35,7 @@ export default function TemplateSettingsPanel({
   const [ncfB02, setNcfB02] = useState(ncfSequences?.find(s => s.type === 'B02')?.currentNumber || 1);
   const [ncfB14, setNcfB14] = useState(ncfSequences?.find(s => s.type === 'B14')?.currentNumber || 1);
   const [ncfB15, setNcfB15] = useState(ncfSequences?.find(s => s.type === 'B15')?.currentNumber || 1);
+  const [ncfSin, setNcfSin] = useState(ncfSequences?.find(s => s.type === 'SIN')?.currentNumber || 1);
 
   const handleNcfSubmit = () => {
     if (updateNcfSequences) {
@@ -43,6 +44,7 @@ export default function TemplateSettingsPanel({
         { type: 'B02', currentNumber: ncfB02, name: 'Consumo / Consumidor Final', prefix: 'B02', suffixLength: 8 },
         { type: 'B14', currentNumber: ncfB14, name: 'Regímenes Especiales', prefix: 'B14', suffixLength: 8 },
         { type: 'B15', currentNumber: ncfB15, name: 'Gubernamental', prefix: 'B15', suffixLength: 8 },
+        { type: 'SIN', currentNumber: ncfSin, name: 'Sin Comprobante', prefix: 'FAT-', suffixLength: 5 },
       ]);
       setLocalFeedback('¡Secuencias de NCF actualizadas!');
       setTimeout(() => setLocalFeedback(null), 4000);
@@ -148,6 +150,7 @@ export default function TemplateSettingsPanel({
       bankAccountName: bankAccounts[0]?.holder || businessName,
       bankAccountCurrency: showBankAccountsOnQuote ? 'true' : (bankAccounts[0]?.currency || 'false'),
       templateStyle,
+      informalMode,
     };
     saveTemplateSettings(updated);
     setLocalFeedback('¡Perfiles de facturación, cuentas bancarias, estilos y plantillas almacenados de forma segura!');
@@ -186,8 +189,19 @@ export default function TemplateSettingsPanel({
                   <Input id="biz-name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Ej. Mi Empresa S.R.L." className="text-xs h-10" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="biz-rnc" className="text-xs font-semibold">RNC o Cédula Comercial</Label>
-                  <Input id="biz-rnc" value={businessRNC} onChange={(e) => setBusinessRNC(e.target.value)} placeholder="Ej. 130123456" className="text-xs h-10 font-mono" />
+                  <div className="flex justify-between items-center">
+                    <Label htmlFor="biz-rnc" className="text-xs font-semibold">RNC o Cédula Comercial</Label>
+                    <label className="flex items-center gap-1.5 cursor-pointer text-[10px] font-semibold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 px-2 py-1 rounded transition-colors">
+                      <input 
+                        type="checkbox" 
+                        checked={informalMode} 
+                        onChange={(e) => setInformalMode(e.target.checked)}
+                        className="w-3 h-3 accent-indigo-600"
+                      />
+                      No tengo RNC
+                    </label>
+                  </div>
+                  <Input id="biz-rnc" value={businessRNC} onChange={(e) => setBusinessRNC(e.target.value)} disabled={informalMode} placeholder={informalMode ? "Opcional (Modo informal)" : "Ej. 130123456"} className={`text-xs h-10 font-mono ${informalMode ? 'bg-neutral-50 text-neutral-400' : ''}`} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="biz-phone" className="text-xs font-semibold">Teléfono(s) de Contacto</Label>
@@ -237,7 +251,11 @@ export default function TemplateSettingsPanel({
               </div>
               <div className="space-y-2 bg-neutral-50 p-4 rounded-lg border border-neutral-150">
                 <Label className="text-xs font-semibold">Gubernamental (B15)</Label>
-                <Input type="number" min="1" value={ncfB15} onChange={(e) => setNcfB15(Number(e.target.value) || 1)} className="text-xs h-9 font-mono bg-white" />
+                <Input type="number" min="1" value={ncfB15} onChange={(e) => setNcfB15(Number(e.target.value) || 1)} disabled={informalMode} className="text-xs h-9 font-mono bg-white disabled:opacity-50" />
+              </div>
+              <div className="space-y-2 bg-sky-50 p-4 rounded-lg border border-sky-100">
+                <Label className="text-xs font-semibold text-sky-800">Factura Simple (SIN)</Label>
+                <Input type="number" min="1" value={ncfSin} onChange={(e) => setNcfSin(Number(e.target.value) || 1)} className="text-xs h-9 font-mono bg-white border-sky-200" />
               </div>
             </div>
             <div className="mt-6 flex justify-end">

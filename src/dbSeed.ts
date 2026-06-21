@@ -5,7 +5,7 @@ export const initialNcfSequences: NcfSequence[] = [
   { type: 'B02', name: 'Factura de Consumo', prefix: 'B02', currentNumber: 42, suffixLength: 8, startNumber: 1, endNumber: 200 },
   { type: 'B14', name: 'Regímenes Especiales', prefix: 'B14', currentNumber: 3, suffixLength: 8, startNumber: 1, endNumber: 50 },
   { type: 'B15', name: 'Comprobante Gubernamental', prefix: 'B15', currentNumber: 7, suffixLength: 8, startNumber: 1, endNumber: 50 },
-  { type: 'SIN', name: 'Sin Comprobante Fiscal', prefix: 'SIN', currentNumber: 104, suffixLength: 8, startNumber: 1, endNumber: 9999 },
+  { type: 'SIN', name: 'Sin Comprobante Fiscal', prefix: 'FAT-', currentNumber: 1, suffixLength: 5, startNumber: 1, endNumber: 99999 },
 ];
 
 export const initialClients: Client[] = [

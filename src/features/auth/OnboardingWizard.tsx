@@ -20,25 +20,35 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
   const [businessAddress, setBusinessAddress] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
   const [isDragging, setIsDragging] = useState(false);
+  const [hasNoRnc, setHasNoRnc] = useState(false);
 
   // Step 2: NCF Preferences
   const [ncfCCF, setNcfCCF] = useState(true); // B01
   const [ncfConsumo, setNcfConsumo] = useState(true); // B02
   const [ncfRegEsp, setNcfRegEsp] = useState(false); // B14
   const [ncfGov, setNcfGov] = useState(false); // B15
+  const [ncfSin, setNcfSin] = useState(false); // SIN
 
   const handleNextStep = () => {
     setFormError('');
     if (step === 1) {
-      if (!businessName || !businessRNC) {
-        setFormError('Por favor introduce la Razón Social y el RNC del Comercio.');
+      if (!businessName) {
+        setFormError('Por favor introduce el Nombre del Comercio o Razón Social.');
         return;
       }
-      const cleanRNC = businessRNC.replace(/[^0-9]/g, '');
-      if (cleanRNC.length !== 9 && cleanRNC.length !== 11) {
-        setFormError('El RNC dominicano debe contener exactamente 9 u 11 dígitos.');
-        return;
+      
+      if (!hasNoRnc) {
+        if (!businessRNC) {
+          setFormError('Por favor introduce el RNC del Comercio. Si no tienes RNC, marca la casilla correspondiente.');
+          return;
+        }
+        const cleanRNC = businessRNC.replace(/[^0-9]/g, '');
+        if (cleanRNC.length !== 9 && cleanRNC.length !== 11) {
+          setFormError('El RNC dominicano debe contener exactamente 9 u 11 dígitos.');
+          return;
+        }
       }
+      
       if (businessPhone) {
         const cleanPhone = businessPhone.replace(/[^0-9]/g, '');
         if (cleanPhone.length !== 10) {
@@ -59,6 +69,16 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
         }
       }
     }
+    
+    // Al pasar al paso 2, si no tiene RNC, sugerimos Sin Comprobante por defecto
+    if (step === 1 && hasNoRnc) {
+      setNcfSin(true);
+      setNcfCCF(false);
+      setNcfConsumo(false);
+      setNcfRegEsp(false);
+      setNcfGov(false);
+    }
+    
     setStep(2);
   };
 
@@ -124,16 +144,17 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
       const finalSettingsDb = {
         id: currentUserId,
         business_name: businessName,
-        business_rnc: businessRNC.replace(/[^0-9]/g, ''),
+        business_rnc: hasNoRnc ? '' : businessRNC.replace(/[^0-9]/g, ''),
         business_phone: businessPhone || '809-555-0100',
         business_email: businessEmail || 'info@comercio.com',
         business_address: businessAddress || 'Santo Domingo, República Dominicana',
         logo_url: logoUrl || null,
         primary_color: '#1A2732',
         accent_color: '#4f46e5',
-        footer_note: 'Términos de Facturación: Comprobante de Crédito Fiscal autorizado por la DGII. Gracias por su pago.',
+        footer_note: hasNoRnc ? 'Gracias por preferirnos. Documento sin validez fiscal.' : 'Términos de Facturación: Comprobante de Crédito Fiscal autorizado por la DGII. Gracias por su pago.',
         page_size: 'Letter',
-        bank_account_currency: 'false'
+        bank_account_currency: 'false',
+        informal_mode: hasNoRnc
       };
 
       // Save to template_settings database
@@ -148,17 +169,18 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
 
       await onComplete({
         businessName: businessName,
-        businessRNC: businessRNC.replace(/[^0-9]/g, ''),
+        businessRNC: hasNoRnc ? '' : businessRNC.replace(/[^0-9]/g, ''),
         businessPhone: businessPhone || '809-555-0100',
         businessEmail: businessEmail || 'info@comercio.com',
         businessAddress: businessAddress || 'Santo Domingo, República Dominicana',
         logoUrl: logoUrl || '',
         primaryColor: '#1A2732',
         accentColor: '#4f46e5',
-        footerNote: 'Términos de Facturación: Comprobante de Crédito Fiscal autorizado por la DGII. Gracias por su pago.',
+        footerNote: hasNoRnc ? 'Gracias por preferirnos. Documento sin validez fiscal.' : 'Términos de Facturación: Comprobante de Crédito Fiscal autorizado por la DGII. Gracias por su pago.',
         pageSize: 'Letter',
         showBankAccountsOnQuote: false,
-        bankAccounts: []
+        bankAccounts: [],
+        informalMode: hasNoRnc
       });
     } catch (err: any) {
       console.error(err);
@@ -219,17 +241,30 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider">Registro Nacional de Contribuyente (RNC) *</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Ej. 131-00000-1"
-                      value={businessRNC}
-                      onChange={(e) => setBusinessRNC(e.target.value)}
-                      className="w-full h-11 px-3.5 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
-                    />
-                    <Lock className="absolute right-3.5 top-3.5 w-4 h-4 text-neutral-400" />
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider">Registro Nacional de Contribuyente (RNC) {hasNoRnc ? '' : '*'}</label>
+                    <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 px-3 py-1.5 rounded-lg transition-colors">
+                      <input 
+                        type="checkbox" 
+                        checked={hasNoRnc} 
+                        onChange={(e) => setHasNoRnc(e.target.checked)}
+                        className="w-3.5 h-3.5 accent-[#1A2732]"
+                      />
+                      No tengo RNC
+                    </label>
                   </div>
+                  {!hasNoRnc && (
+                    <div className="relative mt-2 animate-in fade-in zoom-in duration-200">
+                      <input
+                        type="text"
+                        placeholder="Ej. 131-00000-1"
+                        value={businessRNC}
+                        onChange={(e) => setBusinessRNC(e.target.value)}
+                        className="w-full h-11 px-3.5 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
+                      />
+                      <Lock className="absolute right-3.5 top-3.5 w-4 h-4 text-neutral-400" />
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -336,48 +371,63 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
 
               <div className="space-y-3 pt-1">
                 <div 
-                  onClick={() => setNcfCCF(!ncfCCF)}
-                  className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfCCF ? 'bg-neutral-50 border-neutral-900 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
+                  onClick={() => setNcfSin(!ncfSin)}
+                  className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfSin ? 'bg-sky-50 border-sky-600 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
                 >
-                  <input type="checkbox" checked={ncfCCF} readOnly className="mt-1 w-4 h-4 accent-[#1A2732]" />
+                  <input type="checkbox" checked={ncfSin} readOnly className="mt-1 w-4 h-4 accent-sky-600" />
                   <div>
-                    <span className="font-bold text-neutral-900 block text-sm">B01 - Comprobante de Crédito Fiscal</span>
-                    <span className="text-xs text-neutral-500 block leading-normal">Para sustentar gastos de ITBIS e ISR requeridos por clientes jurídicos nacionales (empresas).</span>
+                    <span className="font-bold text-neutral-900 block text-sm">Facturas Sin Comprobante (Proformas)</span>
+                    <span className="text-xs text-neutral-500 block leading-normal">Para control interno o usuarios que operan sin registro de RNC comercial.</span>
                   </div>
                 </div>
 
-                <div 
-                  onClick={() => setNcfConsumo(!ncfConsumo)}
-                  className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfConsumo ? 'bg-neutral-50 border-neutral-900 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
-                >
-                  <input type="checkbox" checked={ncfConsumo} readOnly className="mt-1 w-4 h-4 accent-[#1A2732]" />
-                  <div>
-                    <span className="font-bold text-neutral-900 block text-sm">B02 - Comprobante de Consumo</span>
-                    <span className="text-xs text-neutral-500 block leading-normal">Para operaciones de ventas a consumidores finales sin necesidad de sustentar ITBIS/gastos corporativos.</span>
-                  </div>
-                </div>
+                {!hasNoRnc && (
+                  <>
+                    <div 
+                      onClick={() => setNcfCCF(!ncfCCF)}
+                      className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfCCF ? 'bg-neutral-50 border-neutral-900 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
+                    >
+                      <input type="checkbox" checked={ncfCCF} readOnly className="mt-1 w-4 h-4 accent-[#1A2732]" />
+                      <div>
+                        <span className="font-bold text-neutral-900 block text-sm">B01 - Comprobante de Crédito Fiscal</span>
+                        <span className="text-xs text-neutral-500 block leading-normal">Para sustentar gastos de ITBIS e ISR requeridos por clientes jurídicos nacionales (empresas).</span>
+                      </div>
+                    </div>
 
-                <div 
-                  onClick={() => setNcfRegEsp(!ncfRegEsp)}
-                  className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfRegEsp ? 'bg-neutral-50 border-neutral-900 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
-                >
-                  <input type="checkbox" checked={ncfRegEsp} readOnly className="mt-1 w-4 h-4 accent-[#1A2732]" />
-                  <div>
-                    <span className="font-bold text-neutral-900 block text-sm">B14 - Regímenes Especiales de Tributación</span>
-                    <span className="text-xs text-neutral-500 block leading-normal">Obligatorio para facturar a empresas acogidas a incentivos por ley especial (Zona Franca, PROINDUSTRIA, etc.).</span>
-                  </div>
-                </div>
+                    <div 
+                      onClick={() => setNcfConsumo(!ncfConsumo)}
+                      className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfConsumo ? 'bg-neutral-50 border-neutral-900 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
+                    >
+                      <input type="checkbox" checked={ncfConsumo} readOnly className="mt-1 w-4 h-4 accent-[#1A2732]" />
+                      <div>
+                        <span className="font-bold text-neutral-900 block text-sm">B02 - Comprobante de Consumo</span>
+                        <span className="text-xs text-neutral-500 block leading-normal">Para operaciones de ventas a consumidores finales sin necesidad de sustentar ITBIS/gastos corporativos.</span>
+                      </div>
+                    </div>
 
-                <div 
-                  onClick={() => setNcfGov(!ncfGov)}
-                  className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfGov ? 'bg-neutral-50 border-neutral-900 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
-                >
-                  <input type="checkbox" checked={ncfGov} readOnly className="mt-1 w-4 h-4 accent-[#1A2732]" />
-                  <div>
-                    <span className="font-bold text-neutral-900 block text-sm">B15 - Comprobantes Gubernamentales</span>
-                    <span className="text-xs text-neutral-500 block leading-normal">Requeridos obligatoriamente para facturar a cualquier institución pública del Estado Dominicano.</span>
-                  </div>
-                </div>
+                    <div 
+                      onClick={() => setNcfRegEsp(!ncfRegEsp)}
+                      className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfRegEsp ? 'bg-neutral-50 border-neutral-900 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
+                    >
+                      <input type="checkbox" checked={ncfRegEsp} readOnly className="mt-1 w-4 h-4 accent-[#1A2732]" />
+                      <div>
+                        <span className="font-bold text-neutral-900 block text-sm">B14 - Regímenes Especiales de Tributación</span>
+                        <span className="text-xs text-neutral-500 block leading-normal">Obligatorio para facturar a empresas acogidas a incentivos por ley especial (Zona Franca, PROINDUSTRIA, etc.).</span>
+                      </div>
+                    </div>
+
+                    <div 
+                      onClick={() => setNcfGov(!ncfGov)}
+                      className={`p-4 border rounded-2xl flex items-start gap-3 cursor-pointer transition-all ${ncfGov ? 'bg-neutral-50 border-neutral-900 border-2 shadow-xs' : 'border-neutral-200 hover:bg-neutral-50'}`}
+                    >
+                      <input type="checkbox" checked={ncfGov} readOnly className="mt-1 w-4 h-4 accent-[#1A2732]" />
+                      <div>
+                        <span className="font-bold text-neutral-900 block text-sm">B15 - Comprobantes Gubernamentales</span>
+                        <span className="text-xs text-neutral-500 block leading-normal">Requeridos obligatoriamente para facturar a cualquier institución pública del Estado Dominicano.</span>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           )}
