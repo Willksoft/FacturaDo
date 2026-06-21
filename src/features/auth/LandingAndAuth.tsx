@@ -808,12 +808,18 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
           {/* Promotional Banner */}
           <div className="w-full bg-slate-50 pt-24 pb-4 px-4 sm:px-6 lg:px-8 flex justify-center border-b border-slate-100/50">
-            <img 
-              src="https://res.cloudinary.com/dap38hi9l/image/upload/v1782018265/banner_2_znlyym.png" 
-              alt="Promoción Especial FacturaDo - Tu software contable en República Dominicana con NCF" 
-              title="Promoción Exclusiva FacturaDo"
-              className="w-full max-w-7xl h-auto object-contain rounded-2xl shadow-sm border border-slate-200/50"
-            />
+            <button 
+              onClick={() => setView('register')} 
+              className="cursor-pointer outline-none border-none bg-transparent p-0 block w-full max-w-7xl hover:opacity-95 transition-opacity"
+              type="button"
+            >
+              <img 
+                src="https://res.cloudinary.com/dap38hi9l/image/upload/v1782018265/banner_2_znlyym.png" 
+                alt="Promoción Especial FacturaDo - Tu software contable en República Dominicana con NCF" 
+                title="Promoción Exclusiva FacturaDo"
+                className="w-full h-auto object-contain rounded-2xl shadow-sm border border-slate-200/50"
+              />
+            </button>
           </div>
 
           {/* Hero Section */}
@@ -860,27 +866,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </div>
 
 
-                  <div className="flex flex-col sm:flex-row flex-wrap gap-4 pt-4 w-full justify-center z-10 mt-6">
-                    <button
-                      onClick={() => setView('register')}
-                      className="px-8 py-4 bg-slate-900 hover:bg-black text-white rounded-2xl font-bold text-base transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer h-14 hover:-translate-y-0.5 duration-150 w-full sm:w-auto"
-                    >
-                      Probar Sistema Gratis <ArrowRight className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => setView('login')}
-                      className="px-8 py-4 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-1.5 cursor-pointer h-14 w-full sm:w-auto"
-                    >
-                      Iniciar Sesión
-                    </button>
-                    <button 
-                      onClick={handleInstallClick}
-                      className="px-8 py-4 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold text-base rounded-2xl transition-colors shadow-sm w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer h-14 hover:-translate-y-0.5 duration-150"
-                    >
-                      <MonitorSmartphone className="w-5 h-5" />
-                      Instalar App (Móvil/Web)
-                    </button>
-                  </div>
+                  {/* Eliminated Hero Buttons to avoid duplication with Header */}
                   
                   <LiveCounter />
 
