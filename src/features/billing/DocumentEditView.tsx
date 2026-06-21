@@ -242,13 +242,12 @@ export default function DocumentEditView({
                   <Label htmlFor="edit-client" className="text-xs font-semibold text-neutral-700">Cliente Asociado</Label>
                   <Select value={selectedClientId} onValueChange={(val) => setSelectedClientId(val)}>
                     <SelectTrigger id="edit-client" className="w-full h-9 bg-white border border-neutral-250 rounded-lg text-xs font-semibold text-neutral-900 focus:ring-1 focus:ring-neutral-950 shadow-xs">
-                      {selectedClientId ? (
-                        <span className="flex flex-1 text-left line-clamp-1">
-                          {clients.find(c => c.id === selectedClientId)?.name || selectedClientId}
-                        </span>
-                      ) : (
-                        <SelectValue placeholder="Seleccione un cliente" />
-                      )}
+                      <SelectValue placeholder="Seleccione un cliente">
+                        {(val: string | null) => {
+                          if (!val) return "Seleccione un cliente";
+                          return clients.find(c => c.id === val)?.name || val;
+                        }}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent className="text-xs">
                       <SelectItem value="cli-consumo" className="text-xs hidden" disabled>Seleccione un cliente...</SelectItem>

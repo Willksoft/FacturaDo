@@ -91,13 +91,12 @@ export default function POSView({
                 <Label className="text-neutral-800 font-bold block">Caja a Operar *</Label>
                 <Select value={selectedCajaId} onValueChange={setSelectedCajaId}>
                   <SelectTrigger className="w-full h-10 bg-white border border-neutral-250 font-bold text-neutral-850 focus:ring-1 focus:ring-black">
-                    {selectedCajaId ? (
-                      <span className="flex flex-1 text-left line-clamp-1">
-                        {cajas.find(c => c.id === selectedCajaId)?.name || selectedCajaId}
-                      </span>
-                    ) : (
-                      <SelectValue placeholder="Seleccionar Caja Física..." />
-                    )}
+                    <SelectValue placeholder="Seleccionar Caja Física...">
+                      {(val: string | null) => {
+                        if (!val) return "Seleccionar Caja Física...";
+                        return cajas.find(c => c.id === val)?.name || val;
+                      }}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="font-sans text-xs bg-white">
                     {cajas.map(c => (
@@ -111,13 +110,12 @@ export default function POSView({
                 <Label className="text-neutral-800 font-bold block">Vendedor Asignado *</Label>
                 <Select value={selectedShiftSellerId} onValueChange={setSelectedShiftSellerId}>
                   <SelectTrigger className="w-full h-10 bg-white border border-neutral-250 font-bold text-neutral-850 focus:ring-1 focus:ring-black">
-                    {selectedShiftSellerId ? (
-                      <span className="flex flex-1 text-left line-clamp-1">
-                        {selectedShiftSellerName || selectedShiftSellerId}
-                      </span>
-                    ) : (
-                      <SelectValue placeholder="Seleccionar Vendedor..." />
-                    )}
+                    <SelectValue placeholder="Seleccionar Vendedor...">
+                      {(val: string | null) => {
+                        if (!val) return "Seleccionar Vendedor...";
+                        return selectedShiftSellerName || val;
+                      }}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="font-sans text-xs bg-white">
                     {displaySellers.map(seller => (
@@ -764,15 +762,13 @@ export default function POSView({
                   </Label>
                   <Select value={selectedSellerId} onValueChange={setSelectedSellerId}>
                     <SelectTrigger className="w-full h-10 bg-white border-neutral-300 font-bold text-neutral-800 text-xs shadow-sm">
-                      {selectedSellerId && selectedSellerId !== 'none' ? (
-                        <span className="flex flex-1 text-left line-clamp-1">
-                          {sellers.find(s => s.id === selectedSellerId)?.name || selectedSellerId}
-                        </span>
-                      ) : selectedSellerId === 'none' || !selectedSellerId ? (
-                        <span className="flex flex-1 text-left line-clamp-1 italic text-neutral-500">-- Sin vendedor --</span>
-                      ) : (
-                        <SelectValue placeholder="-- Sin vendedor --" />
-                      )}
+                      <SelectValue placeholder="-- Sin vendedor --">
+                        {(val: string | null) => {
+                          if (!val) return "-- Sin vendedor --";
+                          if (val === 'none') return <span className="italic text-neutral-500">-- Sin vendedor --</span>;
+                          return sellers.find(s => s.id === val)?.name || val;
+                        }}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none" className="text-xs italic text-neutral-500">-- Sin vendedor --</SelectItem>
@@ -958,13 +954,13 @@ export default function POSView({
                         onValueChange={(val) => setSelectedClientId(val)}
                       >
                         <SelectTrigger className="w-full h-10 bg-white border border-neutral-305 rounded-lg text-xs font-extrabold text-neutral-900 focus:ring-2 focus:ring-neutral-950 transition-all shadow-sm">
-                          {selectedClientId ? (
-                            <span className="flex flex-1 text-left line-clamp-1">
-                              {selectedClientId === 'cli-consumo' ? 'Cliente de Consumo (Público General)' : (clients.find(c => c.id === selectedClientId)?.name || selectedClientId)}
-                            </span>
-                          ) : (
-                            <SelectValue placeholder="Seleccionar Cliente" />
-                          )}
+                          <SelectValue placeholder="Seleccionar Cliente">
+                            {(val: string | null) => {
+                              if (!val) return "Seleccionar Cliente";
+                              if (val === 'cli-consumo') return 'Cliente de Consumo (Público General)';
+                              return clients.find(c => c.id === val)?.name || val;
+                            }}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent className="font-sans text-xs">
                           {clients.map(c => (

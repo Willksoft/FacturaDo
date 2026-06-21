@@ -203,13 +203,12 @@ export default function ShiftsView({
                   <Label>Caja a Operar *</Label>
                   <Select value={selectedCajaId} onValueChange={setSelectedCajaId}>
                     <SelectTrigger>
-                      {selectedCajaId ? (
-                        <span className="flex flex-1 text-left line-clamp-1">
-                          {cajas.find(c => c.id === selectedCajaId)?.name || selectedCajaId}
-                        </span>
-                      ) : (
-                        <SelectValue placeholder="Seleccionar Caja Física" />
-                      )}
+                      <SelectValue placeholder="Seleccionar Caja Física">
+                        {(val: string | null) => {
+                          if (!val) return "Seleccionar Caja Física";
+                          return cajas.find(c => c.id === val)?.name || val;
+                        }}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {cajas.map(c => (
@@ -222,13 +221,12 @@ export default function ShiftsView({
                   <Label>Vendedor Asignado *</Label>
                   <Select value={selectedShiftSellerId} onValueChange={setSelectedShiftSellerId}>
                     <SelectTrigger>
-                      {selectedShiftSellerId ? (
-                        <span className="flex flex-1 text-left line-clamp-1">
-                          {selectedSellerName || selectedShiftSellerId}
-                        </span>
-                      ) : (
-                        <SelectValue placeholder="Seleccionar Vendedor" />
-                      )}
+                      <SelectValue placeholder="Seleccionar Vendedor">
+                        {(val: string | null) => {
+                          if (!val) return "Seleccionar Vendedor";
+                          return selectedSellerName || val;
+                        }}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {displaySellers.map(seller => (

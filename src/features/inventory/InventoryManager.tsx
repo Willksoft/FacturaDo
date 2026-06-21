@@ -170,15 +170,12 @@ export default function InventoryManager({
 
               <Select value={selectedProviderFilter} onValueChange={(val) => setSelectedProviderFilter(val)}>
                 <SelectTrigger id="provider-inventary-filter" className="text-xs h-8 w-44 bg-neutral-50 border-neutral-200">
-                  {selectedProviderFilter && selectedProviderFilter !== 'all' ? (
-                    <span className="flex flex-1 text-left line-clamp-1">
-                      {providers.find(p => p.id === selectedProviderFilter)?.name || selectedProviderFilter}
-                    </span>
-                  ) : selectedProviderFilter === 'all' ? (
-                    <span className="flex flex-1 text-left line-clamp-1">Todos los Proveedores</span>
-                  ) : (
-                    <SelectValue placeholder="Suplidor" />
-                  )}
+                  <SelectValue placeholder="Suplidor">
+                    {(val: string | null) => {
+                      if (!val || val === 'all') return "Todos los Proveedores";
+                      return providers.find(p => p.id === val)?.name || val;
+                    }}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="text-xs">
                   <SelectItem value="all">Todos los Proveedores</SelectItem>
@@ -379,15 +376,14 @@ export default function InventoryManager({
                 <Label htmlFor="adj-type" className="text-xs">Tipo de Movimiento</Label>
                 <Select value={adjustType} onValueChange={(val: any) => setAdjustType(val)}>
                   <SelectTrigger id="adj-type">
-                    {adjustType === 'Entrada Suministro' ? (
-                      <span className="flex flex-1 text-left line-clamp-1">Entrada de Almacén (Abastecimiento)</span>
-                    ) : adjustType === 'Salida Pérdida' ? (
-                      <span className="flex flex-1 text-left line-clamp-1">Salida Directa (Rotura, Robo, Pérdida)</span>
-                    ) : adjustType === 'Ajuste Sellar' ? (
-                      <span className="flex flex-1 text-left line-clamp-1">Ajuste Físico Auditoría (Sobrescribir Stock)</span>
-                    ) : (
-                      <SelectValue />
-                    )}
+                    <SelectValue>
+                      {(val: string | null) => {
+                        if (val === 'Entrada Suministro') return "Entrada de Almacén (Abastecimiento)";
+                        if (val === 'Salida Pérdida') return "Salida Directa (Rotura, Robo, Pérdida)";
+                        if (val === 'Ajuste Sellar') return "Ajuste Físico Auditoría (Sobrescribir Stock)";
+                        return val || "";
+                      }}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="text-xs">
                     <SelectItem value="Entrada Suministro">Entrada de Almacén (Abastecimiento)</SelectItem>
