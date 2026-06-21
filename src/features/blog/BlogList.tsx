@@ -59,7 +59,7 @@ export default function BlogList() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="bg-white rounded-2xl shadow-sm border border-slate-200/50 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer flex flex-col"
-                onClick={() => navigate(\`/blog/\${post.slug}\`)}
+                onClick={() => navigate(`/blog/${post.slug}`)}
               >
                 <div className="aspect-[16/9] relative overflow-hidden bg-slate-100">
                   <img 
