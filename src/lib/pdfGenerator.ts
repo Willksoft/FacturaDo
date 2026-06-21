@@ -296,9 +296,31 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
   applyFont(doc, 'normal');
   doc.setFontSize(8);
   doc.setTextColor(80, 80, 80);
-  doc.text(`RNC / Cédula: ${invoice.client.rncOrCedula || 'N/D'}`, leftMargin + 4, y + 16);
-  doc.text(`Tel: ${invoice.client.phone || 'N/D'} | Correo: ${invoice.client.email || 'N/D'}`, leftMargin + 4, y + 21);
-  doc.text(`Dirección: ${invoice.client.address || 'N/D'}`, leftMargin + 4, y + 25);
+  
+  let currentClientY = y + 16;
+  const isConsumo = invoice.client.name === 'Cliente de Consumo';
+  
+  const showRnc = !isConsumo || (invoice.client.rncOrCedula && invoice.client.rncOrCedula.trim() !== '');
+  if (showRnc) {
+    doc.text(`RNC / Cédula: ${invoice.client.rncOrCedula || 'N/D'}`, leftMargin + 4, currentClientY);
+    currentClientY += 5;
+  }
+  
+  const hasPhone = invoice.client.phone && invoice.client.phone.trim() !== '';
+  const hasEmail = invoice.client.email && invoice.client.email.trim() !== '';
+  const showContact = !isConsumo || hasPhone || hasEmail;
+  if (showContact) {
+    const pText = hasPhone ? invoice.client.phone : 'N/D';
+    const eText = hasEmail ? invoice.client.email : 'N/D';
+    doc.text(`Tel: ${pText} | Correo: ${eText}`, leftMargin + 4, currentClientY);
+    currentClientY += 4;
+  }
+  
+  const hasAddr = invoice.client.address && invoice.client.address.trim() !== '';
+  const showAddr = !isConsumo || hasAddr;
+  if (showAddr) {
+    doc.text(`Dirección: ${invoice.client.address || 'N/D'}`, leftMargin + 4, currentClientY);
+  }
 
   // Metadata Card right side
   applyFont(doc, 'bold');
@@ -318,21 +340,23 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
   applyFont(doc, 'normal');
   doc.text(new Date(invoice.dueDate).toLocaleDateString('es-DO'), 158, y + 16);
 
-  applyFont(doc, 'bold');
-  doc.text('Condición Pago:', 129, y + 21);
-  applyFont(doc, 'normal');
-  doc.text(invoice.paymentCondition || 'Contado', 158, y + 21);
+  if (!isQuote) {
+    applyFont(doc, 'bold');
+    doc.text('Condición Pago:', 129, y + 21);
+    applyFont(doc, 'normal');
+    doc.text(invoice.paymentCondition || 'Contado', 158, y + 21);
 
-  if (!isQuote && invoice.ncfType !== 'SIN') {
-    applyFont(doc, 'bold');
-    doc.text('Secuencia NCF:', 129, y + 25);
-    applyFont(doc, 'normal');
-    doc.text(`${invoice.ncfType}-${invoice.sequenceNumber}`, 158, y + 25);
-  } else {
-    applyFont(doc, 'bold');
-    doc.text('Vía de Cobro:', 129, y + 25);
-    applyFont(doc, 'normal');
-    doc.text(invoice.paymentMethod, 158, y + 25);
+    if (invoice.ncfType !== 'SIN') {
+      applyFont(doc, 'bold');
+      doc.text('Secuencia NCF:', 129, y + 25);
+      applyFont(doc, 'normal');
+      doc.text(`${invoice.ncfType}-${invoice.sequenceNumber}`, 158, y + 25);
+    } else {
+      applyFont(doc, 'bold');
+      doc.text('Vía de Cobro:', 129, y + 25);
+      applyFont(doc, 'normal');
+      doc.text(invoice.paymentMethod, 158, y + 25);
+    }
   }
 
   // 4. ITEMS TABLE

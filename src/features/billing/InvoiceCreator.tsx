@@ -651,6 +651,7 @@ export default function InvoiceCreator({
       alert('Debe agregar al menos un art\u00edculo o servicio al documento.');
       return;
     }
+    const finalDueDate = docType === 'Factura' ? `${new Date().getFullYear()}-12-31` : dueDate;
     const draftDoc = createInvoiceOrQuote({
       type: docType,
       client: selectedClient!,
@@ -659,7 +660,7 @@ export default function InvoiceCreator({
       ncfType: docType === 'Cotizacion' ? 'SIN' : selectedNcfType,
       customSequenceNumber: overrideSequence && customSequenceNum ? Number(customSequenceNum) - 1 : undefined,
       notes,
-      dueDate,
+      dueDate: finalDueDate,
       createdAt: new Date(issueDate + "T12:00:00Z").toISOString(),
       currency,
       paymentCondition,
@@ -726,6 +727,7 @@ export default function InvoiceCreator({
         qrUrl = msellerResult.qrUrl;
       }
 
+      const finalDueDate = docType === 'Factura' ? `${new Date().getFullYear()}-12-31` : dueDate;
       const createdDoc = createInvoiceOrQuote({
         type: docType,
         client: selectedClient!,
@@ -734,7 +736,7 @@ export default function InvoiceCreator({
         ncfType: docType === 'Cotizacion' ? 'SIN' : selectedNcfType,
         customSequenceNumber: overrideSequence && customSequenceNum ? Number(customSequenceNum) - 1 : undefined,
         notes,
-        dueDate,
+        dueDate: finalDueDate,
         createdAt: new Date(issueDate + "T12:00:00Z").toISOString(),
         currency,
         paymentCondition,
@@ -1364,10 +1366,13 @@ export default function InvoiceCreator({
                   <Label htmlFor="inv-due-date" className="text-xs font-semibold text-neutral-700">Fecha de Vencimiento</Label>
                   <Input
                     id="inv-due-date"
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className="h-9 text-xs border-neutral-250"
+                    type={docType === 'Factura' ? 'text' : 'date'}
+                    value={docType === 'Factura' ? `31 de Diciembre ${new Date().getFullYear()}` : dueDate}
+                    onChange={(e) => {
+                      if (docType === 'Cotizacion') setDueDate(e.target.value);
+                    }}
+                    disabled={docType === 'Factura'}
+                    className="h-9 text-xs border-neutral-250 disabled:bg-neutral-100 disabled:text-neutral-500"
                   />
                 </div>
               </div>

@@ -313,20 +313,33 @@ export default function DocumentDetailsView({
               <div className="space-y-1.5 bg-neutral-50 p-3 rounded-lg border border-neutral-150">
                 <span className="text-[8.5px] text-neutral-400 uppercase font-bold tracking-wider">Cliente Receptor</span>
                 <div className="font-bold text-[11px] text-neutral-900 leading-tight">{invoice.client.name}</div>
-                <div className="text-[9.5px] text-neutral-550">
-                  {invoice.client.type === 'Empresa' ? 'RNC Fiscal' : 'Cédula de Identidad'}: {invoice.client.rncOrCedula}
-                </div>
-                <div className="text-[9.5px] text-neutral-550">Dirección: {invoice.client.address || 'SD, Rep. Dominicana'}</div>
+                {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.rncOrCedula && invoice.client.rncOrCedula.trim() !== '')) && (
+                  <div className="text-[9.5px] text-neutral-550">
+                    {invoice.client.type === 'Empresa' ? 'RNC Fiscal' : 'Cédula de Identidad'}: {invoice.client.rncOrCedula || 'N/D'}
+                  </div>
+                )}
+                {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.phone?.trim() || invoice.client.email?.trim())) && (
+                  <div className="text-[9.5px] text-neutral-550">
+                    Tel: {invoice.client.phone || 'N/D'} | Correo: {invoice.client.email || 'N/D'}
+                  </div>
+                )}
+                {(!(invoice.client.name === 'Cliente de Consumo') || (invoice.client.address && invoice.client.address.trim() !== '')) && (
+                  <div className="text-[9.5px] text-neutral-550">Dirección: {invoice.client.address || 'N/D'}</div>
+                )}
               </div>
 
               <div className="space-y-1.5 bg-neutral-50 p-3 rounded-lg border border-neutral-150">
                 <span className="text-[8.5px] text-neutral-400 uppercase font-bold tracking-wider">Términos de la Operación</span>
-                <div><span className="font-medium text-neutral-500">Condición de Pago: </span> <span className="font-bold text-slate-900">{invoice.paymentCondition || 'Contado'}</span></div>
+                {!isQuote && (
+                  <div><span className="font-medium text-neutral-500">Condición de Pago: </span> <span className="font-bold text-slate-900">{invoice.paymentCondition || 'Contado'}</span></div>
+                )}
                 <div><span className="font-medium text-neutral-500">Moneda Emisión: </span> <span className="font-bold text-slate-900">{invoice.currency || 'DOP'}</span></div>
                 {!isQuote && (
                   <div><span className="font-medium text-neutral-500">Comprobante Fiscal: </span> <span className="font-bold text-blue-800">{`${invoice.ncfType} (${invoice.ncf})`}</span></div>
                 )}
-                <div><span className="font-medium text-neutral-500">Vía de Liquidación: </span> <span className="text-neutral-900 font-medium">{invoice.paymentMethod}</span></div>
+                {!isQuote && (
+                  <div><span className="font-medium text-neutral-500">Vía de Liquidación: </span> <span className="text-neutral-900 font-medium">{invoice.paymentMethod}</span></div>
+                )}
                 <div><span className="font-medium text-neutral-500">Vence / Vencimiento: </span> <span className="text-neutral-550 font-medium">{new Date(invoice.dueDate).toLocaleDateString('es-DO')}</span></div>
               </div>
             </div>
