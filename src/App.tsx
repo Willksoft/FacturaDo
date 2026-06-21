@@ -927,15 +927,19 @@ export default function App() {
       <Route 
         path="/" 
         element={
-          <LandingAndAuth 
-            initialView="landing"
-            usersList={users} 
-            isLoggedIn={isLoggedIn}
-            onLoginSuccess={async (user) => {
-              await handleLoginSuccessUser(user);
-              setIsLoggedIn(true);
-            }} 
-          />
+          isLoggedIn ? (
+            needsOnboarding ? <Navigate to="/onboarding" replace /> : <Navigate to="/dashboard" replace />
+          ) : (
+            <LandingAndAuth 
+              initialView="landing"
+              usersList={users} 
+              isLoggedIn={isLoggedIn}
+              onLoginSuccess={async (user) => {
+                await handleLoginSuccessUser(user);
+                setIsLoggedIn(true);
+              }} 
+            />
+          )
         } 
       />
 
