@@ -4,6 +4,7 @@ import { LogoFacturaDo, OldLogoFacturaDo } from '../core/LogoFacturaDo';
 import { insforge } from '../../lib/insforge';
 import HelpManualView from '../help/HelpManualView';
 import UserManual from '../help/UserManual';
+import CompetitorComparison from './CompetitorComparison';
 import * as OTPAuth from 'otpauth';
 import { 
   Infinity,
@@ -1676,6 +1677,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               </div>
             </div>
           </motion.section>
+
+          <CompetitorComparison />
 
           {/* FAQ Accordion Section (Page 3 of Screenshot style) */}
           <section id="faq" className="py-16 sm:py-24 bg-white border-b border-slate-200 text-center space-y-12">
