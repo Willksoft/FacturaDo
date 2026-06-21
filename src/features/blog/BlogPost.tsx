@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { blogPosts } from '../../data/blogPosts';
+import { LogoFacturaDo } from '../core/LogoFacturaDo';
 
 const renderTextWithBold = (text: string) => {
   const parts = text.split(/(\*\*.*?\*\*)/g);
@@ -23,8 +24,8 @@ const renderContent = (content: string) => {
       // Manejar blockquotes que pueden tener negritas adentro
       const innerText = trimmed.replace('> ', '');
       return (
-        <blockquote key={index} className="border-l-4 border-indigo-500 bg-indigo-50/80 p-5 my-8 rounded-r-xl shadow-sm">
-          <p className="text-indigo-900 font-medium italic">{renderTextWithBold(innerText)}</p>
+        <blockquote key={index} className="border-l-4 border-sky-500 bg-sky-50/80 p-5 my-8 rounded-r-xl shadow-sm">
+          <p className="text-sky-900 font-medium italic">{renderTextWithBold(innerText)}</p>
         </blockquote>
       );
     }
@@ -52,9 +53,9 @@ export default function BlogPost() {
 
   if (!post) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA]">
         <h1 className="text-4xl font-bold text-slate-900 mb-4">Artículo no encontrado</h1>
-        <button onClick={() => navigate('/blog')} className="text-indigo-600 hover:text-indigo-700 font-medium">
+        <button onClick={() => navigate('/blog')} className="text-sky-600 hover:text-sky-700 font-medium">
           ← Volver al blog
         </button>
       </div>
@@ -62,24 +63,43 @@ export default function BlogPost() {
   }
 
   return (
-    <div className="min-h-screen bg-white font-sans selection:bg-indigo-100 selection:text-indigo-900">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+    <div className="min-h-screen bg-white font-sans selection:bg-[#1A2732]/10 selection:text-[#FAFAFA] overflow-x-hidden">
+      {/* Header Navigation (Identical to Landing) */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 bg-opacity-95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/20 group-hover:scale-105 transition-transform duration-300">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+          <div className="flex items-center gap-2">
+            {/* Desktop Logo */}
+            <div className="hidden sm:block cursor-pointer" onClick={() => navigate('/')}>
+              <LogoFacturaDo className="h-9 w-auto" />
             </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">FacturaDo</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link to="/blog" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors mr-4 hidden sm:block">
-              ← Volver al Blog
-            </Link>
-            <button onClick={() => navigate('/register')} className="text-sm font-medium bg-slate-900 text-white px-5 py-2.5 rounded-lg hover:bg-slate-800 shadow-lg shadow-slate-900/20 transition-all hover:-translate-y-0.5">
-              Crear Cuenta Gratis
+            {/* Mobile Logo using favicon */}
+            <div className="block sm:hidden flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+              <img src="/facturaDonuevologo_favicon.svg" alt="FacturaDo" className="w-8 h-8 shrink-0 object-contain" referrerPolicy="no-referrer" />
+              <span className="text-lg font-extrabold tracking-tight text-slate-900 font-sans">FacturaDo</span>
+            </div>
+          </div>
+
+          {/* Desktop Nav Actions */}
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-8 text-[13px] xl:text-sm font-semibold text-slate-600">
+            <button onClick={() => navigate('/blog')} className="text-sky-600 transition-colors cursor-pointer font-semibold bg-transparent border-0 p-0 text-[13px] xl:text-sm whitespace-nowrap">Blog</button>
+            <a href="/#funcionalidades" className="hover:text-sky-600 transition-colors whitespace-nowrap">Funcionalidades</a>
+            <a href="/#testimonios" className="hover:text-sky-600 transition-colors whitespace-nowrap">Opiniones</a>
+            <a href="/#faq" className="hover:text-sky-600 transition-colors whitespace-nowrap">Preguntas Frecuentes</a>
+          </nav>
+
+          {/* Desktop CTA actions */}
+          <div className="hidden md:flex items-center gap-2 xl:gap-3">
+            <button
+              onClick={() => navigate('/login')}
+              className="whitespace-nowrap px-4 xl:px-5 py-2.5 text-[13px] xl:text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200"
+            >
+              Iniciar Sesión
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-bold bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
+            >
+              Comenzar Gratis
             </button>
           </div>
         </div>
@@ -93,7 +113,7 @@ export default function BlogPost() {
             transition={{ duration: 0.5 }}
             className="mb-10 text-center"
           >
-            <span className="inline-block px-4 py-1.5 bg-indigo-50 text-indigo-700 font-semibold rounded-full text-sm mb-6">
+            <span className="inline-block px-4 py-1.5 bg-sky-50 text-sky-700 font-semibold rounded-full text-sm mb-6">
               {post.category}
             </span>
             <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-8 leading-tight">
@@ -102,7 +122,7 @@ export default function BlogPost() {
             
             <div className="flex items-center justify-center gap-6 text-sm font-medium text-slate-500">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+                <div className="w-8 h-8 bg-sky-100 rounded-full flex items-center justify-center text-sky-600">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
                 {post.author}
@@ -148,15 +168,15 @@ export default function BlogPost() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-20 bg-gradient-to-br from-indigo-600 to-indigo-900 rounded-3xl p-8 md:p-12 text-center shadow-2xl shadow-indigo-600/20"
+            className="mt-20 bg-gradient-to-br from-sky-600 to-sky-800 rounded-3xl p-8 md:p-12 text-center shadow-2xl shadow-sky-600/20"
           >
             <h3 className="text-3xl font-bold text-white mb-4">¿Listo para simplificar tu facturación?</h3>
-            <p className="text-indigo-100 text-lg mb-8 max-w-2xl mx-auto">
+            <p className="text-sky-100 text-lg mb-8 max-w-2xl mx-auto">
               Únete a miles de negocios en República Dominicana que ya emiten sus comprobantes fiscales sin complicaciones. Es 100% gratis.
             </p>
             <button 
               onClick={() => navigate('/register')}
-              className="bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              className="bg-white text-sky-700 px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
               Comenzar Ahora - Es Gratis
             </button>

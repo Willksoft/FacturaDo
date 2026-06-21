@@ -2,33 +2,49 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { blogPosts } from '../../data/blogPosts';
+import { LogoFacturaDo } from '../core/LogoFacturaDo';
 
 export default function BlogList() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-indigo-100 selection:text-indigo-900">
-      {/* Header (Simple version of Landing Header) */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+    <div className="min-h-screen bg-[#FAFAFA] font-sans selection:bg-[#1A2732]/10 selection:text-[#FAFAFA] overflow-x-hidden">
+      {/* Header Navigation (Identical to Landing) */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 bg-opacity-95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/20 group-hover:scale-105 transition-transform duration-300">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+          <div className="flex items-center gap-2">
+            {/* Desktop Logo */}
+            <div className="hidden sm:block cursor-pointer" onClick={() => navigate('/')}>
+              <LogoFacturaDo className="h-9 w-auto" />
             </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">FacturaDo</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8">
-            <Link to="/#features" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Características</Link>
-            <Link to="/#precios" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Precios</Link>
+            {/* Mobile Logo using favicon */}
+            <div className="block sm:hidden flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+              <img src="/facturaDonuevologo_favicon.svg" alt="FacturaDo" className="w-8 h-8 shrink-0 object-contain" referrerPolicy="no-referrer" />
+              <span className="text-lg font-extrabold tracking-tight text-slate-900 font-sans">FacturaDo</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/login')} className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
-              Ingresar
+
+          {/* Desktop Nav Actions */}
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-8 text-[13px] xl:text-sm font-semibold text-slate-600">
+            <button onClick={() => navigate('/blog')} className="text-sky-600 transition-colors cursor-pointer font-semibold bg-transparent border-0 p-0 text-[13px] xl:text-sm whitespace-nowrap">Blog</button>
+            <a href="/#funcionalidades" className="hover:text-sky-600 transition-colors whitespace-nowrap">Funcionalidades</a>
+            <a href="/#testimonios" className="hover:text-sky-600 transition-colors whitespace-nowrap">Opiniones</a>
+            <a href="/#faq" className="hover:text-sky-600 transition-colors whitespace-nowrap">Preguntas Frecuentes</a>
+          </nav>
+
+          {/* Desktop CTA actions */}
+          <div className="hidden md:flex items-center gap-2 xl:gap-3">
+            <button
+              onClick={() => navigate('/login')}
+              className="whitespace-nowrap px-4 xl:px-5 py-2.5 text-[13px] xl:text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200"
+            >
+              Iniciar Sesión
             </button>
-            <button onClick={() => navigate('/register')} className="text-sm font-medium bg-indigo-600 text-white px-5 py-2.5 rounded-lg hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5">
-              Registrarse
+            <button
+              onClick={() => navigate('/register')}
+              className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-bold bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
+            >
+              Comenzar Gratis
             </button>
           </div>
         </div>
@@ -68,7 +84,7 @@ export default function BlogList() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-indigo-700 text-xs font-semibold rounded-full shadow-sm">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-sky-700 text-xs font-semibold rounded-full shadow-sm">
                       {post.category}
                     </span>
                   </div>
@@ -86,7 +102,7 @@ export default function BlogList() {
                     </span>
                   </div>
                   
-                  <h2 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                  <h2 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-sky-600 transition-colors line-clamp-2">
                     {post.title}
                   </h2>
                   
@@ -96,9 +112,9 @@ export default function BlogList() {
                   
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
                     <span className="text-sm font-medium text-slate-900">{post.author}</span>
-                    <span className="text-indigo-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                    <span className="text-sky-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
                       Leer más
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </span>
                   </div>
                 </div>
