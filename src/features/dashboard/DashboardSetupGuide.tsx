@@ -43,8 +43,6 @@ export default function DashboardSetupGuide({
     setShowModal(false);
   };
 
-  if (!isVisible) return null;
-
   const hasCotizaciones = invoices.some(i => i.type === 'Cotizacion');
   const hasFacturas = invoices.some(i => i.type === 'Factura');
 
@@ -178,6 +176,8 @@ export default function DashboardSetupGuide({
     }
     previousCompletedCount.current = completedSteps;
   }, [completedSteps]);
+
+  if (!isVisible) return null;
 
   if (completedSteps === totalSteps) {
     return null; 
