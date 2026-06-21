@@ -1438,12 +1438,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* Left Column - Text */}
                 <div className="space-y-8">
                   <div className="space-y-5">
-                    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 text-amber-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
+                    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 text-sky-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
                       <Sparkles className="w-3.5 h-3.5" />
                       Para Emprendedores
                     </div>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold tracking-tight leading-tight">
-                      Diseñado para <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">emprendedores</span> dominicanos
+                      Diseñado para <span className="bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent">emprendedores</span> dominicanos
                     </h2>
                     <p className="text-base sm:text-lg text-slate-400 max-w-lg leading-relaxed">
                       No necesitas ser contador ni experto en tecnología. FacturaDo simplifica la facturación fiscal para que tú te enfoques en vender y hacer crecer tu negocio.
@@ -1466,7 +1466,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         className="flex gap-4 items-start group"
                       >
                         <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white/15 transition-colors">
-                          <item.icon className="w-5 h-5 text-amber-400" />
+                          <item.icon className="w-5 h-5 text-sky-400" />
                         </div>
                         <div>
                           <h4 className="text-sm font-bold text-white mb-0.5">{item.title}</h4>
@@ -1478,10 +1478,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                   <button
                     onClick={() => setView('register')}
-                    className="px-7 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-2xl font-bold text-sm transition-all shadow-lg hover:shadow-xl cursor-pointer hover:-translate-y-0.5 duration-150 flex items-center gap-2"
+                    className="px-7 py-3.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white rounded-2xl font-bold text-sm transition-all shadow-lg hover:shadow-xl cursor-pointer hover:-translate-y-0.5 duration-150 flex items-center gap-2"
                   >
                     <Rocket className="w-4 h-4" />
-                    Empezar gratis ahora
+                    Regístrate ahora
                   </button>
                 </div>
 
@@ -1496,7 +1496,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <img 
                     src="https://res.cloudinary.com/dap38hi9l/image/upload/v1782018933/banner4x4_wntjic.png" 
                     alt="Beneficios para emprendedores: 100% Gratis, Registro en 2 mins, Acceso 24/7 y cero cuotas" 
-                    className="w-full max-w-md lg:max-w-full h-auto object-contain"
+                    className="w-full max-w-md lg:max-w-full h-auto object-contain rounded-3xl"
                   />
                 </motion.div>
               </div>
