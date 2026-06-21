@@ -74,6 +74,8 @@ export interface InvoiceItem {
   taxAmount: number;
   total: number;
   discount?: number; // percentage discount (e.g., 5 for 5%)
+  imageUrl?: string; // Product image at time of invoice
+  showImage?: boolean; // Whether to display this image on the PDF
 }
 
 export interface Invoice {
@@ -124,6 +126,9 @@ export interface Receipt {
   notes?: string;
   accountId?: string; // Linked bank or cash register/box account
   accountName?: string;
+  retainedItbis?: number;
+  retainedIsr?: number;
+  retentionNumber?: string;
 }
 
 export interface Warehouse {
@@ -235,6 +240,8 @@ export interface TemplateSettings {
   showBankAccountsOnQuote?: boolean;
   templateStyle?: string;
   fontFamily?: string;
+  informalMode?: boolean; // Si es true, el negocio es informal: sin RNC, sin NCF DGII, numeración interna FAC-######
+  showProductPhotos?: boolean; // Global toggle to show product photos on PDFs
 }
 
 export interface Seller {

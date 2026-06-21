@@ -211,7 +211,10 @@ const mapReceiptFromDb = (db: any): Receipt => ({
   date: db.date,
   notes: db.notes || undefined,
   accountId: db.account_id || undefined,
-  accountName: db.account_name || undefined
+  accountName: db.account_name || undefined,
+  retainedItbis: parseFloat(db.retained_itbis || 0) || undefined,
+  retainedIsr: parseFloat(db.retained_isr || 0) || undefined,
+  retentionNumber: db.retention_number || undefined
 });
 
 const mapReceiptToDb = (rec: Receipt) => ({
@@ -226,6 +229,9 @@ const mapReceiptToDb = (rec: Receipt) => ({
   notes: rec.notes || null,
   account_id: rec.accountId || null,
   account_name: rec.accountName || null,
+  retained_itbis: rec.retainedItbis || 0,
+  retained_isr: rec.retainedIsr || 0,
+  retention_number: rec.retentionNumber || null,
   is_deleted: false
 });
 
@@ -488,7 +494,9 @@ const mapTemplateSettingsFromDb = (db: any): TemplateSettings => {
     bankAccountBank: db.bank_account_bank || undefined,
     bankAccounts: parsedAccounts,
     showBankAccountsOnQuote: showQuote,
-    templateStyle: db.template_style || 'Moderna'
+    templateStyle: db.template_style || 'Moderna',
+    informalMode: !!db.informal_mode,
+    showProductPhotos: !!db.show_product_photos
   };
 };
 
@@ -509,7 +517,9 @@ const mapTemplateSettingsToDb = (s: TemplateSettings) => ({
   bank_account_type: s.bankAccounts && s.bankAccounts.length > 0 ? s.bankAccounts[0].type : (s.bankAccountType || null),
   bank_account_currency: s.showBankAccountsOnQuote ? 'true' : (s.bankAccounts && s.bankAccounts.length > 0 ? s.bankAccounts[0].currency : 'false'),
   bank_account_bank: s.bankAccounts && s.bankAccounts.length > 0 ? s.bankAccounts[0].bank : (s.bankAccountBank || null),
-  template_style: s.templateStyle || 'Moderna'
+  template_style: s.templateStyle || 'Moderna',
+  informal_mode: s.informalMode || false,
+  show_product_photos: s.showProductPhotos || false
 });
 
 const mapSupportTicketFromDb = (db: any): SupportTicket => ({
@@ -1992,6 +2002,8 @@ export function useInvoiceState() {
   // NCF Sequence Handler (Generates exact alphanumeric string)
   const generateNcfString = (type: NcfType, seqNumber: number) => {
     if (type === 'SIN') return 'SIN_COMPROBANTE';
+    // In informal mode, generate internal sequential number (e.g. 003718)
+    if (templateSettings.informalMode) return String(seqNumber).padStart(6, '0');
     const numStr = String(seqNumber).padStart(8, '0');
     return `${type}${numStr}`;
   };
@@ -2114,7 +2126,9 @@ export function useInvoiceState() {
     }, 0);
     const count = maxExistingNumber + 1;
     const docPrefix = isQuote ? 'COT' : 'FAC';
-    const docNumber = `${docPrefix}-${new Date().getFullYear()}-${String(count).padStart(4, '0')}`;
+    const docNumber = templateSettings.informalMode
+      ? `${docPrefix}-${String(count).padStart(6, '0')}`
+      : `${docPrefix}-${new Date().getFullYear()}-${String(count).padStart(4, '0')}`;
 
     const currentYear = new Date().getFullYear();
     let computedDueDate = data.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
@@ -2365,12 +2379,12 @@ export function useInvoiceState() {
     return nInvoice;
   };
 
-  const payInvoice = (invoiceId: string, amount: number, paymentMethod: PaymentMethod, notes?: string, accountId?: string) => {
+  const payInvoice = (invoiceId: string, amount: number, paymentMethod: PaymentMethod, notes?: string, accountId?: string, retainedItbis?: number, retainedIsr?: number, retentionNumber?: string) => {
     const invoice = invoices.find(inv => inv.id === invoiceId);
     if (!invoice) return;
 
-    const previousPaid = receipts.filter(r => r.invoiceId === invoiceId).reduce((sum, r) => sum + r.amountPaid, 0);
-    const newTotalPaid = previousPaid + amount;
+    const previousPaid = receipts.filter(r => r.invoiceId === invoiceId).reduce((sum, r) => sum + r.amountPaid + (r.retainedItbis || 0) + (r.retainedIsr || 0), 0);
+    const newTotalPaid = previousPaid + amount + (retainedItbis || 0) + (retainedIsr || 0);
     const newStatus = newTotalPaid >= (invoice.total - 0.1) ? 'Pagada' : 'Pendiente';
 
     updateInvoice(invoiceId, { status: newStatus });
@@ -2410,6 +2424,9 @@ export function useInvoiceState() {
       accountName: selectedAccountName || undefined,
       date: new Date().toISOString(),
       notes,
+      retainedItbis,
+      retainedIsr,
+      retentionNumber,
     };
 
     const updatedReceipts = [newReceipt, ...receipts];

@@ -16,7 +16,7 @@ interface DocumentDetailsViewProps {
   invoices: Invoice[];
   templateSettings: TemplateSettings;
   currentUser: any;
-  payInvoice: (invoiceId: string, amount: number, paymentMethod: PaymentMethod, notes?: string) => void;
+  payInvoice: (invoiceId: string, amount: number, paymentMethod: PaymentMethod, notes?: string, accountId?: string, retainedItbis?: number, retainedIsr?: number, retentionNumber?: string) => void;
   onBack: () => void;
   onEdit: (invoice: Invoice) => void;
   onDuplicate: (invoice: Invoice) => void;
@@ -56,7 +56,7 @@ export default function DocumentDetailsView({
 
   // Settle payments linked to this document
   const associatedReceipts = receipts.filter(r => r.invoiceId === invoice.id);
-  const totalPaidSum = associatedReceipts.reduce((sum, r) => sum + r.amountPaid, 0);
+  const totalPaidSum = associatedReceipts.reduce((sum, r) => sum + r.amountPaid + (r.retainedItbis || 0) + (r.retainedIsr || 0), 0);
   const remaingBalance = Math.max(0, invoice.total - totalPaidSum);
 
   const canEdit = currentUser.permissions.canEditInvoice || currentUser.role === 'Administrador';

@@ -28,6 +28,8 @@ export default function TemplateSettingsPanel({
   const [businessEmail, setBusinessEmail] = useState(settings.businessEmail);
   const [businessAddress, setBusinessAddress] = useState(settings.businessAddress);
   const [footerNote, setFooterNote] = useState(settings.footerNote);
+  const [informalMode, setInformalMode] = useState(!!settings.informalMode);
+  const [showProductPhotos, setShowProductPhotos] = useState(!!settings.showProductPhotos);
 
   const [ncfB01, setNcfB01] = useState(ncfSequences?.find(s => s.type === 'B01')?.currentNumber || 1);
   const [ncfB02, setNcfB02] = useState(ncfSequences?.find(s => s.type === 'B02')?.currentNumber || 1);

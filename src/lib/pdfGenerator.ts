@@ -356,7 +356,8 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
   y += 8;
   doc.setFontSize(8.5);
 
-  invoice.items.forEach((item, index) => {
+  for (let index = 0; index < invoice.items.length; index++) {
+    const item = invoice.items[index];
     // Alternating background colors
     if (style !== 'Minimalista' && style !== 'Elegante' && index % 2 === 1) {
       doc.setFillColor(250, 250, 250);
@@ -380,7 +381,30 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
     // Description
     rX += colWidths[0];
     const descText = item.name.length > 52 ? item.name.substring(0, 50) + '...' : item.name;
-    doc.text(descText, rX + 2, y + 5.5);
+    
+    let imgShift = 0;
+    if (settings.showProductPhotos !== false && item.showImage !== false && item.imageUrl) {
+        try {
+            const dims = await getImageDimensions(item.imageUrl);
+            if (dims.height > 0) {
+               const h = 5; // 5mm height
+               const w = (dims.width / dims.height) * h;
+               // Extract format to avoid jsPDF errors, fallback to PNG
+               let format = 'PNG';
+               if (item.imageUrl.toLowerCase().endsWith('.jpg') || item.imageUrl.toLowerCase().endsWith('.jpeg')) {
+                   format = 'JPEG';
+               } else if (item.imageUrl.toLowerCase().endsWith('.webp')) {
+                   format = 'WEBP';
+               }
+               doc.addImage(item.imageUrl, format, rX + 2, y + 1.5, w, h);
+               imgShift = w + 3; // Shift text right
+            }
+        } catch(e) {
+            console.warn("Failed to load item image for PDF", e);
+        }
+    }
+
+    doc.text(descText, rX + 2 + imgShift, y + 5.5);
 
     // Price
     rX += colWidths[1];
@@ -395,7 +419,7 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
     doc.text(item.total.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' }), rX + colWidths[4] - 2, y + 5.5, { align: 'right' });
 
     y += 8;
-  });
+  }
 
   // 5. TOTALS CALCULATIONS BLOCK
   y += 5;
