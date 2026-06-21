@@ -323,7 +323,9 @@ export default function DocumentDetailsView({
                 <span className="text-[8.5px] text-neutral-400 uppercase font-bold tracking-wider">Términos de la Operación</span>
                 <div><span className="font-medium text-neutral-500">Condición de Pago: </span> <span className="font-bold text-slate-900">{invoice.paymentCondition || 'Contado'}</span></div>
                 <div><span className="font-medium text-neutral-500">Moneda Emisión: </span> <span className="font-bold text-slate-900">{invoice.currency || 'DOP'}</span></div>
-                <div><span className="font-medium text-neutral-500">Comprobante Fiscal: </span> <span className="font-bold text-blue-800">{isQuote ? 'N/A (Cotización)' : `${invoice.ncfType} (${invoice.ncf})`}</span></div>
+                {!isQuote && (
+                  <div><span className="font-medium text-neutral-500">Comprobante Fiscal: </span> <span className="font-bold text-blue-800">{`${invoice.ncfType} (${invoice.ncf})`}</span></div>
+                )}
                 <div><span className="font-medium text-neutral-500">Vía de Liquidación: </span> <span className="text-neutral-900 font-medium">{invoice.paymentMethod}</span></div>
                 <div><span className="font-medium text-neutral-500">Vence / Vencimiento: </span> <span className="text-neutral-550 font-medium">{new Date(invoice.dueDate).toLocaleDateString('es-DO')}</span></div>
               </div>

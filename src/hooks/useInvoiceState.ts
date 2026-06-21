@@ -131,7 +131,7 @@ const mapInvoiceFromDb = (db: any, resolvedClients: Client[]): Invoice => {
   const client = resolvedClients.find(c => c.id === db.client_id) || {
     id: db.client_id,
     type: 'Fisica',
-    name: 'Cliente desconocido',
+    name: 'Cliente de Consumo',
     rncOrCedula: '',
     email: '',
     phone: '',

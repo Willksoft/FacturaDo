@@ -13,15 +13,34 @@ const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
   };
 };
 
-const getImageDimensions = (url: string): Promise<{ width: number; height: number }> => {
+const getImageDimensionsAndData = (url: string): Promise<{ width: number; height: number; dataUrl: string | null; format: string }> => {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      resolve({ width: img.naturalWidth || img.width, height: img.naturalHeight || img.height });
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          const dataUrl = canvas.toDataURL('image/png');
+          resolve({ 
+            width: canvas.width, 
+            height: canvas.height, 
+            dataUrl,
+            format: 'PNG'
+          });
+          return;
+        }
+      } catch (e) {
+        console.warn('Failed to convert image to canvas data url', e);
+      }
+      resolve({ width: img.naturalWidth || img.width, height: img.naturalHeight || img.height, dataUrl: null, format: 'PNG' });
     };
     img.onerror = () => {
-      resolve({ width: 0, height: 0 });
+      resolve({ width: 0, height: 0, dataUrl: null, format: 'PNG' });
     };
     img.src = url;
   });
@@ -71,11 +90,15 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
   // 1. HEADER BRANDING & LOGO REPRESENTATION
   let logoWidth = 25; // default starting width estimation
   const logoHeight = 15; // Fixed height in mm as requested
+  let logoDataUrl: string | null = null;
+  let logoFormat = 'PNG';
   if (settings.logoUrl) {
     try {
-      const dimensions = await getImageDimensions(settings.logoUrl);
+      const dimensions = await getImageDimensionsAndData(settings.logoUrl);
       if (dimensions.height > 0) {
         logoWidth = (dimensions.width / dimensions.height) * logoHeight;
+        logoDataUrl = dimensions.dataUrl;
+        logoFormat = dimensions.format;
       }
     } catch (e) {
       console.warn("Failed to retrieve logo dimensions, using defaults", e);
@@ -90,7 +113,7 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
     let logoRendered = false;
     if (settings.logoUrl) {
       try {
-        doc.addImage(settings.logoUrl, 'PNG', leftMargin + 5, y + 7.5, logoWidth, logoHeight);
+        doc.addImage(logoDataUrl || settings.logoUrl, logoFormat, leftMargin + 5, y + 7.5, logoWidth, logoHeight);
         logoRendered = true;
       } catch (e) {
         console.warn("Failed to embed logo", e);
@@ -117,7 +140,7 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
     // Centered header layout for Clásica
     if (settings.logoUrl) {
       try {
-        doc.addImage(settings.logoUrl, 'PNG', (210 - logoWidth) / 2, y, logoWidth, logoHeight);
+        doc.addImage(logoDataUrl || settings.logoUrl, logoFormat, (210 - logoWidth) / 2, y, logoWidth, logoHeight);
         y += logoHeight + 5;
       } catch (e) {
         console.warn("Failed to embed logo", e);
@@ -143,7 +166,7 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
     let logoRendered = false;
     if (settings.logoUrl) {
       try {
-        doc.addImage(settings.logoUrl, 'PNG', leftMargin, y, logoWidth, logoHeight);
+        doc.addImage(logoDataUrl || settings.logoUrl, logoFormat, leftMargin, y, logoWidth, logoHeight);
         logoRendered = true;
       } catch (e) {
         console.warn("Failed to embed logo", e);
@@ -385,18 +408,13 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
     let imgShift = 0;
     if (settings.showProductPhotos !== false && item.showImage !== false && item.imageUrl) {
         try {
-            const dims = await getImageDimensions(item.imageUrl);
+            const dims = await getImageDimensionsAndData(item.imageUrl);
             if (dims.height > 0) {
                const h = 5; // 5mm height
                const w = (dims.width / dims.height) * h;
                // Extract format to avoid jsPDF errors, fallback to PNG
-               let format = 'PNG';
-               if (item.imageUrl.toLowerCase().endsWith('.jpg') || item.imageUrl.toLowerCase().endsWith('.jpeg')) {
-                   format = 'JPEG';
-               } else if (item.imageUrl.toLowerCase().endsWith('.webp')) {
-                   format = 'WEBP';
-               }
-               doc.addImage(item.imageUrl, format, rX + 2, y + 1.5, w, h);
+               let format = dims.format || 'PNG';
+               doc.addImage(dims.dataUrl || item.imageUrl, format, rX + 2, y + 1.5, w, h);
                imgShift = w + 3; // Shift text right
             }
         } catch(e) {
@@ -539,11 +557,15 @@ export const generateReceiptPDF = async (receipt: any, settings: TemplateSetting
   // Logo representation
   let logoWidth = 25;
   const logoHeight = 15; // Fixed height
+  let logoDataUrl: string | null = null;
+  let logoFormat = 'PNG';
   if (settings.logoUrl) {
     try {
-      const dimensions = await getImageDimensions(settings.logoUrl);
+      const dimensions = await getImageDimensionsAndData(settings.logoUrl);
       if (dimensions.height > 0) {
         logoWidth = (dimensions.width / dimensions.height) * logoHeight;
+        logoDataUrl = dimensions.dataUrl;
+        logoFormat = dimensions.format;
       }
     } catch (e) {
       console.warn("Failed to retrieve logo dimensions inside receipt", e);
@@ -557,7 +579,7 @@ export const generateReceiptPDF = async (receipt: any, settings: TemplateSetting
     let logoRendered = false;
     if (settings.logoUrl) {
       try {
-        doc.addImage(settings.logoUrl, 'PNG', leftMargin + 5, y + 7.5, logoWidth, logoHeight);
+        doc.addImage(logoDataUrl || settings.logoUrl, logoFormat, leftMargin + 5, y + 7.5, logoWidth, logoHeight);
         logoRendered = true;
       } catch (e) {
         console.warn("Failed to embed logo inside receipt", e);
@@ -583,7 +605,7 @@ export const generateReceiptPDF = async (receipt: any, settings: TemplateSetting
   } else if (style === 'Clásica') {
     if (settings.logoUrl) {
       try {
-        doc.addImage(settings.logoUrl, 'PNG', (210 - logoWidth) / 2, y, logoWidth, logoHeight);
+        doc.addImage(logoDataUrl || settings.logoUrl, logoFormat, (210 - logoWidth) / 2, y, logoWidth, logoHeight);
         y += logoHeight + 5;
       } catch (e) {
         console.warn("Failed to embed logo inside receipt", e);
@@ -608,7 +630,7 @@ export const generateReceiptPDF = async (receipt: any, settings: TemplateSetting
     let logoRendered = false;
     if (settings.logoUrl) {
       try {
-        doc.addImage(settings.logoUrl, 'PNG', leftMargin, y, logoWidth, logoHeight);
+        doc.addImage(logoDataUrl || settings.logoUrl, logoFormat, leftMargin, y, logoWidth, logoHeight);
         logoRendered = true;
       } catch (e) {
         console.warn("Failed to embed logo inside receipt", e);
