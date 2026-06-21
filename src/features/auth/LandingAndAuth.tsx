@@ -62,33 +62,6 @@ interface LandingAndAuthProps {
 }
 
 
-function LiveCounter() {
-  const [count, setCount] = useState(100000);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCount(c => c + Math.floor(Math.random() * 2));
-    }, 300); // Much faster updates for dynamic feel
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="flex flex-col items-center space-y-2 py-4 animate-fade-in z-10 mt-6">
-      <div className="flex items-baseline gap-2 bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full border border-sky-100/50 shadow-sm">
-        <span className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-        <span className="text-3xl font-extrabold text-slate-900 tracking-tight font-heading">
-          {count.toLocaleString()}
-        </span>
-        <span className="text-sm font-semibold text-slate-600 flex items-center gap-1.5">
-          <Store className="w-4 h-4 text-sky-600" />
-          comercios operando
-        </span>
-      </div>
-      <p className="text-xs text-slate-500 font-medium">¿Qué esperas para unirte al sistema de mayor crecimiento?</p>
-    </div>
-  );
-}
-
 function AnimatedNumber({ target, duration = 2000, suffix = '', prefix = '' }: { target: number, duration?: number, suffix?: string, prefix?: string }) {
   const [count, setCount] = useState(0);
 
@@ -921,9 +894,6 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
 
                   {/* Eliminated Hero Buttons to avoid duplication with Header */}
-                  
-                  <LiveCounter />
-
 
 
                   {/* Slider Controls */}
