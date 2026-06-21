@@ -149,12 +149,25 @@ export default function DashboardSetupGuide({
   useEffect(() => {
     if (completedSteps > previousCompletedCount.current && previousCompletedCount.current > 0) {
       // Disparar confetti
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#34d399', '#6366f1', '#fcd34d']
-      });
+      try {
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#34d399', '#6366f1', '#fcd34d']
+          });
+        } else if (confetti && typeof (confetti as any).default === 'function') {
+          (confetti as any).default({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#34d399', '#6366f1', '#fcd34d']
+          });
+        }
+      } catch (e) {
+        console.error('Confetti error:', e);
+      }
       
       // Intentar reproducir sonido corto (opcional)
       try {
