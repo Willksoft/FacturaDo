@@ -1,6 +1,4 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
 
-# Sitemaps
-Sitemap: https://facturado.vercel.app/sitemap.xml
+Sitemap: https://facturadord.com/sitemap.xml
