@@ -165,12 +165,19 @@ export default function Directories({
   const [prodProviderId, setProdProviderId] = useState('');
   const [prodWarehouseId, setProdWarehouseId] = useState('');
   const [prodImageUrl, setProdImageUrl] = useState('');
+  const [prodImageFile, setProdImageFile] = useState<File | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [prodCategory, setProdCategory] = useState('');
   const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [isScanningBarcode, setIsScanningBarcode] = useState(false);
   const [isKit, setIsKit] = useState(false);
   const [kitItems, setKitItems] = useState<{ productId: string; quantity: number }[]>([]);
   const [batches, setBatches] = useState<{ batchNumber: string; expirationDate: string; stock: number }[]>([]);
+  const [showQuickProvider, setShowQuickProvider] = useState(false);
+  const [quickProvName, setQuickProvName] = useState('');
+  const [quickProvPhone, setQuickProvPhone] = useState('');
+  const [quickProvEmail, setQuickProvEmail] = useState('');
+  const prodImageFileRef = useRef<HTMLInputElement>(null);
   const [stockLevels, setStockLevels] = useState<{ warehouseId: string; stock: number; minStock: number }[]>([]);
 
   // Form Fields - Providers
@@ -311,9 +318,31 @@ export default function Directories({
   };
 
   // Handle Product Save
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prodName) return;
+
+    let finalImageUrl = prodImageUrl;
+    // If a file was selected, upload it to InsForge Storage
+    if (prodImageFile) {
+      setIsUploadingImage(true);
+      try {
+        const { insforge } = await import('../../lib/insforge');
+        const { data: uploadData, error: uploadError } = await insforge.storage
+          .from('product-images')
+          .uploadAuto(prodImageFile);
+        if (uploadData?.url) {
+          finalImageUrl = uploadData.url;
+        } else if (uploadError) {
+          console.warn('Image upload failed:', uploadError);
+          // Keep blob URL as fallback
+        }
+      } catch (err) {
+        console.warn('Image upload failed, using local blob URL', err);
+      } finally {
+        setIsUploadingImage(false);
+      }
+    }
 
     const data = {
       code: prodCode || `PROD-${Math.floor(100 + Math.random() * 900)}`,
@@ -324,9 +353,9 @@ export default function Directories({
       taxRate: Number(prodTax) || 0,
       stock: prodType === 'Servicio' ? 0 : Number(prodStock) || 0,
       minStock: Number(prodMinStock) || 0,
-      providerId: prodProviderId || undefined,
+      providerId: prodProviderId && prodProviderId !== 'none_selected' ? prodProviderId : undefined,
       warehouseId: prodType === 'Producto' && prodWarehouseId ? prodWarehouseId : undefined,
-      imageUrl: prodImageUrl || undefined,
+      imageUrl: finalImageUrl || undefined,
       category: prodCategory || undefined,
       isKit,
       kitItems,
@@ -355,10 +384,44 @@ export default function Directories({
     setProdStock('0');
     setProdMinStock('0');
     setProdProviderId('');
-    setProdWarehouseId('');
+    // Auto-select default warehouse
+    const defaultWh = warehouses.find(w => w.isDefault) || warehouses[0];
+    setProdWarehouseId(defaultWh?.id || '');
     setProdImageUrl('');
+    setProdImageFile(null);
     setProdCategory('');
     setIsCustomCategory(false);
+    setShowQuickProvider(false);
+    setQuickProvName('');
+    setQuickProvPhone('');
+    setQuickProvEmail('');
+  };
+
+  const handleProdImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProdImageFile(file);
+    // Show local preview immediately
+    const localUrl = URL.createObjectURL(file);
+    setProdImageUrl(localUrl);
+  };
+
+  const handleQuickCreateProvider = async () => {
+    if (!quickProvName.trim()) return;
+    const newProv = await addProvider({
+      name: quickProvName.trim(),
+      rnc: '',
+      email: quickProvEmail.trim(),
+      phone: quickProvPhone.trim(),
+      address: '',
+      contactName: '',
+    });
+    // Select the newly created provider
+    if (newProv?.id) setProdProviderId(newProv.id);
+    setShowQuickProvider(false);
+    setQuickProvName('');
+    setQuickProvPhone('');
+    setQuickProvEmail('');
   };
 
   // Barcode Scanner using BarcodeDetector API (supported in Chrome/Edge on mobile/desktop)
@@ -1537,7 +1600,9 @@ export default function Directories({
                         </SelectTrigger>
                         <SelectContent>
                           {warehouses.map(wh => (
-                            <SelectItem key={wh.id} value={wh.id}>{wh.name} ({wh.code})</SelectItem>
+                            <SelectItem key={wh.id} value={wh.id}>
+                              {wh.name} ({wh.code}){wh.isDefault ? ' ✓' : ''}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -1545,41 +1610,99 @@ export default function Directories({
                   </>
                 )}
 
+                {/* Proveedor + Quick Create */}
                 <div className="space-y-1">
-                  <Label htmlFor="p-prov" className="text-xs font-semibold">Proveedor Suministrante</Label>
-                  <Select value={prodProviderId} onValueChange={(val) => setProdProviderId(val)}>
-                    <SelectTrigger id="p-prov" className="h-9">
-                      <SelectValue placeholder="Seleccione un proveedor (Opcional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none_selected">Ninguno</SelectItem>
-                      {providers.map(p => (
-                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="p-prov" className="text-xs font-semibold">Proveedor Suministrante</Label>
+                    <button
+                      type="button"
+                      onClick={() => setShowQuickProvider(!showQuickProvider)}
+                      className="text-[10px] text-blue-600 hover:text-blue-800 font-extrabold bg-transparent border-0 cursor-pointer"
+                    >
+                      {showQuickProvider ? 'Cancelar' : '+ Crear Proveedor'}
+                    </button>
+                  </div>
+                  {showQuickProvider ? (
+                    <div className="space-y-2 p-3 bg-blue-50/50 border border-blue-150 rounded-xl">
+                      <p className="text-[10px] font-bold text-blue-700">Nuevo Proveedor (Rápido)</p>
+                      <Input placeholder="Nombre del proveedor *" value={quickProvName} onChange={e => setQuickProvName(e.target.value)} className="h-8 text-xs bg-white" />
+                      <div className="grid grid-cols-2 gap-2">
+                        <Input placeholder="Teléfono (opcional)" value={quickProvPhone} onChange={e => setQuickProvPhone(e.target.value)} className="h-8 text-xs bg-white" />
+                        <Input type="email" placeholder="Correo (opcional)" value={quickProvEmail} onChange={e => setQuickProvEmail(e.target.value)} className="h-8 text-xs bg-white" />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleQuickCreateProvider}
+                        disabled={!quickProvName.trim()}
+                        className="w-full h-8 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg disabled:opacity-50 cursor-pointer transition-all"
+                      >
+                        Guardar y Seleccionar Proveedor
+                      </button>
+                    </div>
+                  ) : (
+                    <Select value={prodProviderId} onValueChange={(val) => setProdProviderId(val)}>
+                      <SelectTrigger id="p-prov" className="h-9">
+                        <SelectValue placeholder="Seleccione un proveedor (Opcional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none_selected">Ninguno</SelectItem>
+                        {providers.map(p => (
+                          <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
 
+                {/* Foto del Producto - Upload desde PC/Dispositivo */}
                 <div className="space-y-1">
-                  <Label htmlFor="p-img" className="text-xs font-semibold text-neutral-800">URL Foto del Producto / Servicio</Label>
-                  <Input id="p-img" placeholder="Ej. https://images.com/art.jpg" value={prodImageUrl} onChange={(e) => setProdImageUrl(e.target.value)} />
-                  <div className="flex flex-wrap gap-1 mt-1 border border-dashed border-neutral-200 p-1.5 rounded-lg bg-neutral-50/50">
-                    <span className="text-[9px] font-bold text-neutral-400 self-center uppercase mr-1 block w-full">Fotos Rápidas:</span>
-                    {[
-                      { label: '🏗️ Cemento', url: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=250&q=80' },
-                      { label: '🔩 Varilla', url: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=250&q=80' },
-                      { label: '🧱 Bloques', url: 'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?w=250&q=80' },
-                      { label: '🔨 Herramientas', url: 'https://images.unsplash.com/photo-1581242163695-19d0acfd486f?w=250&q=80' },
-                    ].map(pill => (
+                  <Label className="text-xs font-semibold text-neutral-800">Foto del Producto / Servicio</Label>
+                  <input
+                    ref={prodImageFileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleProdImageFileChange}
+                  />
+                  <div className="flex gap-2 items-start">
+                    {/* Preview */}
+                    <div
+                      className="w-16 h-16 rounded-xl border-2 border-dashed border-neutral-200 bg-neutral-50 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:border-neutral-400 transition-all"
+                      onClick={() => prodImageFileRef.current?.click()}
+                    >
+                      {prodImageUrl ? (
+                        <img src={prodImageUrl} alt="preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <Package className="w-6 h-6 text-neutral-300" />
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-2">
                       <button
-                        key={pill.label}
                         type="button"
-                        onClick={() => setProdImageUrl(pill.url)}
-                        className="text-[9px] bg-white border border-neutral-200 hover:border-neutral-850 hover:bg-neutral-50 text-neutral-800 px-1.5 py-0.5 rounded-md transition-all"
+                        onClick={() => prodImageFileRef.current?.click()}
+                        className="w-full h-9 flex items-center justify-center gap-2 border border-neutral-200 hover:border-neutral-400 bg-white hover:bg-neutral-50 text-neutral-700 text-xs font-semibold rounded-lg transition-all cursor-pointer"
                       >
-                        {pill.label}
+                        <Upload className="w-4 h-4" />
+                        {prodImageFile ? 'Cambiar imagen' : 'Subir desde PC / Dispositivo'}
                       </button>
-                    ))}
+                      {prodImageUrl && !prodImageFile && (
+                        <Input
+                          placeholder="O pega una URL de imagen"
+                          value={prodImageUrl}
+                          onChange={e => setProdImageUrl(e.target.value)}
+                          className="h-8 text-xs"
+                        />
+                      )}
+                      {(prodImageUrl || prodImageFile) && (
+                        <button
+                          type="button"
+                          onClick={() => { setProdImageUrl(''); setProdImageFile(null); }}
+                          className="text-[10px] text-red-500 hover:text-red-700 font-semibold cursor-pointer bg-transparent border-0"
+                        >
+                          Quitar imagen
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1587,7 +1710,9 @@ export default function Directories({
 
             <DialogFooter className="mt-4 pt-3 border-t border-neutral-100">
               <Button type="button" variant="outline" size="sm" onClick={() => setProductModalOpen(false)}>Cancelar</Button>
-              <Button type="submit" size="sm" className="bg-black hover:bg-neutral-800 text-white font-bold">Guardar Ítem o Servicio</Button>
+              <Button type="submit" size="sm" disabled={isUploadingImage} className="bg-black hover:bg-neutral-800 text-white font-bold">
+                {isUploadingImage ? <><Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />Subiendo imagen...</> : 'Guardar Ítem o Servicio'}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -1656,7 +1781,7 @@ export default function Directories({
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
                   <div className="flex justify-between items-center">
-                    <Label htmlFor="prov-rnc" className="text-xs">RNC (9 dígitos) *</Label>
+                    <Label htmlFor="prov-rnc" className="text-xs">RNC (9 dígitos) <span className="text-neutral-400 font-normal">(Opcional)</span></Label>
                     <button
                       type="button"
                       onClick={handleValidateProvRnc}
@@ -1669,14 +1794,13 @@ export default function Directories({
                   <div className="relative">
                     <Input 
                       id="prov-rnc" 
-                      placeholder="101112233" 
+                      placeholder="101112233 (opcional)" 
                       value={provRnc} 
                       onChange={(e) => {
                         setProvRnc(e.target.value);
                         if (provDgiiValidation) setProvDgiiValidation(null);
                         if (provDgiiError) setProvDgiiError(null);
                       }} 
-                      required 
                     />
                     {provDgiiValidation?.valid && provDgiiValidation?.found_in_dgii && (
                       <span className="absolute right-2 top-2 text-emerald-600" title="Verificado DGII">
