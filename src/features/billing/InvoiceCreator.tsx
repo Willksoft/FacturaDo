@@ -20,6 +20,7 @@ interface InvoiceCreatorProps {
   currentUser: any;
   initialDocType?: 'Factura' | 'Cotizacion';
   initialPrefilledDoc?: Invoice;
+  deleteInvoice?: (id: string) => void;
   addClient: (client: Omit<Client, 'id' | 'createdAt'>) => Client | Promise<Client>;
   addProduct: (product: Omit<Product, 'id'>) => Product | Promise<Product>;
   templateSettings?: any;
@@ -39,6 +40,7 @@ export default function InvoiceCreator({
   currentUser,
   initialDocType,
   initialPrefilledDoc,
+  deleteInvoice,
   addClient,
   addProduct,
   sellers = [],
@@ -291,38 +293,50 @@ export default function InvoiceCreator({
         const prod = products.find(p => p.id === it.productId);
         if (!prod) return it; // skip custom
 
-        let basePrice = prod.price;
-        let tax = prod.taxRate;
-        
-        if (isInformal) {
-          if (prod.priceIncludesTax !== false) {
-            basePrice = prod.price;
-          } else {
-            basePrice = prod.price * (1 + prod.taxRate / 100);
-          }
-          tax = 0;
-        } else {
-          if (prod.priceIncludesTax !== false) {
-            basePrice = prod.price / (1 + prod.taxRate / 100);
-          } else {
-            basePrice = prod.price;
-          }
-          tax = prod.taxRate;
+        const shouldBeInformal = isInformal;
+        const currentlyInformal = it.taxRate === 0;
+
+        // If the item is already in the correct tax state, do not override its price
+        if (shouldBeInformal === currentlyInformal && !isInformal) {
+           // We only check if taxRate needs update if they are formal and change NCF tax rules
+           // But since NCFs mostly keep the same tax rate (except SIN which makes it informal),
+           // we can safely assume it's correct.
+           return it;
+        }
+        if (shouldBeInformal === currentlyInformal && isInformal) {
+           return it;
         }
 
-        basePrice = parseFloat(basePrice.toFixed(2));
-        if (it.price === basePrice && it.taxRate === tax) return it; // no change
+        let newPrice = it.price;
+        let newTaxRate = it.taxRate;
+        
+        if (shouldBeInformal && !currentlyInformal) {
+          // Transition to Informal: The user wants final price. We add the tax back into the base price.
+          newPrice = it.price * (1 + it.taxRate / 100);
+          newTaxRate = 0;
+        } else if (!shouldBeInformal && currentlyInformal) {
+          // Transition to Formal: We extract the tax from the price (if it was tax-inclusive)
+          newTaxRate = prod.taxRate;
+          if (prod.priceIncludesTax !== false) {
+            newPrice = it.price / (1 + newTaxRate / 100);
+          } else {
+            newPrice = it.price;
+          }
+        }
+
+        newPrice = parseFloat(newPrice.toFixed(2));
+        if (it.price === newPrice && it.taxRate === newTaxRate) return it; // no change
         changed = true;
 
-        const subNoDisc = it.quantity * basePrice;
+        const subNoDisc = it.quantity * newPrice;
         const discountAm = subNoDisc * ((it.discount || 0) / 100);
         const suball = subNoDisc - discountAm;
-        const taxAmount = suball * (tax / 100);
+        const taxAmount = suball * (newTaxRate / 100);
 
         return {
           ...it,
-          price: basePrice,
-          taxRate: tax,
+          price: newPrice,
+          taxRate: newTaxRate,
           taxAmount: parseFloat(taxAmount.toFixed(2)),
           total: parseFloat((suball + taxAmount).toFixed(2))
         };
@@ -636,7 +650,56 @@ export default function InvoiceCreator({
     if (items.length === 0) {
       alert('Debe cargar por lo menos una línea de productos o servicios antes de facturar.');
       return;
+      return;
     }
+
+    const handleSaveDraft = () => {
+      if (!selectedClientId) {
+        alert('Favor seleccionar un cliente para procesar la transacci\u00f3n.');
+        return;
+      }
+      if (items.length === 0) {
+        alert('Debe agregar al menos un art\u00edculo o servicio al documento.');
+        return;
+      }
+      const draftDoc = createInvoiceOrQuote({
+        type: docType,
+        client: selectedClient!,
+        items,
+        paymentMethod,
+        ncfType: docType === 'Cotizacion' ? 'SIN' : selectedNcfType,
+        customSequenceNumber: overrideSequence && customSequenceNum ? Number(customSequenceNum) - 1 : undefined,
+        notes,
+        dueDate,
+        createdAt: new Date(issueDate + "T12:00:00Z").toISOString(),
+        currency,
+        paymentCondition,
+        discountRate,
+        status: 'Borrador',
+        isDraft: true,
+        sellerId: selectedSellerId || undefined,
+        sellerName: selectedSellerId ? sellers.find(s => s.id === selectedSellerId)?.name : undefined,
+        shiftId: activeShift ? activeShift.id : undefined,
+      });
+
+      if (initialPrefilledDoc && initialPrefilledDoc.status === 'Borrador' && deleteInvoice) {
+        deleteInvoice(initialPrefilledDoc.id);
+      }
+
+      localStorage.removeItem('inv_creator_draft');
+      setSuccessAnimationMessage('Borrador Guardado');
+      setShowSuccessAnimation(true);
+      
+      setTimeout(() => {
+        setShowSuccessAnimation(false);
+        setSelectedClientId('');
+        setItems([]);
+        setPayments([]);
+        setNotes('');
+        setHasRestoredDraft(false);
+        onSuccess(draftDoc);
+      }, 1500);
+    };
 
     setIsEmitting(true);
 
@@ -684,6 +747,10 @@ export default function InvoiceCreator({
         sellerName: selectedSellerId ? sellers.find(s => s.id === selectedSellerId)?.name : undefined,
         shiftId: activeShift ? activeShift.id : undefined,
       });
+
+      if (initialPrefilledDoc && initialPrefilledDoc.status === 'Borrador' && deleteInvoice) {
+        deleteInvoice(initialPrefilledDoc.id);
+      }
 
     // Capture and immediately apply payments if it's a Factura
     if (docType === 'Factura' && payments.length > 0 && payInvoice && createdDoc) {
@@ -1983,19 +2050,29 @@ export default function InvoiceCreator({
 
               <div className="mt-4 pt-4 border-t border-neutral-150 space-y-2">
                 {isRoleAuthorized ? (
-                  <Button
-                    onClick={handleCreateDocument}
-                    disabled={isEmitting}
-                    className="w-full h-9 bg-neutral-950 text-white hover:bg-neutral-800 font-semibold text-xs flex items-center justify-center gap-1.5"
-                    id="submit-invoice-btn"
-                  >
-                    {isEmitting ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Plus className="w-4 h-4" />
-                    )}
-                    {isEmitting ? 'Procesando e-CF...' : 'Guardar'}
-                  </Button>
+                  <>
+                    <Button
+                      onClick={handleCreateDocument}
+                      disabled={isEmitting}
+                      className="w-full h-9 bg-neutral-950 text-white hover:bg-neutral-800 font-semibold text-xs flex items-center justify-center gap-1.5"
+                      id="submit-invoice-btn"
+                    >
+                      {isEmitting ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Plus className="w-4 h-4" />
+                      )}
+                      {isEmitting ? 'Procesando...' : 'Guardar'}
+                    </Button>
+                    <Button
+                      onClick={handleSaveDraft}
+                      disabled={isEmitting}
+                      variant="outline"
+                      className="w-full h-9 text-xs border-neutral-250 hover:bg-neutral-100 font-semibold"
+                    >
+                      Guardar como Borrador
+                    </Button>
+                  </>
                 ) : (
                   <div className="flex items-start gap-2 p-3 bg-red-50 text-red-900 rounded-lg text-xs leading-relaxed border border-red-150">
                     Su perfil de usuario no cuenta con los permisos necesarios para emitir documentos.

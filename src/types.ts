@@ -1,6 +1,6 @@
 export type ClientType = 'Fisica' | 'Empresa';
 export type InvoiceType = 'Factura' | 'Cotizacion';
-export type InvoiceStatus = 'Pagada' | 'Pendiente' | 'Anulada' | 'Parcial';
+export type InvoiceStatus = 'Pagada' | 'Pendiente' | 'Anulada' | 'Parcial' | 'Borrador';
 export type PaymentMethod = 'Efectivo' | 'Transferencia' | 'Tarjeta' | 'Crédito';
 export type NcfType = 'B01' | 'B02' | 'B14' | 'B15' | 'SIN' | 'E31' | 'E32' | 'E33' | 'E34' | 'E44' | 'E45'; // B*: Clásicos, E*: Electrónicos
 

@@ -6,7 +6,7 @@ import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
-import { ArrowLeft, Edit, Copy, Download, ReceiptIcon, CircleAlert, CheckCircle2, Landmark, HelpCircle, Mail, AlertTriangle, Calendar, Printer, Palette, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Edit, Copy, Download, ReceiptIcon, CircleAlert, CheckCircle2, Landmark, HelpCircle, Mail, AlertTriangle, Calendar, Printer, Palette, MessageCircle, Pencil } from 'lucide-react';
 import { generateInvoicePDF } from '../../lib/pdfGenerator';
 import TemplateStylePicker from '../settings/TemplateStylePicker';
 
@@ -177,10 +177,19 @@ export default function DocumentDetailsView({
             className="text-xs border-neutral-200 bg-white h-8.5 hover:bg-neutral-50 transition-colors"
             onClick={() => onDuplicate(invoice)}
             id="duplicate-doc-btn"
-            title="Hacer una copia duplicada de este documento"
+            title={invoice.status === 'Borrador' ? "Continuar editando este borrador" : "Hacer una copia duplicada de este documento"}
           >
-            <Copy className="w-3.5 h-3.5 mr-1.5 text-neutral-600" />
-            Duplicar / Copiar
+            {invoice.status === 'Borrador' ? (
+              <>
+                <Pencil className="w-3.5 h-3.5 mr-1.5 text-neutral-600" />
+                Retomar Borrador
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5 mr-1.5 text-neutral-600" />
+                Duplicar / Copiar
+              </>
+            )}
           </Button>
 
           {/* Download PDF button */}

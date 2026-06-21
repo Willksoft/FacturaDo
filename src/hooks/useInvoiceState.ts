@@ -2019,6 +2019,8 @@ export function useInvoiceState() {
     dueDate?: string;
     originalQuoteId?: string;
     originalQuoteNo?: string;
+    status?: InvoiceStatus;
+    isDraft?: boolean;
   }) => {
     const isQuote = data.type === 'Cotizacion';
     
@@ -2143,7 +2145,7 @@ export function useInvoiceState() {
       subtotal,
       taxAmount,
       total,
-      status: 'Pendiente',
+      status: data.status || 'Pendiente',
       ncfType: resolvedNcfType,
       ncf: computedNcf,
       sequenceNumber: selectedSequenceNumber,
@@ -2159,7 +2161,7 @@ export function useInvoiceState() {
       discountAmount: computedDiscountAmount,
     };
 
-    if (!isQuote) {
+    if (!isQuote && data.status !== 'Borrador') {
       let updatedProducts = [...products];
       const prefix = getDbPrefix();
 
