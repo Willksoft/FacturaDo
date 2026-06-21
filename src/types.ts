@@ -57,6 +57,11 @@ export interface Product {
   imageUrl?: string; // photo/picture URL of the product
   category?: string; // category tag
   createdAt: string;
+  // Refined Inventory
+  isKit?: boolean;
+  kitItems?: { productId: string; quantity: number }[];
+  batches?: { batchNumber: string; expirationDate: string; stock: number }[];
+  stockLevels?: { warehouseId: string; stock: number; minStock: number }[];
 }
 
 export interface PaymentDetail {
