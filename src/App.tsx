@@ -872,8 +872,14 @@ export default function App() {
   const executeNavigation = (destination: TabType) => {
     rawSetCurrentTab(destination);
     setMobileMenuOpen(false);
-    setSelectedInvoiceForPreview(null);
-    setPrefilledDocForCopy(null);
+    
+    if (destination !== 'view-document' && destination !== 'edit-document') {
+      setSelectedInvoiceForPreview(null);
+    }
+    if (destination !== 'create' && destination !== 'view-document' && destination !== 'edit-document') {
+      setPrefilledDocForCopy(null);
+    }
+    
     if (destination === 'facturas' || destination === 'cotizaciones') {
       setInitialStatusFilter('Todas');
     }
