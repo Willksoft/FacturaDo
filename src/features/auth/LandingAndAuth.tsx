@@ -58,6 +58,7 @@ interface LandingAndAuthProps {
   onLoginSuccess: (user: any) => void;
   usersList: any[];
   initialView?: 'landing' | 'login' | 'register' | 'ayuda';
+  isLoggedIn?: boolean;
 }
 
 
@@ -88,7 +89,7 @@ function LiveCounter() {
   );
 }
 
-export default function LandingAndAuth({ onLoginSuccess, usersList, initialView = 'landing' }: LandingAndAuthProps) {
+export default function LandingAndAuth({ onLoginSuccess, usersList, initialView = 'landing', isLoggedIn = false }: LandingAndAuthProps) {
   const { scrollY } = useScroll();
   const yParallax = useTransform(scrollY, [0, 1000], [0, 120]);
   const navigate = useNavigate();
@@ -234,7 +235,6 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
   const [socialProviderName, setSocialProviderName] = useState<'Google' | 'Apple' | null>(null);
   const [isEmailRegisterMode, setIsEmailRegisterMode] = useState(false);
 
-  // Register state
   const [registerForm, setRegisterForm] = useState({
     businessName: '',
     ownerName: '',
@@ -242,7 +242,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
     phone: '',
     password: '',
     confirmPassword: '',
-    agree: true
+    agree: false
   });
   const [registerSuccess, setRegisterSuccess] = useState(false);
   const [emailConfirmationRequired, setEmailConfirmationRequired] = useState(false);
@@ -459,6 +459,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
       return;
     }
 
+    if (!registerForm.agree) {
+      setLoginError('Debes aceptar los Términos y Condiciones y las Políticas de Privacidad para continuar.');
+      return;
+    }
+
     // Input sanitization / injection checks
     const hasSuspiciousChars = /[<>'"\\;]/.test(registerForm.email) || /[<>'"\\;]/.test(registerForm.businessName) || /[<>'"\\;]/.test(registerForm.ownerName);
     if (hasSuspiciousChars) {
@@ -546,11 +551,15 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
     }
   };
 
-  // Completa los datos restantes del registro (Paso 2)
   const handleRemainingDetailsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!registerForm.businessName || !registerForm.ownerName) {
       setLoginError('El nombre del comercio y de propietario son obligatorios.');
+      return;
+    }
+
+    if (!registerForm.agree) {
+      setLoginError('Debes aceptar los Términos y Condiciones y las Políticas de Privacidad para continuar.');
       return;
     }
 
@@ -686,19 +695,29 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
               {/* Desktop CTA actions */}
               <div className="hidden md:flex items-center gap-2 xl:gap-3">
-                
-                <button
-                  onClick={() => setView('login')}
-                  className="whitespace-nowrap px-4 xl:px-5 py-2.5 text-[13px] xl:text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200"
-                >
-                  Iniciar Sesión
-                </button>
-                <button
-                  onClick={() => setView('register')}
-                  className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-bold bg-slate-900 hover:bg-black text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
-                >
-                  Registrarse Gratis
-                </button>
+                {isLoggedIn ? (
+                  <button
+                    onClick={() => navigate('/dashboard')}
+                    className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-bold bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
+                  >
+                    Ir al Dashboard
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => setView('login')}
+                      className="whitespace-nowrap px-4 xl:px-5 py-2.5 text-[13px] xl:text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200"
+                    >
+                      Iniciar Sesión
+                    </button>
+                    <button
+                      onClick={() => setView('register')}
+                      className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-bold bg-slate-900 hover:bg-black text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
+                    >
+                      Registrarse Gratis
+                    </button>
+                  </>
+                )}
               </div>
 
               {/* Mobile Hamburger Button */}
@@ -757,18 +776,29 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     </a>
 
                     <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100">
-                      <button
-                        onClick={() => setView('login')}
-                        className="w-full py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200 text-center"
-                      >
-                        Iniciar Sesión
-                      </button>
-                      <button
-                        onClick={() => setView('register')}
-                        className="w-full py-3 text-xs font-bold bg-slate-900 hover:bg-black text-white rounded-xl transition-all shadow-md cursor-pointer text-center"
-                      >
-                        Registrarse
-                      </button>
+                      {isLoggedIn ? (
+                        <button
+                          onClick={() => navigate('/dashboard')}
+                          className="col-span-2 w-full py-3 text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-all shadow-md cursor-pointer text-center"
+                        >
+                          Ir al Dashboard
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => setView('login')}
+                            className="w-full py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200 text-center"
+                          >
+                            Iniciar Sesión
+                          </button>
+                          <button
+                            onClick={() => setView('register')}
+                            className="w-full py-3 text-xs font-bold bg-slate-900 hover:bg-black text-white rounded-xl transition-all shadow-md cursor-pointer text-center"
+                          >
+                            Registrarse
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -2178,6 +2208,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                           setLoginError('Las contraseñas no coinciden.');
                           return;
                         }
+                        if (!registerForm.agree) {
+                          setLoginError('Debes aceptar los Términos y Condiciones y Políticas de Privacidad para continuar.');
+                          return;
+                        }
                         setRegisterForm(prev => ({
                           ...prev,
                           email: email,
@@ -2251,22 +2285,56 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     </div>
 
                     {isEmailRegisterMode && (
-                      <div className="space-y-1">
-                        <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Confirmar Clave de Acceso *</label>
-                        <div className="relative">
-                          <input
-                            type={showConfirmPassword ? "text" : "password"}
-                            placeholder="••••••••"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full h-12 pl-3.5 pr-10 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
-                            required
-                          />
-                          <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-neutral-600 cursor-pointer">
-                            {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                          </button>
+                      <>
+                        <div className="space-y-1">
+                          <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Confirmar Clave de Acceso *</label>
+                          <div className="relative">
+                            <input
+                              type={showConfirmPassword ? "text" : "password"}
+                              placeholder="••••••••"
+                              value={confirmPassword}
+                              onChange={(e) => setConfirmPassword(e.target.value)}
+                              className="w-full h-12 pl-3.5 pr-10 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent text-sm bg-neutral-50 focus:bg-white transition-all font-sans"
+                              required
+                            />
+                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3.5 top-3.5 text-neutral-400 hover:text-neutral-600 cursor-pointer">
+                              {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            </button>
+                          </div>
                         </div>
-                      </div>
+
+                        <div className="flex items-start gap-2.5 font-sans text-xs text-neutral-600 py-1 mt-2 select-none">
+                          <input
+                            type="checkbox"
+                            id="agree-checkbox-email"
+                            checked={registerForm.agree}
+                            onChange={(e) => setRegisterForm({ ...registerForm, agree: e.target.checked })}
+                            className="w-5 h-5 accent-[#1A2732] shrink-0 mt-0.5"
+                          />
+                          <label htmlFor="agree-checkbox-email" className="cursor-pointer leading-relaxed">
+                            Acepto los{' '}
+                            <span
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setShowTermsModal(true);
+                              }}
+                              className="text-[#1A2732] font-semibold hover:underline cursor-pointer"
+                            >
+                              términos y condiciones
+                            </span>{' '}
+                            y las{' '}
+                            <span
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setShowPrivacyModal(true);
+                              }}
+                              className="text-[#1A2732] font-semibold hover:underline cursor-pointer"
+                            >
+                              políticas de privacidad
+                            </span>
+                          </label>
+                        </div>
+                      </>
                     )}
 
                     <button
