@@ -89,6 +89,58 @@ function LiveCounter() {
   );
 }
 
+function AnimatedNumber({ target, duration = 2000, suffix = '', prefix = '' }: { target: number, duration?: number, suffix?: string, prefix?: string }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTimestamp: number;
+    let animationFrameId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      // easeOutExpo
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      
+      setCount(Math.floor(easeProgress * target));
+      
+      if (progress < 1) {
+        animationFrameId = window.requestAnimationFrame(step);
+      }
+    };
+    
+    animationFrameId = window.requestAnimationFrame(step);
+    
+    return () => {
+      if (animationFrameId) window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [target, duration]);
+
+  return <span>{prefix}{count.toLocaleString()}{suffix}</span>;
+}
+
+function StatCounters() {
+  return (
+    <div className="w-full bg-slate-50 pb-8 pt-4 px-4 sm:px-6 lg:px-8 border-b border-slate-100/50 relative z-10">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        {[
+          { label: 'Facturas Emitidas', value: 2542000, suffix: '+' },
+          { label: 'Negocios Activos', value: 10500, suffix: '+' },
+          { label: 'Ahorro en Contador', value: 85, prefix: '', suffix: '%' },
+          { label: 'Uptime Sistema', value: 99, suffix: '.9%' }
+        ].map((stat, idx) => (
+          <div key={idx} className="flex flex-col items-center justify-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 text-center hover:shadow-md transition-shadow">
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-blue-700 font-heading mb-2">
+              <AnimatedNumber target={stat.value} suffix={stat.suffix} prefix={stat.prefix} duration={2500 + (idx * 300)} />
+            </div>
+            <div className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-widest">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function LandingAndAuth({ onLoginSuccess, usersList, initialView = 'landing', isLoggedIn = false }: LandingAndAuthProps) {
   const { scrollY } = useScroll();
   const yParallax = useTransform(scrollY, [0, 1000], [0, 120]);
@@ -821,6 +873,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               />
             </button>
           </div>
+
+          <StatCounters />
 
           {/* Hero Section */}
           <section className="relative overflow-visible bg-gradient-to-b from-white via-white to-white pt-10 border-b border-slate-100">
