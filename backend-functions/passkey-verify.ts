@@ -128,14 +128,38 @@ export default async function (req: Request): Promise<Response> {
 
         if (linkError) throw new Error(`Failed to generate auth token: ${linkError.message}`);
 
-        // Extract token from URL
-        // Format: https://site.com/auth/v1/verify?token=PKK2e...&type=magiclink
-        const url = new URL(linkData.properties.action_link);
-        const magicToken = url.searchParams.get('token');
+        // Extract token from magic link URL and verify it server-side
+        // This avoids needing a client-side verifyOtp method
+        const actionUrl = new URL(linkData.properties.action_link);
+        const magicToken = actionUrl.searchParams.get('token');
+
+        // Verify the magic link token server-side via the GoTrue API
+        const verifyResponse = await fetch(`${supabaseUrl}/auth/v1/verify`, {
+          method: 'POST',
+          headers: {
+            'apikey': supabaseKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            token: magicToken,
+            type: 'magiclink',
+          })
+        });
+
+        if (!verifyResponse.ok) {
+          const verifyError = await verifyResponse.text();
+          throw new Error(`Token verification failed: ${verifyError}`);
+        }
+
+        const sessionData = await verifyResponse.json();
 
         return new Response(JSON.stringify({ 
           success: true, 
-          magicToken, 
+          session: {
+            access_token: sessionData.access_token,
+            refresh_token: sessionData.refresh_token,
+            user: sessionData.user,
+          },
           email: user.email 
         }), {
           status: 200,

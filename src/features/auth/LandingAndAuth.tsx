@@ -709,13 +709,31 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
       
       if (verifyErr || !verifyData || verifyData.error) throw new Error(verifyErr?.message || verifyData?.error || 'Huella no reconocida');
 
-      const { error: otpError } = await insforge.auth.verifyOtp({
-        email: verifyData.email,
-        token: verifyData.magicToken,
-        type: 'magiclink'
-      });
+      // The backend already verified the magic link token server-side and returned session data.
+      // Use refreshSession to establish the httpOnly cookie session, then get the user.
+      const { data: refreshed } = await insforge.auth.refreshSession();
+      const { data: { user } } = await insforge.auth.getCurrentUser();
 
-      if (otpError) throw new Error('Error al intercambiar el token biométrico de inicio de sesión.');
+      if (user) {
+        const loggedUser = {
+          id: user.id,
+          username: user.profile?.name || user.email?.split('@')[0] || 'Usuario',
+          email: user.email || verifyData.email,
+          role: 'Administrador' as const,
+          avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&h=256&q=80',
+          permissions: {
+            canCreateInvoice: true,
+            canEditInvoice: true,
+            canDeleteInvoice: true,
+            canExportReports: true,
+            canManageUsers: true
+          }
+        };
+        setIsSubmitting(false);
+        onLoginSuccess(loggedUser);
+      } else {
+        throw new Error('No se pudo establecer la sesión biométrica.');
+      }
       
     } catch (err: any) {
       console.error('Passkey login error:', err);

@@ -376,7 +376,7 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
                 >
                   <input type="checkbox" checked={ncfSin} readOnly className="mt-1 w-4 h-4 accent-sky-600" />
                   <div>
-                    <span className="font-bold text-neutral-900 block text-sm">Facturas Sin Comprobante (Proformas)</span>
+                    <span className="font-bold text-neutral-900 block text-sm">Facturas Sin Comprobante</span>
                     <span className="text-xs text-neutral-500 block leading-normal">Para control interno o usuarios que operan sin registro de RNC comercial.</span>
                   </div>
                 </div>

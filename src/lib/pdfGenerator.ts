@@ -1,4 +1,5 @@
 import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { Invoice, TemplateSettings } from '../types';
 
 const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
@@ -47,6 +48,51 @@ const getImageDimensionsAndData = (url: string): Promise<{ width: number; height
 };
 
 export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSettings) => {
+  const filename = `${invoice.type === 'Cotizacion' ? 'Cotizacion' : 'Factura'}_${invoice.invoiceNumber}.pdf`;
+  
+  // 1. VISUAL PARITY MODE: If the element is on screen, capture it exactly
+  const element = document.getElementById('printable-commercial-sheet');
+  if (element) {
+    try {
+      // Force element to 8.5in (letter width) for proper PDF sizing even on mobile
+      const originalWidth = element.style.width;
+      const originalMaxWidth = element.style.maxWidth;
+      element.style.width = '816px'; // 8.5 inches at 96 DPI
+      element.style.maxWidth = '816px';
+
+      const canvas = await html2canvas(element, {
+        scale: 2, // High resolution
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        windowWidth: 816
+      });
+      
+      // Revert styles
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+
+      const imgData = canvas.toDataURL('image/png');
+      
+      // Calculate aspect ratio to fit A4/Letter size
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'letter'
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(filename);
+      return; // Stop here!
+    } catch (err) {
+      console.warn("Visual parity capture failed, falling back to manual drawing", err);
+    }
+  }
+
+  // 2. FALLBACK MODE: Manual jsPDF drawing for list-view downloads or if html2canvas fails
   // Create instance
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -539,7 +585,6 @@ export const generateInvoicePDF = async (invoice: Invoice, settings: TemplateSet
   doc.text(splitFooter, leftMargin, y + 4);
 
   // Download the generated file
-  const filename = `${invoice.type === 'Cotizacion' ? 'Cotizacion' : 'Factura'}_${invoice.invoiceNumber}.pdf`;
   doc.save(filename);
 };
 
