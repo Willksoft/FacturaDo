@@ -326,8 +326,9 @@ export interface SupportTicket {
   subject: string;
   category: 'Sistema' | 'DGII' | 'Facturas' | 'Inventario';
   description: string;
-  status: 'Abierto' | 'En Proceso' | 'Resulto';
+  status: 'Abierto' | 'En Proceso' | 'Resulto' | 'Resuelto';
   createdAt: string;
+  response?: string;
 }
 
 export interface Expense {

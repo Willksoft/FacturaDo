@@ -528,7 +528,8 @@ const mapSupportTicketFromDb = (db: any): SupportTicket => ({
   category: db.category as any,
   description: db.description,
   status: db.status as any,
-  createdAt: db.created_at
+  createdAt: db.created_at,
+  response: db.response || undefined
 });
 
 const mapSupportTicketToDb = (t: SupportTicket) => ({
@@ -537,7 +538,8 @@ const mapSupportTicketToDb = (t: SupportTicket) => ({
   category: t.category,
   description: t.description,
   status: t.status,
-  created_at: t.createdAt
+  created_at: t.createdAt,
+  response: t.response || null
 });
 
 const mapSellerFromDb = (db: any): Seller => ({

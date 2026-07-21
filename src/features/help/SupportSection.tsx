@@ -133,19 +133,28 @@ export default function SupportSection({ tickets, addTicket }: SupportSectionPro
                     tickets.map((t) => (
                       <TableRow key={t.id} className="hover:bg-neutral-50/30 text-xs">
                         <TableCell className="font-semibold font-mono text-neutral-500">#{t.id}</TableCell>
-                        <TableCell className="font-semibold text-neutral-900">
-                          <div>{t.subject}</div>
-                          <div className="text-[10px] text-neutral-400 font-medium truncate max-w-[250px]">{t.description}</div>
+                        <TableCell className="font-semibold text-neutral-900 py-3">
+                          <div className="font-bold text-neutral-900 text-xs">{t.subject}</div>
+                          <div className="text-[11px] text-neutral-500 font-normal mt-0.5 max-w-[380px] leading-relaxed">{t.description}</div>
+                          {t.response && (
+                            <div className="mt-2 p-2.5 rounded-lg bg-emerald-50/80 border border-emerald-200/80 text-[11px] text-emerald-900 font-normal leading-relaxed flex items-start gap-1.5">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                              <div>
+                                <span className="font-bold text-emerald-950 block text-[10px] uppercase tracking-wider mb-0.5">Respuesta Oficial de Asistencia:</span>
+                                {t.response}
+                              </div>
+                            </div>
+                          )}
                         </TableCell>
-                        <TableCell className="font-medium text-neutral-600">{t.category}</TableCell>
-                        <TableCell className="text-center">
-                          <span className={`inline-flex px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                            t.status === 'Resulto' ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'
+                        <TableCell className="font-medium text-neutral-600 align-top pt-3">{t.category}</TableCell>
+                        <TableCell className="text-center align-top pt-3">
+                          <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            t.status === 'Resulto' || t.status === 'Resuelto' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                           }`}>
-                            {t.status}
+                            {t.status === 'Resulto' ? 'Resuelto' : t.status}
                           </span>
                         </TableCell>
-                        <TableCell className="text-right text-neutral-450 text-[11px] whitespace-nowrap">
+                        <TableCell className="text-right text-neutral-450 text-[11px] whitespace-nowrap align-top pt-3">
                           {new Date(t.createdAt).toLocaleDateString()}
                         </TableCell>
                       </TableRow>
