@@ -28,67 +28,79 @@ const normalizeKey = (str: string): string => {
     .replace(/[^a-z0-9]/g, ''); // keep only alphanumeric
 };
 
-// Synonym Dictionaries for Dominican Republic DGII & Standard Commerce
+// Synonym Dictionaries for Dominican Republic DGII & Standard Commerce (Alegra, QuickBooks, Cashflow, Odoo, Zoho, Sage, Softland)
 const FIELD_SYNONYMS: Record<string, string[]> = {
-  // Client / Provider Name
+  // Client / Provider Name (Alegra: "Nombre / Razón Social", QuickBooks: "Customer"/"Company", Cashflow: "Razón Social")
   name: [
     'nombre', 'razonsocial', 'nombrerazonsocial', 'cliente', 'proveedor',
     'suplidor', 'empresa', 'name', 'businessname', 'company', 'contact',
-    'nombredelcliente', 'nombredelproveedor', 'titular'
+    'nombredelcliente', 'nombredelproveedor', 'titular', 'customer',
+    'vendor', 'customername', 'vendorname', 'contacto', 'nombrecontacto',
+    'firstname', 'lastname', 'displayname', 'tercero', 'nombretercero'
   ],
-  // RNC / Cédula
+  // RNC / Cédula (Alegra: "Identificación", QuickBooks: "Tax ID", Cashflow: "RNC/Cédula")
   rncOrCedula: [
     'rnc', 'cedula', 'rnccedula', 'rncocedula', 'documento', 'taxid',
     'identificacion', 'numdocumento', 'rncsuplidor', 'rnccliente',
-    'numeroidentificacion', 'cedulaornc'
+    'numeroidentificacion', 'cedulaornc', 'numeroidentificacionfiscal',
+    'nit', 'nif', 'idnumber', 'vatnumber', 'taxnumber', 'cuit', 'rut'
   ],
   // Email
   email: [
-    'email', 'correo', 'mail', 'correoelectronico', 'emailaddress', 'contactoemail'
+    'email', 'correo', 'mail', 'correoelectronico', 'emailaddress', 'contactoemail',
+    'emailcontacto', 'primaryemail', 'correodefacturas'
   ],
   // Phone
   phone: [
-    'telefono', 'celular', 'tel', 'phone', 'mobile', 'telefonos', 'whatsapp', 'contacto'
+    'telefono', 'celular', 'tel', 'phone', 'mobile', 'telefonos', 'whatsapp', 'contacto',
+    'telefonomovil', 'telefonofijo', 'primaryphone', 'workphone', 'phonenumber'
   ],
   // Address
   address: [
-    'direccion', 'ubicacion', 'address', 'calle', 'domicilio', 'location', 'ciudad'
+    'direccion', 'ubicacion', 'address', 'calle', 'domicilio', 'location', 'ciudad',
+    'direccionprincipal', 'billtoaddress', 'shiptoaddress', 'street', 'city', 'provincia'
   ],
   // Client Type
   type: [
-    'tipo', 'tipocliente', 'tipopersona', 'clasificacion', 'categoria', 'clienttype'
+    'tipo', 'tipocliente', 'tipopersona', 'clasificacion', 'categoria', 'clienttype',
+    'personatipo', 'tipodeidentificacion'
   ],
-  // Product Code / SKU
+  // Product Code / SKU (Alegra: "Código / Referencia", QuickBooks: "Item / SKU")
   code: [
-    'codigo', 'sku', 'referencia', 'codigoproducto', 'code', 'barcode', 'codigodebarra', 'idproducto'
+    'codigo', 'sku', 'referencia', 'codigoproducto', 'code', 'barcode', 'codigodebarra',
+    'idproducto', 'itemnumber', 'itemcode', 'productcode', 'ref', 'codigorapido'
   ],
-  // Product Name
+  // Product Name (Alegra: "Descripción", QuickBooks: "Item Description")
   productName: [
-    'producto', 'descripcion', 'articulo', 'item', 'productname', 'title', 'nombreproducto'
+    'producto', 'descripcion', 'articulo', 'item', 'productname', 'title', 'nombreproducto',
+    'itemdescription', 'productdescription', 'concepto', 'detalledelproducto'
   ],
-  // Price
+  // Price (Alegra: "Precio de venta", QuickBooks: "Sales Price")
   price: [
-    'precio', 'preciodeventa', 'price', 'monto', 'unitprice', 'pvp', 'valor', 'preciounitario'
+    'precio', 'preciodeventa', 'price', 'monto', 'unitprice', 'pvp', 'valor', 'preciounitario',
+    'salesprice', 'rate', 'montounitario', 'preciosubtotal'
   ],
-  // Cost
+  // Cost (Alegra: "Costo unitario", QuickBooks: "Cost")
   cost: [
-    'costo', 'costounitario', 'costcompra', 'costoestimado', 'cost'
+    'costo', 'costounitario', 'costcompra', 'costoestimado', 'cost', 'unitcost', 'purchaseprice'
   ],
-  // Stock
+  // Stock (Alegra: "Stock inicial", QuickBooks: "Qty On Hand")
   stock: [
-    'stock', 'cantidad', 'existencia', 'inventario', 'qty', 'stockactual', 'unidades'
+    'stock', 'cantidad', 'existencia', 'inventario', 'qty', 'stockactual', 'unidades',
+    'qtyonhand', 'stockinicial', 'quantity', 'balance', 'existenciaactual'
   ],
   // Product Type
   productType: [
-    'tipoproducto', 'tipo', 'esServicio', 'itemtype', 'producttype'
+    'tipoproducto', 'tipo', 'esservicio', 'itemtype', 'producttype', 'esproducto'
   ],
-  // NCF
+  // NCF (Facturas/Cotizaciones)
   ncf: [
-    'ncf', 'comprobante', 'comprobantefiscal', 'numeroncf', 'ncffactura', 'ncfsecuencia'
+    'ncf', 'comprobante', 'comprobantefiscal', 'numeroncf', 'ncffactura', 'ncfsecuencia',
+    'invoicenumber', 'facturanumero', 'numfactura', 'invoiceno', 'foliorefiscal'
   ],
   // Invoice Total
   total: [
-    'total', 'monto', 'subtotal', 'grandtotal', 'montototal', 'valor'
+    'total', 'monto', 'subtotal', 'grandtotal', 'montototal', 'valor', 'amount', 'totalamount'
   ]
 };
 

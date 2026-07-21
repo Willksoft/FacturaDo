@@ -1730,6 +1730,59 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             </div>
           </motion.section>
 
+          {/* Importación Masiva Universal y Migración desde Otros Sistemas */}
+          <section className="py-16 sm:py-20 bg-gradient-to-b from-slate-900 to-black text-white relative overflow-hidden font-sans">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 relative z-10">
+              <div className="max-w-3xl mx-auto text-center space-y-3">
+                <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                  Migración e Importación Inteligente
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-white tracking-tight leading-tight">
+                  Importa tus Productos, Clientes, Facturas y Cotizaciones desde Cualquier Sistema
+                </h2>
+                <p className="text-sm sm:text-base text-slate-300">
+                  ¿Vienes de <strong>Alegra, QuickBooks, Cashflow, Odoo, Zoho, Sage, Softland</strong> o archivos Excel personalizados? 
+                  Nuestro motor lee directamente archivos <code>.xlsx</code>, <code>.csv</code>, <code>.xml</code> o <code>.txt</code> sin reestructurar datos.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-left">
+                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-3 hover:bg-white/10 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">1</div>
+                  <h3 className="text-base font-bold text-white">Compatibilidad Total</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Reconoce encabezados en español e inglés: <em>RNC, Cédula, Razón Social, SKU, Precio de Venta, Tax ID, Qty On Hand</em> y más.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-3 hover:bg-white/10 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">2</div>
+                  <h3 className="text-base font-bold text-white">Desinfección de RNCs</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Limpia guiones, puntos y espacios automáticamente. Clasifica entre Persona Física (11 dígitos) y Empresa (9 dígitos).
+                  </p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-3 hover:bg-white/10 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">3</div>
+                  <h3 className="text-base font-bold text-white">Monedas y Precios</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Detecta precios con símbolos monetarios (<code>RD$ 1,500.00</code> ➔ <code>1500</code>) y costos unitarios sin margen de error.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-3 hover:bg-white/10 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">4</div>
+                  <h3 className="text-base font-bold text-white">Vista Previa & Algoritmo Fuzzy</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Verifica las columnas mapeadas y la vista previa de datos antes de importar miles de filas a tu base de datos PostgreSQL.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <CompetitorComparison />
 
           {/* FAQ Accordion Section (Page 3 of Screenshot style) */}
