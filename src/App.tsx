@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePwaUpdate } from './hooks/usePwaUpdate';
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
 import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { insforge } from './lib/insforge';
 import { LogoFacturaDo, OldLogoFacturaDo } from './features/core/LogoFacturaDo';
@@ -43,6 +43,7 @@ const ExpensesView = React.lazy(() => import('./features/accounting/ExpensesView
 const VendedoresView = React.lazy(() => import('./features/hr/VendedoresView').then(m => ({ default: m.VendedoresView })));
 const AuditLogsView = React.lazy(() => import('./features/settings/AuditLogsView').then(m => ({ default: m.AuditLogsView })));
 const SecuritySettingsView = React.lazy(() => import('./features/settings/SecuritySettingsView').then(m => ({ default: m.SecuritySettingsView })));
+const SystemMigrationView = React.lazy(() => import('./features/migration/SystemMigrationView').then(m => ({ default: m.SystemMigrationView })));
 
 const Specialized = import('./features/accounting/SpecializedViews');
 const ClientHistoryView = React.lazy(() => Specialized.then(m => ({ default: m.ClientHistoryView })));
@@ -112,6 +113,7 @@ import {
   Briefcase,
   Eye,
   EyeOff,
+  UploadCloud,
 } from 'lucide-react';
 
 type TabType =
@@ -158,6 +160,7 @@ type TabType =
   | 'rep-608'
   | 'rep-609'
   | 'rep-excel'
+  | 'migracion'
   | 'cfg-datos'
   | 'cfg-apariencia'
   | 'cfg-impuestos'
@@ -851,6 +854,7 @@ export default function App() {
     { id: 'financial-accounts', name: 'Cuentas & Cajas', icon: Landmark },
     { id: 'gastos', name: 'Gastos & Compras', icon: TrendingDown },
     { id: 'reportes', name: 'Formatos DGII 606/7', icon: FileSpreadsheet },
+    { id: 'migracion', name: 'Migración de Sistemas', icon: UploadCloud },
     { id: 'configuracion', name: 'Configuración', icon: Settings, permission: true },
   ];
 
@@ -2225,6 +2229,21 @@ export default function App() {
 
           {currentTab === 'rep-excel' && (
             <ReportExcelView />
+          )}
+
+          {currentTab === 'migracion' && (
+            <SystemMigrationView
+              onImportClients={importClientsBulk}
+              onImportProducts={importProductsBulk}
+              onImportProviders={importProvidersBulk}
+              onImportInvoices={(invs) => {
+                toast.success(`Se importaron ${invs.length} comprobantes al registro de facturas`);
+              }}
+              showNotice={(msg, isSuccess) => {
+                if (isSuccess) toast.success(msg);
+                else toast.error(msg);
+              }}
+            />
           )}
 
           {currentTab === 'cfg-datos' && (

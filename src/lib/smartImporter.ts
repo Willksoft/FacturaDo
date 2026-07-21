@@ -409,3 +409,56 @@ export const smartImportProviders = async (file: File): Promise<SmartImportResul
     }))
   };
 };
+
+export type EntityType = 'client' | 'product' | 'provider' | 'invoice';
+
+export interface UniversalMigrationResult {
+  totalValid: number;
+  mappedColumns: { excelHeader: string; targetField: string }[];
+  sanitizedRecords: any[];
+  previewData: any[];
+}
+
+export const processSmartImport = async (file: File, targetEntity: EntityType): Promise<UniversalMigrationResult> => {
+  if (targetEntity === 'client') {
+    const res = await smartImportClients(file);
+    return {
+      totalValid: res.validRecords.length,
+      mappedColumns: res.mappings.map(m => ({ excelHeader: m.sourceColumn, targetField: m.targetField })),
+      sanitizedRecords: res.validRecords,
+      previewData: res.validRecords.map(r => ({ ...r, _isValid: true }))
+    };
+  } else if (targetEntity === 'product') {
+    const res = await smartImportProducts(file);
+    return {
+      totalValid: res.validRecords.length,
+      mappedColumns: res.mappings.map(m => ({ excelHeader: m.sourceColumn, targetField: m.targetField })),
+      sanitizedRecords: res.validRecords,
+      previewData: res.validRecords.map(r => ({ ...r, _isValid: true }))
+    };
+  } else if (targetEntity === 'provider') {
+    const res = await smartImportProviders(file);
+    return {
+      totalValid: res.validRecords.length,
+      mappedColumns: res.mappings.map(m => ({ excelHeader: m.sourceColumn, targetField: m.targetField })),
+      sanitizedRecords: res.validRecords,
+      previewData: res.validRecords.map(r => ({ ...r, _isValid: true }))
+    };
+  } else {
+    const { headers, rows } = await readFileGrid(file);
+    const records = rows.map((r) => ({
+      ncf: String(r[0] || 'B0100000001').trim(),
+      clientName: String(r[1] || 'Cliente Migrado').trim(),
+      subtotal: parseFloat(String(r[2] || '0').replace(/[^0-9.]/g, '')) || 0,
+      itbis: parseFloat(String(r[3] || '0').replace(/[^0-9.]/g, '')) || 0,
+      total: parseFloat(String(r[4] || '0').replace(/[^0-9.]/g, '')) || 0,
+      _isValid: true
+    }));
+    return {
+      totalValid: records.length,
+      mappedColumns: headers.map((h, i) => ({ excelHeader: h, targetField: ['ncf', 'clientName', 'subtotal', 'itbis', 'total'][i] || `col_${i}` })),
+      sanitizedRecords: records,
+      previewData: records
+    };
+  }
+};
