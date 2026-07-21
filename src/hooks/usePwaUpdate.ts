@@ -1,83 +1,75 @@
-import { useEffect, useState, useCallback } from 'react';
-
-interface UsePwaUpdateReturn {
-  /** Hay una nueva versión disponible esperando activarse */
-  updateAvailable: boolean;
-  /** Aplica la actualización (recarga la página con la nueva versión) */
-  applyUpdate: () => void;
-}
+import { useEffect } from 'react';
 
 /**
- * Hook que registra el Service Worker y detecta cuando hay
- * una nueva versión disponible para notificar al usuario.
+ * Hook que registra /sw.js y fuerza recarga automática
+ * cuando el Service Worker detecta una nueva versión.
+ *
+ * No requiere interacción del usuario — la actualización
+ * ocurre automáticamente (se recarga la página en background).
  */
-export function usePwaUpdate(): UsePwaUpdateReturn {
-  const [updateAvailable, setUpdateAvailable] = useState(false);
-  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
-
-  const applyUpdate = useCallback(() => {
-    if (waitingWorker) {
-      // Le dice al SW en espera que se active ahora
-      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-    }
-    // Recarga la página para usar el nuevo SW activo
-    window.location.reload();
-  }, [waitingWorker]);
-
+export function usePwaUpdate(): void {
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
+
+    // Evitar recargas en bucle: marcamos si ya recargamos en esta sesión
+    const RELOAD_FLAG = 'facturado_sw_reloaded';
 
     const registerSW = async () => {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js', {
-          // 'importScripts' scope
           scope: '/',
         });
 
-        // Verificar si ya hay un SW en espera al cargar
+        // Escuchar el BroadcastChannel del SW que avisa cuando se activa
+        const channel = new BroadcastChannel('facturado-sw-update');
+        channel.addEventListener('message', (event) => {
+          if (event.data?.type === 'SW_UPDATED') {
+            // Solo recargamos si no lo hicimos ya en esta carga de página
+            if (!sessionStorage.getItem(RELOAD_FLAG)) {
+              sessionStorage.setItem(RELOAD_FLAG, '1');
+              console.log('[PWA] Nueva versión activa, recargando…', event.data.version);
+              window.location.reload();
+            }
+          }
+        });
+
+        // Si ya hay un SW en espera (raro con skipWaiting pero por si acaso)
         if (registration.waiting) {
-          setWaitingWorker(registration.waiting);
-          setUpdateAvailable(true);
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
         }
 
-        // Detectar cuando un nuevo SW termina de instalarse y queda en espera
+        // Cuando se descarga una actualización
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           if (!newWorker) return;
-
           newWorker.addEventListener('statechange', () => {
-            if (
-              newWorker.state === 'installed' &&
-              navigator.serviceWorker.controller
-            ) {
-              // Hay un nuevo SW instalado esperando activarse
-              setWaitingWorker(newWorker);
-              setUpdateAvailable(true);
+            if (newWorker.state === 'installed') {
+              // Forzar skipWaiting por si acaso no se llamó en el install del SW
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
             }
           });
         });
 
-        // Escuchar cuando el SW controlador cambia (después de skipWaiting)
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          // Evitar recargas en loop
-          window.location.reload();
-        });
+        // Limpiar el flag de recarga cuando la página carga normalmente
+        // (así la próxima actualización volverá a poder recargar)
+        window.addEventListener('load', () => {
+          sessionStorage.removeItem(RELOAD_FLAG);
+        }, { once: true });
 
-        // Revisar actualizaciones cada 60 segundos si la app está abierta
+        // Revisar actualizaciones silenciosamente cada 5 minutos
         const interval = setInterval(() => {
-          registration.update().catch(() => {
-            // Silencioso si no hay red
-          });
-        }, 60 * 1000);
+          registration.update().catch(() => {/* sin red, silencioso */});
+        }, 5 * 60 * 1000);
 
-        return () => clearInterval(interval);
+        return () => {
+          clearInterval(interval);
+          channel.close();
+        };
       } catch (err) {
-        console.warn('[PWA] Error al registrar el service worker:', err);
+        console.warn('[PWA] Error registrando service worker:', err);
       }
     };
 
     registerSW();
   }, []);
-
-  return { updateAvailable, applyUpdate };
 }

@@ -1,90 +1,82 @@
-// FacturaDo Service Worker — v2026.07.21
+// FacturaDo Service Worker — v2026.07.21b
 // Estrategia: Network First con fallback a caché
-// Al detectar nueva versión notifica al cliente para que actualice
+// Actualización AUTOMÁTICA: sin intervención del usuario
 
-const CACHE_NAME = 'facturado-v2026.07.21';
+const CACHE_NAME = 'facturado-v2026.07.21b';
 const OFFLINE_PAGE = '/';
 
-// Archivos a pre-cachear en la instalación
-const PRE_CACHE = [
-  '/',
-  '/manifest.json',
-];
+const PRE_CACHE = ['/', '/manifest.json'];
 
-// ── INSTALL: Pre-carga recursos esenciales ──────────────────────────────────
+// Canal BroadcastChannel para notificar a la página que hay nueva versión activa
+const updateChannel = new BroadcastChannel('facturado-sw-update');
+
+// ── INSTALL: skipWaiting INMEDIATO ───────────────────────────────────────────
 self.addEventListener('install', (event) => {
-  // Actívate inmediatamente sin esperar a que se cierren las pestañas viejas
-  self.skipWaiting();
+  self.skipWaiting(); // Se activa de una sola, sin esperar que cierren pestañas
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(PRE_CACHE))
   );
 });
 
-// ── ACTIVATE: Elimina cachés antiguas ───────────────────────────────────────
+// ── ACTIVATE: Limpia cachés viejas y toma control ────────────────────────────
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => {
-            console.log('[SW] Eliminando caché antigua:', key);
-            return caches.delete(key);
+    caches.keys()
+      .then((keys) =>
+        Promise.all(
+          keys.filter((k) => k !== CACHE_NAME).map((k) => {
+            console.log('[SW] Borrando caché antigua:', k);
+            return caches.delete(k);
           })
+        )
       )
-    ).then(() => {
-      // Toma control de todas las pestañas abiertas inmediatamente
-      return self.clients.claim();
-    })
+      .then(() => self.clients.claim()) // Toma control de todas las tabs abiertas
+      .then(() => {
+        // Avisa a todas las pestañas que la nueva versión ya está activa
+        updateChannel.postMessage({ type: 'SW_UPDATED', version: CACHE_NAME });
+      })
   );
 });
 
-// ── FETCH: Network First con fallback a caché ────────────────────────────────
+// ── FETCH: Network First ─────────────────────────────────────────────────────
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-
-  // Solo interceptar peticiones GET
   if (request.method !== 'GET') return;
 
-  // No interceptar peticiones a APIs externas (insforge, supabase, etc.)
   const url = new URL(request.url);
-  const isExternalAPI = (
+  // Excluir APIs externas — se acceden siempre en tiempo real
+  const isExternal =
     url.hostname.includes('insforge') ||
     url.hostname.includes('supabase') ||
     url.hostname.includes('googleapis') ||
     url.hostname.includes('cloudinary') ||
     url.hostname.includes('googletagmanager') ||
-    url.hostname.includes('openrouter')
-  );
-  if (isExternalAPI) return;
+    url.hostname.includes('openrouter') ||
+    url.hostname.includes('testsprite') ||
+    url.hostname.includes('testprite');
+
+  if (isExternal) return;
 
   event.respondWith(
     fetch(request)
-      .then((networkResponse) => {
-        // Guarda en caché la respuesta fresca
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+      .then((res) => {
+        if (res && res.status === 200) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
-        return networkResponse;
+        return res;
       })
-      .catch(() => {
-        // Sin red: intenta desde caché
-        return caches.match(request).then((cached) => {
+      .catch(() =>
+        caches.match(request).then((cached) => {
           if (cached) return cached;
-          // Fallback para navegación (páginas HTML)
-          if (request.mode === 'navigate') {
-            return caches.match(OFFLINE_PAGE);
-          }
+          if (request.mode === 'navigate') return caches.match(OFFLINE_PAGE);
           return new Response('Sin conexión', { status: 503 });
-        });
-      })
+        })
+      )
   );
 });
 
-// ── MENSAJE: Soporte para skipWaiting forzado desde la UI ───────────────────
+// ── MENSAJE: skipWaiting manual (por si acaso) ───────────────────────────────
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (event?.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
