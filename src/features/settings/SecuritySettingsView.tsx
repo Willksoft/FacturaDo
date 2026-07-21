@@ -134,11 +134,22 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
     }
   };
 
+  // Social login detection
+  const [isSocialAccount, setIsSocialAccount] = useState<boolean>(() => {
+    const provider = localStorage.getItem('inv_auth_provider');
+    if (provider === 'google' || provider === 'apple') return true;
+    try {
+      const user = (insforge.auth as any)?.getCurrentUser?.() || (insforge.auth as any)?.user;
+      if (user?.app_metadata?.provider === 'google' || user?.app_metadata?.provider === 'apple') return true;
+    } catch (e) {}
+    return false;
+  });
+
   const handlePasswordChangeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordNotice(null);
 
-    if (!currentPassword) {
+    if (!isSocialAccount && !currentPassword) {
       setPasswordNotice({ text: 'Por favor, introduce tu contraseña actual.', type: 'error' });
       return;
     }
@@ -324,13 +335,25 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
             <CardHeader className="py-4 border-b border-neutral-100 bg-neutral-50/50">
               <CardTitle className="text-sm font-bold text-neutral-900 flex items-center gap-2">
                 <Key className="w-4.5 h-4.5 text-neutral-500" />
-                Actualizar Contraseña de Acceso
+                {isSocialAccount ? 'Establecer Contraseña para Acceso Directo' : 'Actualizar Contraseña de Acceso'}
               </CardTitle>
               <CardDescription className="text-xs">
-                Modifique su clave periódicamente para mantener la seguridad fiscal y comercial.
+                {isSocialAccount 
+                  ? 'Establezca una contraseña por primera vez para habilitar el inicio de sesión directo con su correo.'
+                  : 'Modifique su clave periódicamente para mantener la seguridad fiscal y comercial.'}
               </CardDescription>
             </CardHeader>
             <CardContent className="p-5">
+              {isSocialAccount && (
+                <div className="p-3.5 bg-indigo-50/90 border border-indigo-200/90 rounded-xl text-xs text-indigo-950 flex items-start gap-2.5 mb-4">
+                  <ShieldCheck className="w-4.5 h-4.5 text-indigo-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-indigo-900 block text-xs mb-0.5">Acceso vía Google / Apple Detectado</span>
+                    Iniciaste sesión mediante autenticación social y no posees una contraseña previa. Puedes definir una contraseña nueva a continuación para ingresar directamente con tu correo electrónico.
+                  </div>
+                </div>
+              )}
+
               {passwordNotice && (
                 <div className={`p-3 rounded-lg text-xs mb-4 font-medium flex items-start gap-2 border ${
                   passwordNotice.type === 'success' 
@@ -343,30 +366,34 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
               )}
 
               <form onSubmit={handlePasswordChangeSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-neutral-700">Contraseña Actual *</Label>
-                  <div className="relative">
-                    <Input 
-                      type={showCurrentPassword ? 'text' : 'password'} 
-                      value={currentPassword}
-                      onChange={e => setCurrentPassword(e.target.value)}
-                      placeholder="Ingrese su contraseña actual"
-                      className="text-xs h-9.5 pr-10 bg-white"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 p-0 bg-transparent border-0"
-                    >
-                      {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                {!isSocialAccount && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold text-neutral-700">Contraseña Actual *</Label>
+                    <div className="relative">
+                      <Input 
+                        type={showCurrentPassword ? 'text' : 'password'} 
+                        value={currentPassword}
+                        onChange={e => setCurrentPassword(e.target.value)}
+                        placeholder="Ingrese su contraseña actual"
+                        className="text-xs h-9.5 pr-10 bg-white"
+                        required={!isSocialAccount}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 p-0 bg-transparent border-0"
+                      >
+                        {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold text-neutral-700">Nueva Contraseña *</Label>
+                    <Label className="text-xs font-semibold text-neutral-700">
+                      {isSocialAccount ? 'Crear Nueva Contraseña *' : 'Nueva Contraseña *'}
+                    </Label>
                     <div className="relative">
                       <Input 
                         type={showNewPassword ? 'text' : 'password'} 
@@ -387,7 +414,9 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-semibold text-neutral-700">Confirmar Nueva Contraseña *</Label>
+                    <Label className="text-xs font-semibold text-neutral-700">
+                      {isSocialAccount ? 'Confirmar Contraseña *' : 'Confirmar Nueva Contraseña *'}
+                    </Label>
                     <div className="relative">
                       <Input 
                         type={showConfirmPassword ? 'text' : 'password'} 
@@ -408,26 +437,37 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={handleSendResetEmail}
-                    className="text-xs font-semibold text-indigo-600 hover:text-indigo-850 flex items-center gap-1.5 self-start sm:self-auto bg-transparent border-0 p-0 cursor-pointer"
-                  >
-                    <Mail className="w-3.5 h-3.5" />
-                    ¿Recuperar clave por correo?
-                  </button>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-neutral-100">
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={handleSendResetEmail}
+                      className="text-xs font-semibold text-indigo-600 hover:text-indigo-850 flex items-center gap-1.5 bg-transparent border-0 p-0 cursor-pointer"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      ¿Recuperar clave por correo?
+                    </button>
+                    <span className="text-neutral-300">|</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsSocialAccount(!isSocialAccount)}
+                      className="text-[11px] font-medium text-neutral-500 hover:text-neutral-800 underline underline-offset-2 cursor-pointer bg-transparent border-0 p-0"
+                    >
+                      {isSocialAccount ? 'Pedir contraseña anterior' : '¿Iniciaste con Google/Apple?'}
+                    </button>
+                  </div>
+
                   <Button 
                     type="submit" 
                     disabled={isChangingPassword}
-                    className="bg-black hover:bg-neutral-800 text-white text-xs h-9.5"
+                    className="bg-black hover:bg-neutral-800 text-white text-xs h-9.5 font-semibold"
                   >
                     {isChangingPassword ? (
                       <>
                         <RefreshCw className="w-3.5 h-3.5 mr-2 animate-spin" />
                         Guardando...
                       </>
-                    ) : 'Guardar Nueva Contraseña'}
+                    ) : isSocialAccount ? 'Establecer Contraseña' : 'Guardar Nueva Contraseña'}
                   </Button>
                 </div>
               </form>
