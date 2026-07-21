@@ -1097,13 +1097,13 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             </div>
           </section>
 
-                    {/* SECCION ILIMITADO Y GRATIS */}
+          {/* SECCION ILIMITADO Y GRATIS */}
           <motion.section
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="py-16 sm:py-24 bg-slate-900 relative z-20 overflow-hidden"
+            className="py-10 sm:py-14 bg-slate-900 relative z-20 overflow-hidden"
           >
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.15),transparent_70%)]" />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -1160,7 +1160,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="py-20 sm:py-28 bg-white relative z-20 overflow-hidden"
+            className="py-10 sm:py-14 bg-white relative z-20 overflow-hidden"
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(14,165,233,0.04),transparent_60%)]" />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
