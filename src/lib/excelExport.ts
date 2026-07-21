@@ -67,11 +67,12 @@ export const importClientsFromExcel = async (file: File): Promise<Partial<Client
             const cells = row.values as any[];
             const typeValue = (cells[2] || '').trim();
             const type: 'Fisica' | 'Empresa' = typeValue.toLowerCase().includes('empresa') || typeValue.toLowerCase() === 'empresa' ? 'Empresa' : 'Fisica';
-            const name = cells[3] || '';
-            const rncOrCedula = String(cells[4] || '').replace(/[^0-9-]/g, ''); // strip letters
-            const email = cells[5] || '';
-            const phone = cells[6] || '';
-            const address = cells[7] || '';
+            const name = String(cells[3] || '').trim();
+            // Automatically strip hyphens, spaces and non-digit characters from RNC/Cédula for clean DGII compatibility
+            const rncOrCedula = String(cells[4] || '').replace(/[^0-9]/g, '');
+            const email = String(cells[5] || '').trim();
+            const phone = String(cells[6] || '').trim();
+            const address = String(cells[7] || '').trim();
 
             if (name) {
               clients.push({
