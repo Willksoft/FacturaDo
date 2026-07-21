@@ -69,14 +69,58 @@ export function BankReconciliationView({ financialAccounts, receipts, expenses, 
       const newTx: BankTransaction[] = [];
       const userPrefix = `${currentUser.id}_`;
 
-      // Simple CSV Parse (Date, Description, Amount)
+      // Smart CSV Parser for Dominican Banks (Popular, BHD, Banreservas, Scotiabank)
       for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').trim());
+        const line = lines[i];
+        if (!line.trim()) continue;
+
+        // Split by comma or semicolon
+        const delimiter = line.includes(';') ? ';' : ',';
+        const cols = line.split(delimiter).map(c => c.replace(/^"|"$/g, '').trim());
+        
         if (cols.length >= 3) {
-          const dateStr = cols[0];
-          const desc = cols[1];
-          const amount = parseFloat(cols[2].replace(/[^0-9.-]+/g, ''));
-          if (isNaN(amount)) continue;
+          const rawDate = cols[0];
+          let parsedDate = new Date();
+
+          // Support DD/MM/YYYY or YYYY-MM-DD
+          if (rawDate.includes('/')) {
+            const parts = rawDate.split('/');
+            if (parts.length === 3) {
+              const day = parseInt(parts[0], 10);
+              const month = parseInt(parts[1], 10) - 1;
+              const year = parseInt(parts[2], 10);
+              if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                parsedDate = new Date(year < 100 ? year + 2000 : year, month, day);
+              }
+            }
+          } else if (rawDate.includes('-')) {
+            parsedDate = new Date(rawDate);
+          }
+
+          if (isNaN(parsedDate.getTime())) parsedDate = new Date();
+
+          const desc = cols[1] || 'Movimiento Bancario';
+          let amount = 0;
+          let ref = cols[2] || '';
+
+          // If columns has Debit and Credit (cols length >= 5)
+          if (cols.length >= 5) {
+            const debitStr = cols[3] ? cols[3].replace(/[^0-9.-]+/g, '') : '';
+            const creditStr = cols[4] ? cols[4].replace(/[^0-9.-]+/g, '') : '';
+            const debit = parseFloat(debitStr) || 0;
+            const credit = parseFloat(creditStr) || 0;
+
+            if (credit > 0) amount = credit;
+            else if (debit > 0) amount = -debit;
+            else amount = parseFloat(cols[2].replace(/[^0-9.-]+/g, '')) || 0;
+          } else {
+            // Single amount column
+            const cleanAmt = cols[2].replace(/[^0-9.-]+/g, '');
+            amount = parseFloat(cleanAmt);
+            if (cols.length >= 4) ref = cols[3];
+          }
+
+          if (isNaN(amount) || amount === 0) continue;
 
           let matchedType: 'receipt' | 'expense' | null = null;
           let matchedId: string | null = null;
@@ -85,15 +129,15 @@ export function BankReconciliationView({ financialAccounts, receipts, expenses, 
           // Auto-Match Logic
           if (amount > 0) {
             // Ingreso -> Receipt
-            const match = receipts.find(r => r.amountPaid === amount && !(r as any).isDeleted);
+            const match = receipts.find(r => Math.abs(r.amountPaid - amount) < 0.01 && !(r as any).isDeleted);
             if (match) {
               matchedType = 'receipt';
               matchedId = match.id;
-              isReconciled = true; // Auto-reconcile for exact amount match
+              isReconciled = true;
             }
           } else {
             // Egreso -> Expense
-            const match = expenses.find(e => e.amount === Math.abs(amount) && !(e as any).isDeleted);
+            const match = expenses.find(e => Math.abs(e.amount - Math.abs(amount)) < 0.01 && !(e as any).isDeleted);
             if (match) {
               matchedType = 'expense';
               matchedId = match.id;
@@ -105,9 +149,10 @@ export function BankReconciliationView({ financialAccounts, receipts, expenses, 
           newTx.push({
             id: txId,
             accountId: selectedAccountId,
-            date: new Date(dateStr).toISOString(),
+            date: parsedDate.toISOString(),
             description: desc,
             amount,
+            reference: ref,
             isReconciled,
             matchedEntityType: matchedType,
             matchedEntityId: matchedId,

@@ -229,11 +229,27 @@ export default function InventoryManager({
                         <TableCell className="font-mono text-xs font-semibold text-neutral-500">{prod.code}</TableCell>
                         <TableCell className="font-semibold text-neutral-900 text-xs sm:text-sm">
                           <div>{prod.name}</div>
-                          {prod.providerId && (
-                            <div className="text-[10px] font-medium text-neutral-400">
-                              Prov: {providers.find(p => p.id === prod.providerId)?.name || 'Catálogo propio'}
-                            </div>
-                          )}
+                          <div className="flex flex-wrap gap-1 items-center mt-1">
+                            {prod.providerId && (
+                              <span className="text-[10px] font-medium text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded border">
+                                Suplidor: {providers.find(p => p.id === prod.providerId)?.name || 'Catálogo propio'}
+                              </span>
+                            )}
+                            {(prod as any).batchNumber && (
+                              <span className="text-[10px] font-bold font-mono text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">
+                                Lote: {(prod as any).batchNumber}
+                              </span>
+                            )}
+                            {(prod as any).expiryDate && (
+                              <span className={`text-[10px] font-bold font-mono px-1.5 py-0.5 rounded border ${
+                                new Date((prod as any).expiryDate).getTime() - Date.now() < 30 * 24 * 60 * 60 * 1000
+                                  ? 'bg-red-50 text-red-700 border-red-200 animate-pulse'
+                                  : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              }`}>
+                                Exp: {new Date((prod as any).expiryDate).toLocaleDateString('es-DO')}
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-right font-mono text-xs text-neutral-500">
                           {prod.cost.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}

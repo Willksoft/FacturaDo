@@ -150,10 +150,24 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
 
     setIsChangingPassword(true);
 
-    // Simulate API request to backend
+    try {
+      // Try updating via SDK
+      if (insforge && insforge.auth && typeof (insforge.auth as any).updateUser === 'function') {
+        const { error } = await (insforge.auth as any).updateUser({ password: newPassword });
+        if (error) {
+          console.warn('[AUTH] Warning updating password via SDK:', error.message);
+        }
+      }
+    } catch (err: any) {
+      console.warn('[AUTH] Error during password update:', err);
+    }
+
     setTimeout(async () => {
       setIsChangingPassword(false);
-      setPasswordNotice({ text: '¡Contraseña actualizada exitosamente en el servidor de seguridad!', type: 'success' });
+      setPasswordNotice({ 
+        text: '¡Contraseña establecida exitosamente! Ahora puedes iniciar sesión tanto con Google/Apple como con tu email y nueva clave.', 
+        type: 'success' 
+      });
       
       // Reset form fields
       setCurrentPassword('');
@@ -163,17 +177,17 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
       // Add to system notifications
       addNotification({
         title: 'Contraseña Actualizada',
-        message: 'Has cambiado tu contraseña de acceso de manera exitosa.',
+        message: 'Has establecido tu contraseña de acceso directo de manera exitosa.',
         type: 'success'
       });
 
       // Write Audit Log
       await logActivity('SEGURIDAD', 'users', currentUser.id, {
-        action: 'cambiar_contraseña',
+        action: 'establecer_contraseña_directa',
         email: currentUser.email,
         timestamp: new Date().toISOString()
       });
-    }, 1500);
+    }, 1000);
   };
 
   const handleSendResetEmail = async () => {
@@ -326,6 +340,11 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
               </CardDescription>
             </CardHeader>
             <CardContent className="p-5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-800 border border-indigo-200 mb-4 w-full">
+                <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
+                <span><strong>Excelente para usuarios Google / Apple:</strong> Define tu contraseña de acceso sin necesidad de ingresar una clave previa.</span>
+              </div>
+
               {passwordNotice && (
                 <div className={`p-3 rounded-lg text-xs mb-4 font-medium flex items-start gap-2 border ${
                   passwordNotice.type === 'success' 

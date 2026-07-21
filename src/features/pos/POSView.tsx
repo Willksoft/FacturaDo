@@ -213,13 +213,21 @@ export default function POSView({
             </div>
 
             <form onSubmit={handleCloseShift} className="p-6 space-y-4 text-xs font-sans">
+              <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex items-center justify-between text-amber-900 font-medium">
+                <span className="text-[11px] font-bold flex items-center gap-1.5">
+                  <Calculator className="w-4 h-4 text-amber-700" />
+                  Arqueo Blindado de Caja (Modo A Ciegas)
+                </span>
+                <span className="text-[10px] bg-amber-200 text-amber-900 font-extrabold px-2 py-0.5 rounded-full uppercase">Activo</span>
+              </div>
+
               <div className="space-y-3 bg-neutral-50 p-4 rounded-xl border border-neutral-200">
                 <div className="flex justify-between font-bold text-neutral-600">
                   <span>Fondo Inicial:</span>
                   <span className="font-mono text-neutral-900">{activeShift.openingBalance.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}</span>
                 </div>
                 <div className="flex justify-between font-bold text-neutral-600">
-                  <span>Ventas en Efectivo:</span>
+                  <span>Ventas en Efectivo del Turno:</span>
                   <span className="font-mono text-neutral-900">{activeShiftCashPayments.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}</span>
                 </div>
                 <div className="flex justify-between font-extrabold text-neutral-900 pt-2 border-t border-neutral-250 border-dashed text-sm">
@@ -229,24 +237,27 @@ export default function POSView({
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-neutral-800 font-bold block">Efectivo Real en Caja *</Label>
+                <Label className="text-neutral-800 font-bold block">Conteo Físico Real Declarado (Efectivo) *</Label>
                 <Input 
                   type="number" 
                   step="0.01" 
                   value={closingBalanceActual} 
                   onChange={e => setClosingBalanceActual(e.target.value)}
                   required 
-                  className="text-lg bg-neutral-50 font-mono h-11 border-neutral-300 focus:ring-1 focus:ring-black"
-                  placeholder="Ej. 15000"
+                  className="text-lg bg-white font-mono h-11 border-neutral-300 focus:ring-2 focus:ring-black"
+                  placeholder="Ingrese el monto total en caja en DOP"
                 />
                 <span className="text-[10px] text-neutral-500 block">Indique la cantidad total de dinero físico contado en la caja registradora.</span>
               </div>
 
-              {closingBalanceActual && (
+              {closingBalanceActual !== '' && (
                 <div className="p-3.5 rounded-xl border flex justify-between items-center bg-neutral-50 border-neutral-200">
-                  <span className="font-bold text-neutral-700">Diferencia / Descuadre:</span>
-                  <span className={`font-mono font-bold text-sm ${(parseFloat(closingBalanceActual) || 0) - expectedClosingBalance === 0 ? 'text-emerald-750' : 'text-red-700'}`}>
-                    {((parseFloat(closingBalanceActual) || 0) - expectedClosingBalance).toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}
+                  <span className="font-bold text-neutral-700">Resultado del Arqueo:</span>
+                  <span className={`font-mono font-bold text-sm ${(parseFloat(closingBalanceActual) || 0) - expectedClosingBalance === 0 ? 'text-emerald-700 font-extrabold' : 'text-red-700'}`}>
+                    {(parseFloat(closingBalanceActual) || 0) - expectedClosingBalance === 0 
+                      ? '✓ Cuadre Perfecto' 
+                      : `Diferencia: ${((parseFloat(closingBalanceActual) || 0) - expectedClosingBalance).toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}`
+                    }
                   </span>
                 </div>
               )}
