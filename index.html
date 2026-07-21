@@ -37,9 +37,22 @@
     <link rel="shortcut icon" type="image/svg+xml" href="https://res.cloudinary.com/dap38hi9l/image/upload/v1781252769/facturaDonuevologo_favicon_ej1mlq.svg" />
     <link rel="apple-touch-icon" href="/facturadomockup.png" />
     
-    <!-- PWA Manifest & Theme -->
+    <!-- PWA Manifest & Service Worker Registration -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#059669" />
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(function(reg) {
+              console.log('[SW] ServiceWorker registrado exitosamente:', reg.scope);
+            })
+            .catch(function(err) {
+              console.warn('[SW] Error registrando ServiceWorker:', err);
+            });
+        });
+      }
+    </script>
     <!-- Google Fonts: DM Sans, Roboto, Jost (Futura alternative) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -1,0 +1,25 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Landing Page & PWA Health Check",
+  "description": "Verifica que la Landing Page de FacturaDo cargue correctamente, responda el manifest PWA y muestre los componentes de autenticación.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar a la página principal https://www.facturadord.com/"
+    },
+    {
+      "type": "assertion",
+      "description": "Verificar que el título contenga 'FacturaDo' y la marca sea visible"
+    },
+    {
+      "type": "assertion",
+      "description": "Confirmar que los botones de Iniciar Sesión / Registrarse están visibles y funcionales"
+    },
+    {
+      "type": "assertion",
+      "description": "Validar que el Service Worker y el manifest.json responden correctamente"
+    }
+  ]
+}

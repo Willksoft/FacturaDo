@@ -1,0 +1,33 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Cotizaciones e Inventario Guard",
+  "description": "Verifica que al generar una Cotización no se efectúe descuento de stock en los productos ni servicios.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Abrir el módulo de Facturación / Cotización en FacturaDo"
+    },
+    {
+      "type": "action",
+      "description": "Seleccionar el tipo de documento 'Cotización'"
+    },
+    {
+      "type": "action",
+      "description": "Agregar un producto de inventario con stock inicial conocido y un servicio"
+    },
+    {
+      "type": "action",
+      "description": "Hacer clic en 'Crear Cotización'"
+    },
+    {
+      "type": "assertion",
+      "description": "Verificar que la cotización se crea exitosamente"
+    },
+    {
+      "type": "assertion",
+      "description": "Confirmar en la lista de inventario que el stock del producto permance intácto (sin reducción)"
+    }
+  ]
+}

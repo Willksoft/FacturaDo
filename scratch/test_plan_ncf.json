@@ -1,0 +1,29 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Emisión de Facturas con NCF DGII",
+  "description": "Valida la generación de Comprobantes Fiscales B01 (Crédito Fiscal) y B02 (Consumo), cálculo de ITBIS y cliente opcional para borradores.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar al creador de facturas"
+    },
+    {
+      "type": "action",
+      "description": "Seleccionar tipo de NCF B01 (Crédito Fiscal) o B02 (Consumo)"
+    },
+    {
+      "type": "action",
+      "description": "Agregar un item grabado (18% ITBIS) y verificar que los totales coincidan con el subtotal + ITBIS"
+    },
+    {
+      "type": "action",
+      "description": "Generar la factura y verificar asignación de secuencia NCF válida"
+    },
+    {
+      "type": "assertion",
+      "description": "Confirmar que la factura aparece reflejada en el listado y reportes 607"
+    }
+  ]
+}
