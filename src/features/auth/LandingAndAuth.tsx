@@ -50,6 +50,7 @@ import {
   Sparkles,
   Heart,
   Store,
+  ShoppingBag,
   Download,
   MonitorSmartphone,
   Apple
@@ -1277,8 +1278,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 <div className="bg-slate-800/60 border border-purple-500/30 rounded-3xl p-6 hover:border-purple-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
-                    🛒
+                  <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Store className="w-6 h-6 text-purple-400" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 font-heading">WooCommerce / WordPress</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1290,8 +1291,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 </div>
 
                 <div className="bg-slate-800/60 border border-emerald-500/30 rounded-3xl p-6 hover:border-emerald-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
-                    🛍️
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <ShoppingBag className="w-6 h-6 text-emerald-400" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 font-heading">Shopify Store</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1303,8 +1304,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 </div>
 
                 <div className="bg-slate-800/60 border border-indigo-500/30 rounded-3xl p-6 hover:border-indigo-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
-                    ⚡
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Zap className="w-6 h-6 text-indigo-400" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 font-heading">Alegra & Cashflow</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1316,8 +1317,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 </div>
 
                 <div className="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 hover:border-blue-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
-                    💼
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Building className="w-6 h-6 text-blue-400" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 font-heading">QuickBooks & Odoo / Zoho</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1329,8 +1330,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 </div>
 
                 <div className="bg-slate-800/60 border border-amber-500/30 rounded-3xl p-6 hover:border-amber-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
-                    📊
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Database className="w-6 h-6 text-amber-400" />
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 font-heading">Excel, CSV o XML Libre</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
