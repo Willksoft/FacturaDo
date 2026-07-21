@@ -296,7 +296,7 @@ export default function DocumentDetailsView({
                 logoAlignClasses = "flex flex-col items-center gap-3";
               }
               
-              let tableHeaderStyle = { backgroundColor: primaryColor, color: '#ffffff' };
+              let tableHeaderStyle: React.CSSProperties = { backgroundColor: primaryColor, color: '#ffffff' };
               let tableHeaderClasses = "text-[9px] uppercase tracking-wider";
               let dividerClass = "border border-neutral-200 rounded-lg overflow-hidden";
               
