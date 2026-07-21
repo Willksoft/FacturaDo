@@ -253,7 +253,7 @@ export default function InvoiceCreator({
     if (!isCustomProductMode) {
       const prod = products.find(p => p.id === currentProductId);
       if (prod) {
-        const isInformal = templateSettings?.informalMode || !templateSettings?.businessRNC || docType === 'Cotizacion' || (docType === 'Factura' && selectedNcfType === 'SIN');
+        const isInformal = templateSettings?.informalMode || !templateSettings?.businessRNC || (docType === 'Factura' && selectedNcfType === 'SIN');
         let basePrice = prod.price;
         let tax = prod.taxRate;
         
@@ -286,7 +286,7 @@ export default function InvoiceCreator({
   useEffect(() => {
     setItems(prevItems => {
       if (prevItems.length === 0) return prevItems;
-      const isInformal = templateSettings?.informalMode || !templateSettings?.businessRNC || docType === 'Cotizacion' || (docType === 'Factura' && selectedNcfType === 'SIN');
+      const isInformal = templateSettings?.informalMode || !templateSettings?.businessRNC || (docType === 'Factura' && selectedNcfType === 'SIN');
       
       let changed = false;
       const newItems = prevItems.map(it => {
@@ -643,18 +643,25 @@ export default function InvoiceCreator({
   const isRoleAuthorized = currentUser.permissions.canCreateInvoice;
 
   const handleSaveDraft = () => {
-    if (!selectedClientId) {
-      alert('Favor seleccionar un cliente para procesar la transacci\u00f3n.');
-      return;
-    }
     if (items.length === 0) {
-      alert('Debe agregar al menos un art\u00edculo o servicio al documento.');
+      alert('Debe agregar al menos un artículo o servicio al documento.');
       return;
     }
+    // For drafts, client is optional — fall back to 'Cliente de Consumo'
+    const draftClient = selectedClient || clients.find(c => c.id === 'cli-consumo') || clients[0] || {
+      id: 'cli-consumo',
+      type: 'Fisica' as const,
+      name: 'Cliente de Consumo',
+      rncOrCedula: '',
+      email: '',
+      phone: '',
+      address: '',
+      createdAt: new Date().toISOString(),
+    };
     const finalDueDate = docType === 'Factura' ? `${new Date().getFullYear()}-12-31` : dueDate;
     const draftDoc = createInvoiceOrQuote({
       type: docType,
-      client: selectedClient!,
+      client: draftClient,
       items,
       paymentMethod,
       ncfType: docType === 'Cotizacion' ? 'SIN' : selectedNcfType,

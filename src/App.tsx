@@ -404,8 +404,9 @@ export default function App() {
     const autoAlerts: AppNotification[] = [];
     const now = new Date();
 
-    // Low-stock products
+    // Low-stock products (only for physical products, not services)
     products.forEach(p => {
+      if (p.type === 'Servicio') return; // Services never run out of stock
       const minStock = p.minStock ?? 5;
       if (p.stock !== undefined && p.stock <= minStock && p.stock >= 0) {
         autoAlerts.push({

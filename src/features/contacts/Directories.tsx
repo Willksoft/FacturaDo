@@ -1558,7 +1558,6 @@ export default function Directories({
                         value={prodCategory}
                         onChange={(e) => setProdCategory(e.target.value)}
                         className="h-9 font-sans bg-white"
-                        autoFocus
                       />
                       <span className="text-[9px] text-neutral-500 block leading-tight">Escriba un nuevo departamento. Se guardará de forma inteligente.</span>
                     </div>

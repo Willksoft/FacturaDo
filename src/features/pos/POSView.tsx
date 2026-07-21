@@ -957,7 +957,7 @@ export default function POSView({
                           <SelectValue placeholder="Seleccionar Cliente">
                             {(val: string | null) => {
                               if (!val) return "Seleccionar Cliente";
-                              if (val === 'cli-consumo') return 'Cliente de Consumo (Público General)';
+                              if (val === 'cli-consumo') return 'Cliente de Consumo';
                               return clients.find(c => c.id === val)?.name || val;
                             }}
                           </SelectValue>
@@ -970,7 +970,7 @@ export default function POSView({
                           ))}
                           {!clients.some(c => c.id === 'cli-consumo') && (
                             <SelectItem value="cli-consumo">
-                              Cliente de Consumo (Público General)
+                              Cliente de Consumo
                             </SelectItem>
                           )}
                         </SelectContent>

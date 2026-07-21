@@ -879,11 +879,11 @@ export function useInvoiceState() {
           const consumptionClient: Client = {
             id: 'cli-consumo',
             type: 'Fisica',
-            name: 'Cliente de Consumo (Público General)',
-            rncOrCedula: '224-00125-4',
-            email: 'consumidor@correo.com',
-            phone: '809-555-5555',
-            address: 'Público General, R.D.',
+            name: 'Cliente de Consumo',
+            rncOrCedula: '',
+            email: '',
+            phone: '',
+            address: '',
             createdAt: new Date().toISOString(),
             dgiiVerified: false,
           };
@@ -899,11 +899,11 @@ export function useInvoiceState() {
           const consumptionClient: Client = {
             id: 'cli-consumo',
             type: 'Fisica',
-            name: 'Cliente de Consumo (PÃºblico General)',
-            rncOrCedula: '224-00125-4',
-            email: 'consumidor@correo.com',
-            phone: '809-555-5555',
-            address: 'PÃºblico General, R.D.',
+            name: 'Cliente de Consumo',
+            rncOrCedula: '',
+            email: '',
+            phone: '',
+            address: '',
             createdAt: new Date().toISOString(),
             dgiiVerified: false,
           };
@@ -1325,25 +1325,33 @@ export function useInvoiceState() {
             parsed.push({
               id: 'cli-consumo',
               type: 'Fisica',
-              name: 'Cliente de Consumo (PÃºblico General)',
-              rncOrCedula: '224-00125-4',
-              email: 'consumidor@correo.com',
-              phone: '809-555-5555',
-              address: 'PÃºblico General, R.D.',
+              name: 'Cliente de Consumo',
+              rncOrCedula: '',
+              email: '',
+              phone: '',
+              address: '',
               createdAt: '2026-01-01T00:00:00Z',
             });
             localStorage.setItem('inv_clients', JSON.stringify(parsed));
           }
-          setClients(parsed);
+          // Fix any existing corrupted or outdated cli-consumo records
+          const fixedParsed = parsed.map((c: any) => {
+            if (c.id === 'cli-consumo') {
+              return { ...c, name: 'Cliente de Consumo', rncOrCedula: c.rncOrCedula === '224-00125-4' ? '' : c.rncOrCedula, email: c.email === 'consumidor@correo.com' ? '' : c.email, phone: c.phone === '809-555-5555' ? '' : c.phone, address: (c.address === 'Público General, R.D.' || c.address === 'PÃºblico General, R.D.') ? '' : c.address };
+            }
+            return c;
+          });
+          setClients(fixedParsed);
+          localStorage.setItem('inv_clients', JSON.stringify(fixedParsed));
         } else { 
           const cleanClients = isLoggedInCheck ? [{
             id: 'cli-consumo',
             type: 'Fisica' as const,
-            name: 'Cliente de Consumo (PÃºblico General)',
-            rncOrCedula: '224-00125-4',
-            email: 'consumidor@correo.com',
-            phone: '809-555-5555',
-            address: 'PÃºblico General, R.D.',
+            name: 'Cliente de Consumo',
+            rncOrCedula: '',
+            email: '',
+            phone: '',
+            address: '',
             createdAt: '2026-01-01T00:00:00Z',
             dgiiVerified: false
           }] : initialClients;
