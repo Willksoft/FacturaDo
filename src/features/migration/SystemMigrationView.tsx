@@ -18,7 +18,7 @@ interface SystemMigrationViewProps {
   showNotice?: (msg: string, success?: boolean) => void;
 }
 
-type OriginSystem = 'alegra' | 'quickbooks' | 'cashflow' | 'odoo_zoho' | 'custom_excel';
+type OriginSystem = 'woocommerce' | 'shopify' | 'alegra' | 'quickbooks' | 'cashflow' | 'odoo_zoho' | 'custom_excel';
 
 export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
   onImportClients,
@@ -28,8 +28,8 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
   showNotice
 }) => {
   const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4>(1);
-  const [selectedSystem, setSelectedSystem] = useState<OriginSystem>('alegra');
-  const [targetEntity, setTargetEntity] = useState<EntityType>('client');
+  const [selectedSystem, setSelectedSystem] = useState<OriginSystem>('woocommerce');
+  const [targetEntity, setTargetEntity] = useState<EntityType>('product');
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [importResult, setImportResult] = useState<UniversalMigrationResult | null>(null);
@@ -40,6 +40,22 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
   const [columnOverrides, setColumnOverrides] = useState<Record<string, string>>({});
 
   const systemsList = [
+    {
+      id: 'woocommerce' as OriginSystem,
+      name: 'WooCommerce (WordPress)',
+      logo: '🛒',
+      badge: 'E-Commerce Popular',
+      desc: 'Importa catálogo de productos, SKU, precios regulares/oferta, stock y categorías desde exportación de WordPress.',
+      color: 'border-purple-500/40 bg-purple-50/40 text-purple-950 hover:bg-purple-50'
+    },
+    {
+      id: 'shopify' as OriginSystem,
+      name: 'Shopify Store',
+      logo: '🛍️',
+      badge: 'Tienda Online',
+      desc: 'Soporta exportación CSV oficial de productos (Title, Variant SKU, Variant Price, Variant Inventory Qty) y clientes.',
+      color: 'border-emerald-600/40 bg-emerald-50/40 text-emerald-950 hover:bg-emerald-50'
+    },
     {
       id: 'alegra' as OriginSystem,
       name: 'Alegra',

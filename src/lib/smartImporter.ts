@@ -65,29 +65,39 @@ const FIELD_SYNONYMS: Record<string, string[]> = {
     'tipo', 'tipocliente', 'tipopersona', 'clasificacion', 'categoria', 'clienttype',
     'personatipo', 'tipodeidentificacion'
   ],
-  // Product Code / SKU (Alegra: "Código / Referencia", QuickBooks: "Item / SKU")
+  // Product Code / SKU (Alegra: "Código / Referencia", QuickBooks: "Item / SKU", Shopify: "Variant SKU", WooCommerce: "SKU")
   code: [
     'codigo', 'sku', 'referencia', 'codigoproducto', 'code', 'barcode', 'codigodebarra',
-    'idproducto', 'itemnumber', 'itemcode', 'productcode', 'ref', 'codigorapido'
+    'idproducto', 'itemnumber', 'itemcode', 'productcode', 'ref', 'codigorapido',
+    'variantsku', 'postid', 'productid', 'id'
   ],
-  // Product Name (Alegra: "Descripción", QuickBooks: "Item Description")
+  // Product Name (Alegra: "Descripción", QuickBooks: "Item Description", Shopify: "Title", WooCommerce: "post_title")
   productName: [
     'producto', 'descripcion', 'articulo', 'item', 'productname', 'title', 'nombreproducto',
-    'itemdescription', 'productdescription', 'concepto', 'detalledelproducto'
+    'itemdescription', 'productdescription', 'concepto', 'detalledelproducto',
+    'posttitle', 'postname', 'bodyhtml', 'nombre'
   ],
-  // Price (Alegra: "Precio de venta", QuickBooks: "Sales Price")
+  // Price (Alegra: "Precio de venta", QuickBooks: "Sales Price", Shopify: "Variant Price", WooCommerce: "regular_price")
   price: [
     'precio', 'preciodeventa', 'price', 'monto', 'unitprice', 'pvp', 'valor', 'preciounitario',
-    'salesprice', 'rate', 'montounitario', 'preciosubtotal'
+    'salesprice', 'rate', 'montounitario', 'preciosubtotal',
+    'regularprice', 'saleprice', 'variantprice', 'variantcompareatprice'
   ],
-  // Cost (Alegra: "Costo unitario", QuickBooks: "Cost")
+  // Cost (Alegra: "Costo unitario", QuickBooks: "Cost", Shopify: "Cost per item")
   cost: [
-    'costo', 'costounitario', 'costcompra', 'costoestimado', 'cost', 'unitcost', 'purchaseprice'
+    'costo', 'costounitario', 'costcompra', 'costoestimado', 'cost', 'unitcost', 'purchaseprice',
+    'costperitem', 'variantcost'
   ],
-  // Stock (Alegra: "Stock inicial", QuickBooks: "Qty On Hand")
+  // Stock (Alegra: "Stock inicial", QuickBooks: "Qty On Hand", Shopify: "Variant Inventory Qty", WooCommerce: "stock")
   stock: [
     'stock', 'cantidad', 'existencia', 'inventario', 'qty', 'stockactual', 'unidades',
-    'qtyonhand', 'stockinicial', 'quantity', 'balance', 'existenciaactual'
+    'qtyonhand', 'stockinicial', 'quantity', 'balance', 'existenciaactual',
+    'variantinventoryqty', 'inventoryqty', 'managestock'
+  ],
+  // Product Type / Category (WooCommerce: "product_cat", Shopify: "Type")
+  category: [
+    'categoria', 'category', 'productcat', 'categories', 'type', 'customproducttype',
+    'vendor', 'clasificacion'
   ],
   // Product Type
   productType: [

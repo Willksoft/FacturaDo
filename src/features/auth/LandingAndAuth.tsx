@@ -1250,6 +1250,115 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             </div>
           </motion.section>
 
+          {/* SECCIÓN MIGRACIÓN UNIVERSAL DE SISTEMAS (WooCommerce, Shopify, Alegra, QuickBooks, etc.) */}
+          <motion.section
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+            className="py-20 sm:py-28 bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 text-white relative z-20 overflow-hidden border-t border-slate-800"
+          >
+            <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
+                <span className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-flex items-center gap-2">
+                  <FolderOpen className="w-4 h-4 text-indigo-400" />
+                  Migración sin Esfuerzo en 1 Clic
+                </span>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-white tracking-tight">
+                  ¿Vienes de <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-300 to-emerald-400">WooCommerce, Shopify, Alegra o QuickBooks?</span>
+                </h2>
+                <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto">
+                  Transfiere automáticamente todo tu catálogo de productos, existencias de inventario, clientes con RNC y comprobantes NCF a FacturaDo sin perder datos ni digitar a mano.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div className="bg-slate-800/60 border border-purple-500/30 rounded-3xl p-6 hover:border-purple-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                    🛒
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 font-heading">WooCommerce / WordPress</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Importa productos, SKU, precios regulares y de oferta, existencias de stock y categorías de tu tienda WordPress en formato CSV o Excel.
+                  </p>
+                  <span className="text-[11px] font-bold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">
+                    E-Commerce Listo ✓
+                  </span>
+                </div>
+
+                <div className="bg-slate-800/60 border border-emerald-500/30 rounded-3xl p-6 hover:border-emerald-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                    🛍️
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 font-heading">Shopify Store</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Reconoce la estructura nativa exportada de Shopify (<code className="text-emerald-300">Title</code>, <code className="text-emerald-300">Variant SKU</code>, <code className="text-emerald-300">Variant Price</code>) y la convierte en comprobantes NCF.
+                  </p>
+                  <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    Sincronización Total ✓
+                  </span>
+                </div>
+
+                <div className="bg-slate-800/60 border border-indigo-500/30 rounded-3xl p-6 hover:border-indigo-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                    ⚡
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 font-heading">Alegra & Cashflow</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Sube tus reportes de clientes con RNC/Cédula, catálogo de ítems y listas de precios para activarte sin perder historial contable.
+                  </p>
+                  <span className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
+                    Dominicano 100% ✓
+                  </span>
+                </div>
+
+                <div className="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 hover:border-blue-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                    💼
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 font-heading">QuickBooks & Odoo / Zoho</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Exporta desde Customers, Vendor List o Item List y FacturaDo desinfectará los campos de forma automática.
+                  </p>
+                  <span className="text-[11px] font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                    Compatibilidad ERP ✓
+                  </span>
+                </div>
+
+                <div className="bg-slate-800/60 border border-amber-500/30 rounded-3xl p-6 hover:border-amber-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-2xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                    📊
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 font-heading">Excel, CSV o XML Libre</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Sube cualquier archivo Excel sin formato rígido. Nuestro asistente con inteligencia de sinónimos empareja tus columnas.
+                  </p>
+                  <span className="text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                    Plantillas Gratis ✓
+                  </span>
+                </div>
+
+                <div className="bg-gradient-to-br from-indigo-900 to-purple-950 border border-indigo-500/50 rounded-3xl p-6 flex flex-col justify-between text-center sm:text-left">
+                  <div>
+                    <h3 className="text-lg font-bold text-white mb-2 font-heading">¿Listo para probar la migración?</h3>
+                    <p className="text-xs text-indigo-200 leading-relaxed mb-4">
+                      Prueba el asistente interactivo en 4 pasos con mapeo manual de columnas e inspección de RNCs en vivo.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setView('register')}
+                    className="w-full py-3 bg-indigo-500 hover:bg-indigo-400 text-white rounded-2xl font-bold text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    Probar Asistente de Migración <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.section>
+
           {/* Features Grid: What you can do with FacturaDo */}
           <motion.section initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.6 }} id="funcionalidades" className="py-16 sm:py-24 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-12">
