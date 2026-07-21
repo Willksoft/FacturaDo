@@ -1,0 +1,21 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Reportes DGII Formato 607 y 608",
+  "description": "Verifica generación del libro de ventas 607 con NCFs asignados y archivo de facturas anuladas 608.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar a la sección de Reportes DGII"
+    },
+    {
+      "type": "action",
+      "description": "Seleccionar el período fiscal actual y generar Formato 607"
+    },
+    {
+      "type": "assertion",
+      "description": "Validar que las ventas registradas con NCF B01 y B02 se clasifiquen correctamente en las columnas de la DGII"
+    }
+  ]
+}

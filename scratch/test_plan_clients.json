@@ -1,0 +1,21 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Directorio de Clientes y RNC DGII",
+  "description": "Verifica creación de clientes física/empresa, consulta automática de RNC/Cédula y cliente opcional para borradores.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar al directorio de Clientes"
+    },
+    {
+      "type": "action",
+      "description": "Agregar cliente con RNC 101000000 y presionar validar DGII"
+    },
+    {
+      "type": "assertion",
+      "description": "Verificar que la información de RNC sea validada y el cliente guardado correctamente"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Control de Turnos y Arqueo de Caja",
+  "description": "Verifica la apertura de turno con fondo inicial, cálculo de ventas esperadas en efectivo y cierre/arqueo de caja.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar al módulo de Turnos de Caja"
+    },
+    {
+      "type": "action",
+      "description": "Abrir un nuevo turno ingresando un fondo inicial en efectivo"
+    },
+    {
+      "type": "action",
+      "description": "Efectuar el arqueo y cierre del turno"
+    },
+    {
+      "type": "assertion",
+      "description": "Verificar el cálculo de sobrante/faltante y registro del turno cerrado"
+    }
+  ]
+}

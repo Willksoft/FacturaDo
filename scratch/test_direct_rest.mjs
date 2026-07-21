@@ -1,0 +1,16 @@
+const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3OC0xMjM0LTU2NzgtOTBhYi1jZGVmMTIzNDU2NzgiLCJlbWFpbCI6ImFub25AaW5zZm9yZ2UuY29tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NDg1NzZ9.wGPrNkJgQqgOXuNOk_iyfgrEjrmPpp2eRg3dwj--GLs";
+
+async function testDirectRest() {
+  const url = "https://zdwuav42.us-east.insforge.app/api/database/records/v1/invoices?limit=1";
+  const res = await fetch(url, {
+    headers: {
+      "Authorization": `Bearer ${ANON_KEY}`,
+      "x-api-key": ANON_KEY
+    }
+  });
+  console.log('Status:', res.status);
+  const data = await res.json();
+  console.log('Data:', data);
+}
+
+testDirectRest();

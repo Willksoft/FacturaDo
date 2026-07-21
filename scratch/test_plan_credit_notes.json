@@ -1,0 +1,21 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Notas de Crédito Fiscal (B04)",
+  "description": "Prueba la emisión de Notas de Crédito con NCF B04 vinculadas a facturas para anulación o ajuste de saldo.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar a la vista de Notas de Crédito"
+    },
+    {
+      "type": "action",
+      "description": "Seleccionar una factura emitida previamente y generar Nota de Crédito B04"
+    },
+    {
+      "type": "assertion",
+      "description": "Verificar la reversión del saldo de la factura y asignación de la secuencia B04"
+    }
+  ]
+}

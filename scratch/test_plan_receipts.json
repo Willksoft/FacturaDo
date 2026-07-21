@@ -1,0 +1,21 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Recibos de Pago y Retenciones",
+  "description": "Verifica cobro de facturas a crédito, emisión de recibos con retención de ITBIS/ISR y estado de cuenta.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar al listado de Facturas a Crédito / Cuentas por Cobrar"
+    },
+    {
+      "type": "action",
+      "description": "Registrar pago/abono especificando retención de ITBIS (100% / 30%)"
+    },
+    {
+      "type": "assertion",
+      "description": "Validar emisión del recibo de ingreso y actualización del saldo pendiente"
+    }
+  ]
+}
