@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Download, Upload, Plus, Search, Trash2, Edit, FileSpreadsheet, Sparkles, Building, User, Package, Check, CheckCircle2, AlertTriangle, Loader2, Eye, Phone, Mail, MapPin, Calendar, Hash, Tag, DollarSign, Layers, Warehouse as WarehouseIcon, ShieldCheck, Globe, UserCircle, ScanBarcode, TrendingUp } from 'lucide-react';
 import { exportClientsToExcel, importClientsFromExcel, exportProductsToExcel, importProductsFromExcel, exportProvidersToExcel, importProvidersFromExcel, downloadImportTemplate } from '../../lib/excelExport';
 import { getDgiiAutocomplete, validateDgiiRnc } from '../../lib/dgiiApi';
+import { UniversalImportModal } from '../../components/ui/UniversalImportModal';
 
 interface DirectoriesProps {
   clients: Client[];
@@ -119,6 +120,7 @@ export default function Directories({
   const [clientModalOpen, setClientModalOpen] = useState(false);
   const [productModalOpen, setProductModalOpen] = useState(false);
   const [providerModalOpen, setProviderModalOpen] = useState(false);
+  const [isSmartImportModalOpen, setIsSmartImportModalOpen] = useState(false);
 
   // Edit States
   const [editingClient, setEditingClient] = useState<Client | null>(null);
@@ -815,15 +817,11 @@ export default function Directories({
                 id="import-excel"
                 variant="outline"
                 size="sm"
-                className="text-xs border-neutral-200 bg-white text-neutral-700"
-                onClick={() => {
-                  if (activeTab === 'clients') clientFileRef.current?.click();
-                  else if (activeTab === 'products') productFileRef.current?.click();
-                  else providerFileRef.current?.click();
-                }}
+                className="text-xs border-neutral-200 bg-white text-neutral-800 font-bold hover:bg-neutral-50 shadow-xs"
+                onClick={() => setIsSmartImportModalOpen(true)}
               >
-                <Upload className="w-3.5 h-3.5 mr-1" />
-                Carga Masiva (Excel)
+                <Upload className="w-3.5 h-3.5 mr-1.5 text-indigo-600" />
+                Carga Masiva Inteligente (.xlsx, .csv, .xml)
               </Button>
             </>
           )}
@@ -2279,6 +2277,25 @@ export default function Directories({
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Universal Smart Import Modal */}
+      <UniversalImportModal
+        isOpen={isSmartImportModalOpen}
+        onClose={() => setIsSmartImportModalOpen(false)}
+        defaultEntity={activeTab}
+        onImportClients={(newClients) => {
+          importClientsBulk(newClients as any);
+          showNotice(`¡Carga Masiva Exitosa! Se importaron ${newClients.length} clientes desinfectados.`, true);
+        }}
+        onImportProducts={(newProducts) => {
+          importProductsBulk(newProducts as any);
+          showNotice(`¡Carga Masiva Exitosa! Se importaron ${newProducts.length} productos desinfectados.`, true);
+        }}
+        onImportProviders={(newProviders) => {
+          importProvidersBulk(newProviders as any);
+          showNotice(`¡Carga Masiva Exitosa! Se importaron ${newProviders.length} proveedores desinfectados.`, true);
+        }}
+      />
     </div>
   );
 }
