@@ -136,6 +136,14 @@ export const cleanCurrency = (val: any): number => {
   return isNaN(num) ? 0 : num;
 };
 
+export const cleanNumber = (val: any): number => {
+  if (val === null || val === undefined) return 0;
+  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  const str = String(val).replace(/[^0-9.-]/g, '');
+  const parsed = parseFloat(str);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
 export const cleanPhone = (val: any): string => {
   if (!val) return '';
   return String(val).replace(/[^0-9+]/g, '');
@@ -414,51 +422,181 @@ export type EntityType = 'client' | 'product' | 'provider' | 'invoice';
 
 export interface UniversalMigrationResult {
   totalValid: number;
+  detectedHeaders: string[];
+  availableTargetFields: { field: string; label: string; required?: boolean }[];
   mappedColumns: { excelHeader: string; targetField: string }[];
   sanitizedRecords: any[];
   previewData: any[];
 }
 
-export const processSmartImport = async (file: File, targetEntity: EntityType): Promise<UniversalMigrationResult> => {
-  if (targetEntity === 'client') {
-    const res = await smartImportClients(file);
-    return {
-      totalValid: res.validRecords.length,
-      mappedColumns: res.mappings.map(m => ({ excelHeader: m.sourceColumn, targetField: m.targetField })),
-      sanitizedRecords: res.validRecords,
-      previewData: res.validRecords.map(r => ({ ...r, _isValid: true }))
-    };
-  } else if (targetEntity === 'product') {
-    const res = await smartImportProducts(file);
-    return {
-      totalValid: res.validRecords.length,
-      mappedColumns: res.mappings.map(m => ({ excelHeader: m.sourceColumn, targetField: m.targetField })),
-      sanitizedRecords: res.validRecords,
-      previewData: res.validRecords.map(r => ({ ...r, _isValid: true }))
-    };
-  } else if (targetEntity === 'provider') {
-    const res = await smartImportProviders(file);
-    return {
-      totalValid: res.validRecords.length,
-      mappedColumns: res.mappings.map(m => ({ excelHeader: m.sourceColumn, targetField: m.targetField })),
-      sanitizedRecords: res.validRecords,
-      previewData: res.validRecords.map(r => ({ ...r, _isValid: true }))
-    };
+export const getTargetFieldsForEntity = (entityType: EntityType): { field: string; label: string; required?: boolean }[] => {
+  if (entityType === 'client') {
+    return [
+      { field: 'name', label: 'Nombre / Razón Social', required: true },
+      { field: 'rncOrCedula', label: 'RNC / Cédula', required: true },
+      { field: 'email', label: 'Correo Electrónico' },
+      { field: 'phone', label: 'Teléfono / WhatsApp' },
+      { field: 'address', label: 'Dirección' },
+      { field: 'type', label: 'Tipo de Cliente (Física / Jurídica)' }
+    ];
+  } else if (entityType === 'product') {
+    return [
+      { field: 'code', label: 'Código / SKU', required: true },
+      { field: 'name', label: 'Nombre del Producto / Servicio', required: true },
+      { field: 'price', label: 'Precio de Venta (RD$)', required: true },
+      { field: 'cost', label: 'Costo Unitario (RD$)' },
+      { field: 'stock', label: 'Existencia / Stock' },
+      { field: 'type', label: 'Tipo (product / service)' },
+      { field: 'category', label: 'Categoría' }
+    ];
+  } else if (entityType === 'provider') {
+    return [
+      { field: 'name', label: 'Razón Social / Nombre Suplidor', required: true },
+      { field: 'rncOrCedula', label: 'RNC / Cédula Suplidor', required: true },
+      { field: 'email', label: 'Correo Electrónico' },
+      { field: 'phone', label: 'Teléfono' },
+      { field: 'address', label: 'Dirección' }
+    ];
   } else {
-    const { headers, rows } = await readFileGrid(file);
-    const records = rows.map((r) => ({
-      ncf: String(r[0] || 'B0100000001').trim(),
-      clientName: String(r[1] || 'Cliente Migrado').trim(),
-      subtotal: parseFloat(String(r[2] || '0').replace(/[^0-9.]/g, '')) || 0,
-      itbis: parseFloat(String(r[3] || '0').replace(/[^0-9.]/g, '')) || 0,
-      total: parseFloat(String(r[4] || '0').replace(/[^0-9.]/g, '')) || 0,
-      _isValid: true
-    }));
-    return {
-      totalValid: records.length,
-      mappedColumns: headers.map((h, i) => ({ excelHeader: h, targetField: ['ncf', 'clientName', 'subtotal', 'itbis', 'total'][i] || `col_${i}` })),
-      sanitizedRecords: records,
-      previewData: records
-    };
+    return [
+      { field: 'ncf', label: 'NCF (Comprobante Fiscal)', required: true },
+      { field: 'clientName', label: 'Nombre de Cliente', required: true },
+      { field: 'subtotal', label: 'Monto Subtotal (RD$)', required: true },
+      { field: 'itbis', label: 'Monto ITBIS (RD$)' },
+      { field: 'total', label: 'Monto Total (RD$)', required: true },
+      { field: 'date', label: 'Fecha de Emisión' }
+    ];
   }
+};
+
+export const processSmartImport = async (
+  file: File, 
+  targetEntity: EntityType,
+  customMappings?: Record<string, string> // targetField -> excelHeader
+): Promise<UniversalMigrationResult> => {
+  const { headers, rows } = await readFileGrid(file);
+  const targetFields = getTargetFieldsForEntity(targetEntity);
+
+  // If customMappings is provided, map target field -> column index in headers
+  const fieldIndexes: Record<string, number> = {};
+  
+  if (customMappings && Object.keys(customMappings).length > 0) {
+    Object.entries(customMappings).forEach(([tField, headerName]) => {
+      const idx = headers.indexOf(headerName);
+      if (idx !== -1) {
+        fieldIndexes[tField] = idx;
+      }
+    });
+  } else {
+    // Auto matching via synonyms
+    headers.forEach((h, idx) => {
+      const match = matchHeaderToField(h);
+      if (match && match.field) {
+        fieldIndexes[match.field] = idx;
+      }
+    });
+  }
+
+  let sanitizedRecords: any[] = [];
+  let mappedColumns: { excelHeader: string; targetField: string }[] = [];
+
+  if (targetEntity === 'client') {
+    rows.forEach((row) => {
+      const rawName = row[fieldIndexes['name']] ?? row[0] ?? '';
+      const rawRnc = row[fieldIndexes['rncOrCedula']] ?? row[1] ?? '';
+      const rawEmail = row[fieldIndexes['email']] ?? row[2] ?? '';
+      const rawPhone = row[fieldIndexes['phone']] ?? row[3] ?? '';
+      const rawAddress = row[fieldIndexes['address']] ?? row[4] ?? '';
+      const rawType = row[fieldIndexes['type']] ?? '';
+
+      const name = String(rawName || '').trim();
+      const rncOrCedula = cleanRncOrCedula(rawRnc);
+      if (name) {
+        sanitizedRecords.push({
+          name,
+          rncOrCedula,
+          email: String(rawEmail || '').trim(),
+          phone: cleanPhone(rawPhone),
+          address: String(rawAddress || '').trim(),
+          type: String(rawType || '').toLowerCase().includes('jur') ? 'Jurídica' : 'Física'
+        });
+      }
+    });
+  } else if (targetEntity === 'product') {
+    rows.forEach((row) => {
+      const rawCode = row[fieldIndexes['code']] ?? row[0] ?? '';
+      const rawName = row[fieldIndexes['name']] ?? row[1] ?? '';
+      const rawPrice = row[fieldIndexes['price']] ?? row[2] ?? 0;
+      const rawCost = row[fieldIndexes['cost']] ?? row[3] ?? 0;
+      const rawStock = row[fieldIndexes['stock']] ?? row[4] ?? 0;
+      const rawType = row[fieldIndexes['type']] ?? '';
+      const rawCat = row[fieldIndexes['category']] ?? '';
+
+      const name = String(rawName || '').trim();
+      const code = String(rawCode || '').trim() || `SKU-${Math.floor(Math.random()*8999+1000)}`;
+      if (name) {
+        sanitizedRecords.push({
+          code,
+          name,
+          price: cleanNumber(rawPrice),
+          cost: cleanNumber(rawCost),
+          stock: cleanNumber(rawStock),
+          type: String(rawType || '').toLowerCase().includes('serv') ? 'service' : 'product',
+          category: String(rawCat || 'General').trim()
+        });
+      }
+    });
+  } else if (targetEntity === 'provider') {
+    rows.forEach((row) => {
+      const rawName = row[fieldIndexes['name']] ?? row[0] ?? '';
+      const rawRnc = row[fieldIndexes['rncOrCedula']] ?? row[1] ?? '';
+      const rawEmail = row[fieldIndexes['email']] ?? row[2] ?? '';
+      const rawPhone = row[fieldIndexes['phone']] ?? row[3] ?? '';
+      const rawAddress = row[fieldIndexes['address']] ?? row[4] ?? '';
+
+      const name = String(rawName || '').trim();
+      const rnc = cleanRncOrCedula(rawRnc);
+      if (name) {
+        sanitizedRecords.push({
+          name,
+          rnc,
+          email: String(rawEmail || '').trim(),
+          phone: cleanPhone(rawPhone),
+          address: String(rawAddress || '').trim(),
+          contactName: name
+        });
+      }
+    });
+  } else {
+    rows.forEach((row) => {
+      const rawNcf = row[fieldIndexes['ncf']] ?? row[0] ?? 'B0100000001';
+      const rawClient = row[fieldIndexes['clientName']] ?? row[1] ?? 'Cliente Migrado';
+      const rawSub = row[fieldIndexes['subtotal']] ?? row[2] ?? 0;
+      const rawItbis = row[fieldIndexes['itbis']] ?? row[3] ?? 0;
+      const rawTot = row[fieldIndexes['total']] ?? row[4] ?? 0;
+
+      sanitizedRecords.push({
+        ncf: String(rawNcf).trim(),
+        clientName: String(rawClient).trim(),
+        subtotal: cleanNumber(rawSub),
+        itbis: cleanNumber(rawItbis),
+        total: cleanNumber(rawTot) || (cleanNumber(rawSub) + cleanNumber(rawItbis)),
+        date: new Date().toISOString().split('T')[0]
+      });
+    });
+  }
+
+  mappedColumns = Object.entries(fieldIndexes).map(([tField, colIdx]) => ({
+    excelHeader: headers[colIdx] || `Columna #${colIdx + 1}`,
+    targetField: tField
+  }));
+
+  return {
+    totalValid: sanitizedRecords.length,
+    detectedHeaders: headers,
+    availableTargetFields: targetFields,
+    mappedColumns,
+    sanitizedRecords,
+    previewData: sanitizedRecords.map(r => ({ ...r, _isValid: true }))
+  };
 };

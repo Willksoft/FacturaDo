@@ -451,32 +451,98 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
             </Card>
           </div>
 
-          {/* Mapped Columns Accordion / Table */}
+          {/* Mapped Columns Accordion / Interactive Manual Mapping */}
           <Card className="border-slate-200 shadow-sm">
-            <CardHeader className="py-4 border-b border-slate-100 bg-slate-50/50">
-              <CardTitle className="text-sm font-bold text-slate-900 flex items-center justify-between">
-                <span className="flex items-center gap-2">
+            <CardHeader className="py-4 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <CardTitle className="text-sm font-bold text-slate-900 flex items-center gap-2">
                   <Layers className="w-4 h-4 text-indigo-600" />
-                  Mapeo Inteligente de Encabezados
-                </span>
-                <span className="text-xs text-slate-500 font-normal">Auto-detectado (95% de Confianza)</span>
-              </CardTitle>
+                  Relación y Enlace Manual de Columnas
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Relaciona manualmente los encabezados de tu archivo con los campos requeridos por FacturaDo si difieren.
+                </CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={async () => {
+                  if (file) {
+                    setColumnOverrides({});
+                    setIsProcessing(true);
+                    const res = await processSmartImport(file, targetEntity);
+                    setImportResult(res);
+                    setIsProcessing(false);
+                    showNotice?.('Mapeo restablecido al algoritmo automático', true);
+                  }
+                }}
+                className="text-xs h-8 bg-white border-slate-200 text-slate-700 font-semibold gap-1.5"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-indigo-600" />
+                Restablecer Mapeo Auto
+              </Button>
             </CardHeader>
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {importResult.mappedColumns.map((col, idx) => (
-                  <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-2">
-                    <div className="truncate">
-                      <p className="text-[10px] uppercase font-bold text-slate-400">Encabezado Original</p>
-                      <p className="text-xs font-bold text-slate-800 truncate">"{col.excelHeader}"</p>
+
+            <CardContent className="p-4 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {importResult.availableTargetFields?.map((tf) => {
+                  // Current mapped Excel header for this targetField
+                  const currentMappedObj = importResult.mappedColumns.find(c => c.targetField === tf.field);
+                  const currentHeaderValue = columnOverrides[tf.field] || currentMappedObj?.excelHeader || '';
+
+                  return (
+                    <div key={tf.field} className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-indigo-950 flex items-center gap-1">
+                          {tf.label}
+                          {tf.required && <span className="text-red-500 font-bold">*</span>}
+                        </span>
+                        {currentHeaderValue ? (
+                          <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
+                            Enlazado ✓
+                          </span>
+                        ) : (
+                          <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">
+                            Sin Enlace
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold text-slate-400">
+                          Columna Origen en tu Excel/CSV:
+                        </label>
+                        <select
+                          value={currentHeaderValue}
+                          onChange={async (e) => {
+                            const newHeader = e.target.value;
+                            const newOverrides = { ...columnOverrides, [tf.field]: newHeader };
+                            setColumnOverrides(newOverrides);
+                            if (file) {
+                              setIsProcessing(true);
+                              try {
+                                const newRes = await processSmartImport(file, targetEntity, newOverrides);
+                                setImportResult(newRes);
+                              } catch (err) {
+                                console.error(err);
+                              } finally {
+                                setIsProcessing(false);
+                              }
+                            }
+                          }}
+                          className="w-full text-xs font-medium bg-white border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        >
+                          <option value="">-- Ignorar / No mapear --</option>
+                          {importResult.detectedHeaders?.map((headerName, hIdx) => (
+                            <option key={hIdx} value={headerName}>
+                              {headerName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    <div className="truncate text-right">
-                      <p className="text-[10px] uppercase font-bold text-indigo-500">Campo FacturaDo</p>
-                      <p className="text-xs font-bold text-indigo-950 truncate">{col.targetField}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

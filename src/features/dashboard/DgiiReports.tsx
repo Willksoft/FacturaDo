@@ -98,6 +98,16 @@ export default function DgiiReports({ invoices, providers, currentUser, initialR
   const [sItbisAmount, setSItbisAmount] = useState('0');
   const [sPaymentMethod, setSPaymentMethod] = useState('01');
 
+  // Manual 609 Foreign Payment State
+  const [manual609List, setManual609List] = useState<any[]>([]);
+  const [modal609, setModal609] = useState(false);
+  const [foreignTaxId, setForeignTaxId] = useState('');
+  const [foreignName, setForeignName] = useState('');
+  const [foreignCountry, setForeignCountry] = useState('EEUU');
+  const [foreignConcept, setForeignConcept] = useState('01');
+  const [foreignAmount, setForeignAmount] = useState('0');
+  const [foreignIsrWithheld, setForeignIsrWithheld] = useState('0');
+
   // Reason codes for 608 Voided Invoices
   const [voidReasons, setVoidReasons] = useState<Record<string, string>>({
     'inv-2': '02', // Errores de Impresión / Secuenciación
@@ -322,6 +332,14 @@ export default function DgiiReports({ invoices, providers, currentUser, initialR
             onClick={() => setActiveReportTab('608')}
           >
             Formato 608 (Anulados)
+          </Button>
+          <Button
+            id="tab-rpt-609"
+            variant={activeReportTab === '609' ? 'default' : 'ghost'}
+            className="text-xs h-8 px-3 rounded text-neutral-300"
+            onClick={() => setActiveReportTab('609')}
+          >
+            Formato 609 (Pagos Exterior)
           </Button>
           <Button
             id="tab-rpt-oficina-virtual"
@@ -657,6 +675,81 @@ export default function DgiiReports({ invoices, providers, currentUser, initialR
                           <SelectItem value="09">09 - Otra causal de fuerza mayor</SelectItem>
                         </SelectContent>
                       </Select>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
+
+      {activeReportTab === '609' && (
+        <Card className="border-neutral-200 shadow-none rounded-xl overflow-hidden bg-white animate-fade-in">
+          <CardHeader className="bg-neutral-50 border-b border-neutral-150 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <CardTitle className="text-sm font-semibold text-neutral-900">Formato 609 - Pagos al Exterior y Personas No Residentes</CardTitle>
+              <CardDescription className="text-xs">Registre pagos por servicios, licencias o asesorías a entidades internacionales fuera de la Rep. Dom.</CardDescription>
+            </div>
+
+            <div className="flex items-center space-x-1.5">
+              <Button size="sm" className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold" onClick={() => setModal609(true)}>
+                <Plus className="w-3.5 h-3.5 mr-1" />
+                Registrar Pago Exterior (609)
+              </Button>
+              {canExport && (
+                <Button size="sm" className="bg-neutral-900 text-white hover:bg-neutral-850 text-[11px] h-8 px-2.5" onClick={() => {
+                  const headerLine = `609|101014234|202604|${manual609List.length}`;
+                  const rows = manual609List.map(r => `${r.taxId}|${r.name}|${r.country}|${r.concept}|${r.date}|${r.amount.toFixed(2)}|${r.isrWithheld.toFixed(2)}`);
+                  const content = [headerLine, ...rows].join('\n');
+                  downloadFile(content, 'DGII_609_202604.txt', 'text/plain;charset=utf-8');
+                }}>
+                  <FileText className="w-3.5 h-3.5 mr-1" />
+                  Exportar TXT (609)
+                </Button>
+              )}
+            </div>
+          </CardHeader>
+
+          <Table>
+            <TableHeader className="bg-neutral-50/50 text-[11px]">
+              <TableRow>
+                <TableHead>Tax ID / Identificación</TableHead>
+                <TableHead>Nombre / Beneficiario</TableHead>
+                <TableHead className="text-center">País</TableHead>
+                <TableHead className="text-center">Concepto Pago</TableHead>
+                <TableHead className="text-center">Fecha</TableHead>
+                <TableHead className="text-right">Monto Pagado (RD$)</TableHead>
+                <TableHead className="text-right text-amber-800">Retención ISR (27%)</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {manual609List.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-16 text-neutral-400 text-xs">
+                    No se registran pagos al exterior reportados en el período.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                manual609List.map((item, idx) => (
+                  <TableRow key={idx} className="hover:bg-neutral-50/30 text-xs">
+                    <TableCell className="font-semibold text-neutral-800">{item.taxId}</TableCell>
+                    <TableCell className="font-bold text-neutral-900">{item.name}</TableCell>
+                    <TableCell className="text-center">{item.country}</TableCell>
+                    <TableCell className="text-center">{item.concept}</TableCell>
+                    <TableCell className="text-center">{item.date}</TableCell>
+                    <TableCell className="text-right font-semibold">{item.amount.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}</TableCell>
+                    <TableCell className="text-right text-amber-800 font-bold">{item.isrWithheld.toLocaleString('es-DO', { style: 'currency', currency: 'DOP' })}</TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 text-red-500 hover:bg-red-50"
+                        onClick={() => setManual609List(prev => prev.filter((_, i) => i !== idx))}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -1198,6 +1291,73 @@ export default function DgiiReports({ invoices, providers, currentUser, initialR
             <DialogFooter>
               <Button type="button" variant="outline" size="sm" onClick={() => setSalesModal(false)}>Cancelar</Button>
               <Button type="submit" size="sm" className="bg-emerald-650 hover:bg-emerald-700 text-white font-semibold">Registrar en 607</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL - RECORD 609 FOREIGN PAYMENT */}
+      <Dialog open={modal609} onOpenChange={setModal609}>
+        <DialogContent className="sm:max-w-[450px]">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const amt = parseFloat(foreignAmount) || 0;
+            const isr = parseFloat(foreignIsrWithheld) || (amt * 0.27);
+            const newRec = {
+              taxId: foreignTaxId || 'FOREIGN-001',
+              name: foreignName || 'Proveedor Internacional',
+              country: foreignCountry || 'EEUU',
+              concept: foreignConcept,
+              date: new Date().toISOString().split('T')[0].replace(/-/g, ''),
+              amount: amt,
+              isrWithheld: isr
+            };
+            setManual609List([newRec, ...manual609List]);
+            setModal609(false);
+            setForeignTaxId('');
+            setForeignName('');
+            setForeignAmount('0');
+            setForeignIsrWithheld('0');
+          }}>
+            <DialogHeader>
+              <DialogTitle className="text-base text-neutral-900 font-heading">Registrar Pago al Exterior (Formato 609)</DialogTitle>
+              <DialogDescription className="text-xs">
+                Registre pagos a empresas o personas no residentes en República Dominicana con retención de ISR Ley 11-92.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 my-4">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Tax ID / Registro Fiscal *</Label>
+                  <Input placeholder="EIN / NIF Extranjero" value={foreignTaxId} onChange={(e) => setForeignTaxId(e.target.value)} required />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">País de Origen *</Label>
+                  <Input placeholder="EEUU, España, etc." value={foreignCountry} onChange={(e) => setForeignCountry(e.target.value)} required />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs">Nombre o Razón Social Extranjera *</Label>
+                <Input placeholder="AWS, Google, Software Corp..." value={foreignName} onChange={(e) => setForeignName(e.target.value)} required />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Monto Pagado (RD$) *</Label>
+                  <Input type="number" step="0.01" value={foreignAmount} onChange={(e) => setForeignAmount(e.target.value)} required />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Retención ISR (27%) *</Label>
+                  <Input type="number" step="0.01" value={foreignIsrWithheld} onChange={(e) => setForeignIsrWithheld(e.target.value)} required />
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button type="button" variant="outline" size="sm" onClick={() => setModal609(false)}>Cancelar</Button>
+              <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold">Guardar en 609</Button>
             </DialogFooter>
           </form>
         </DialogContent>
