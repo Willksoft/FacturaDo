@@ -106,10 +106,10 @@ function StatCounters() {
           { label: 'Uptime Sistema', value: 99, suffix: '.9%' }
         ].map((stat, idx) => (
           <div key={idx} className="flex flex-col items-center justify-center bg-transparent p-6 text-center hover:-translate-y-1 transition-transform duration-300">
-            <div className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-blue-700 font-heading mb-2">
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-blue-700 font-heading mb-2">
               <AnimatedNumber target={stat.value} suffix={stat.suffix} prefix={stat.prefix} duration={2500 + (idx * 300)} />
             </div>
-            <div className="text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-widest">{stat.label}</div>
+            <div className="text-xs sm:text-sm font-medium text-slate-500 uppercase tracking-widest">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -760,7 +760,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* Mobile Logo using favicon */}
                 <div className="block sm:hidden flex items-center gap-2">
                   <img src="/facturaDonuevologo_favicon.svg" alt="FacturaDo" className="w-8 h-8 shrink-0 object-contain" referrerPolicy="no-referrer" />
-                  <span className="text-lg font-extrabold tracking-tight text-slate-900 font-sans">FacturaDo</span>
+                  <span className="text-lg font-medium tracking-tight text-slate-900 font-sans">FacturaDo</span>
                 </div>
               </div>
 
@@ -778,7 +778,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {isLoggedIn ? (
                   <button
                     onClick={() => navigate('/dashboard')}
-                    className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-bold bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
+                    className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-medium bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
                   >
                     Ir al Dashboard
                   </button>
@@ -786,13 +786,13 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <>
                     <button
                       onClick={() => setView('login')}
-                      className="whitespace-nowrap px-4 xl:px-5 py-2.5 text-[13px] xl:text-sm font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200"
+                      className="whitespace-nowrap px-4 xl:px-5 py-2.5 text-[13px] xl:text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200"
                     >
                       Iniciar Sesión
                     </button>
                     <button
                       onClick={() => setView('register')}
-                      className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-bold bg-slate-900 hover:bg-black text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
+                      className="whitespace-nowrap px-4 xl:px-6 py-2.5 text-[13px] xl:text-sm font-medium bg-slate-900 hover:bg-black text-white rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer"
                     >
                       Registrarse Gratis
                     </button>
@@ -830,33 +830,33 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <a 
                       href="#funcionalidades" 
                       onClick={() => setMobileMenuOpen(false)}
-                      className="text-sm font-bold text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100"
+                      className="text-sm font-medium text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100"
                     >
                       Funcionalidades
                     </a>
                     <a 
                       href="#testimonios" 
                       onClick={() => setMobileMenuOpen(false)}
-                      className="text-sm font-bold text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100"
+                      className="text-sm font-medium text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100"
                     >
                       Opiniones
                     </a>
                     <button 
                       onClick={() => navigate('/blog')} 
-                      className="text-left text-sm font-bold text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100 cursor-pointer w-full"
+                      className="text-left text-sm font-medium text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100 cursor-pointer w-full"
                     >
                       Blog
                     </button>
                     <button 
                       onClick={() => setView('ayuda')} 
-                      className="text-left text-sm font-bold text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100 cursor-pointer w-full"
+                      className="text-left text-sm font-medium text-slate-700 hover:text-sky-600 py-2.5 border-b border-slate-100 cursor-pointer w-full"
                     >
                       Centro de Ayuda
                     </button>
                     <a 
                       href="#faq" 
                       onClick={() => setMobileMenuOpen(false)}
-                      className="text-sm font-bold text-slate-700 hover:text-sky-600 py-2.5"
+                      className="text-sm font-medium text-slate-700 hover:text-sky-600 py-2.5"
                     >
                       Preguntas Frecuentes
                     </a>
@@ -865,7 +865,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                       {isLoggedIn ? (
                         <button
                           onClick={() => navigate('/dashboard')}
-                          className="col-span-2 w-full py-3 text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-all shadow-md cursor-pointer text-center"
+                          className="col-span-2 w-full py-3 text-xs font-medium bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-all shadow-md cursor-pointer text-center"
                         >
                           Ir al Dashboard
                         </button>
@@ -873,13 +873,13 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         <>
                           <button
                             onClick={() => setView('login')}
-                            className="w-full py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200 text-center"
+                            className="w-full py-3 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200 text-center"
                           >
                             Iniciar Sesión
                           </button>
                           <button
                             onClick={() => setView('register')}
-                            className="w-full py-3 text-xs font-bold bg-slate-900 hover:bg-black text-white rounded-xl transition-all shadow-md cursor-pointer text-center"
+                            className="w-full py-3 text-xs font-medium bg-slate-900 hover:bg-black text-white rounded-xl transition-all shadow-md cursor-pointer text-center"
                           >
                             Registrarse
                           </button>
@@ -918,14 +918,14 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-100/40 rounded-full blur-3xl -z-10" />
             <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-50/50 rounded-full blur-3xl -z-10" />
 
-            <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pb-32 sm:pb-48">
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
+            <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-6">
                 
                 {/* Hero Top Info */}
-                <div className="w-full lg:w-[500px] xl:w-[600px] shrink-0 flex flex-col items-center lg:items-start text-center lg:text-left relative min-h-[450px] sm:min-h-[380px] lg:min-h-[360px]">
+                <div className="w-full lg:w-[480px] xl:w-[540px] shrink-0 flex flex-col items-center lg:items-start text-center lg:text-left relative min-h-[260px] sm:min-h-[220px]">
 
                   
-                  <div className="relative w-full flex-1 min-h-[380px] sm:min-h-[280px]">
+                  <div className="relative w-full flex-1 min-h-[220px] sm:min-h-[180px]">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentSlide}
@@ -935,18 +935,18 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         transition={{ duration: 0.5, ease: "easeInOut" }}
                         className="flex flex-col items-center lg:items-start w-full"
                       >
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-heading font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-medium text-slate-900 tracking-tight leading-tight mb-4">
                           {heroSlides[currentSlide].title[0]} <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-blue-600 block sm:inline">{heroSlides[currentSlide].title[1]}</span>
                         </h1>
                         
-                        <p className="text-base sm:text-lg lg:text-xl text-slate-600 font-normal leading-relaxed max-w-3xl mb-8">
+                        <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed max-w-2xl mb-6">
                           {heroSlides[currentSlide].description}
                         </p>
 
-                        <div className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 text-slate-700 font-semibold text-sm">
+                        <div className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-5 text-slate-700 font-medium text-xs sm:text-sm">
                           {heroSlides[currentSlide].badges.map((badge, idx) => (
                             <div key={idx} className="flex items-center gap-2">
-                              <span className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs border border-emerald-100 shrink-0">✓</span>
+                              <span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-medium text-xs border border-emerald-100 shrink-0">✓</span>
                               <span>{badge}</span>
                             </div>
                           ))}
@@ -960,7 +960,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
 
                   {/* Slider Controls */}
-                  <div className="flex justify-center lg:justify-start gap-2 mt-8 z-10 w-full">
+                  <div className="flex justify-center lg:justify-start gap-2 mt-6 z-10 w-full">
                     {heroSlides.map((_, idx) => (
                       <button
                         key={idx}
@@ -973,21 +973,21 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               </div>
 
                 {/* Hero Bottom Visuals - Dashboard Image */}
-                <div className="w-full lg:w-[900px] xl:w-[1024px] shrink-0 sticky top-24 sm:top-28 z-10 flex justify-center lg:justify-end relative mt-12 lg:mt-0">
+                <div className="w-full lg:w-[540px] xl:w-[620px] shrink-0 z-10 flex justify-center lg:justify-end relative mt-6 lg:mt-0">
                   <div className="absolute inset-0 bg-sky-200/30 rounded-full blur-3xl transform rotate-3 -z-10" />
                   <motion.div
-                    className="relative w-full drop-shadow-2xl"
+                    className="relative w-full drop-shadow-xl"
                   >
                     <motion.img 
-                      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                      initial={{ opacity: 0, y: 30, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                      transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
                       src={heroSlides[currentSlide].image} 
                       alt="FacturaDo Dashboard" 
                       onClick={() => setIsLightboxOpen(true)}
                       fetchPriority="high"
                       loading="eager"
-                      className="w-full h-auto object-contain rounded-xl sm:rounded-3xl shadow-2xl ring-1 ring-slate-900/5 cursor-pointer hover:opacity-95 transition-opacity lg:-mr-16 xl:-mr-24"
+                      className="w-full h-auto max-h-[360px] sm:max-h-[420px] object-contain rounded-xl sm:rounded-2xl shadow-xl ring-1 ring-slate-900/5 cursor-pointer hover:opacity-95 transition-opacity"
                     />
                   </motion.div>
                 </div>
@@ -1042,7 +1042,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         className="relative z-10 w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl"
                       >
                         <div className="flex justify-between items-start mb-6">
-                          <h3 className="text-xl font-bold text-slate-900 font-heading">Instalar en tu dispositivo</h3>
+                          <h3 className="text-xl font-medium text-slate-900 font-heading">Instalar en tu dispositivo</h3>
                           <button 
                             onClick={() => setShowPwaInstructions(false)}
                             className="p-2 -mr-2 -mt-2 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
@@ -1053,7 +1053,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         
                         <div className="space-y-6 text-left">
                           <div>
-                            <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <h4 className="font-medium text-slate-800 mb-2 flex items-center gap-2">
                               <Apple className="w-5 h-5" /> En iPhone / iPad (Safari)
                             </h4>
                             <ol className="text-sm text-slate-600 space-y-2 ml-7 list-decimal">
@@ -1063,7 +1063,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                           </div>
                           
                           <div>
-                            <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <h4 className="font-medium text-slate-800 mb-2 flex items-center gap-2">
                               <MonitorSmartphone className="w-5 h-5" /> En Android (Chrome)
                             </h4>
                             <ol className="text-sm text-slate-600 space-y-2 ml-7 list-decimal">
@@ -1073,7 +1073,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                           </div>
 
                           <div>
-                            <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <h4 className="font-medium text-slate-800 mb-2 flex items-center gap-2">
                               <Laptop className="w-5 h-5" /> En Computadora (Chrome/Edge)
                             </h4>
                             <p className="text-sm text-slate-600 ml-7">
@@ -1084,7 +1084,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         
                         <button 
                           onClick={() => setShowPwaInstructions(false)}
-                          className="w-full mt-8 py-3 bg-slate-900 hover:bg-black text-white rounded-xl font-bold transition-colors"
+                          className="w-full mt-8 py-3 bg-slate-900 hover:bg-black text-white rounded-xl font-medium transition-colors"
                         >
                           Entendido
                         </button>
@@ -1109,12 +1109,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="flex flex-col items-center text-center space-y-8">
                 
-                <div className="inline-flex items-center gap-2 bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
+                <div className="inline-flex items-center gap-2 bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-medium uppercase tracking-widest px-4 py-1.5 rounded-full">
                   <Infinity className="w-4 h-4" />
                   Totalmente Gratis. Sin Límites.
                 </div>
                 
-                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-white tracking-tight max-w-4xl">
+                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-medium text-white tracking-tight max-w-4xl">
                   Todo el poder de FacturaDo <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-400">Sin Restricciones</span>
                 </h2>
                 
@@ -1135,8 +1135,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                       <div className="w-12 h-12 rounded-xl bg-slate-700/50 flex items-center justify-center group-hover:bg-sky-500/10 group-hover:scale-110 transition-all">
                         <item.icon className="w-6 h-6 text-slate-300 group-hover:text-sky-400 transition-colors" />
                       </div>
-                      <span className="text-white font-bold text-[13px] sm:text-sm">{item.label}</span>
-                      <span className="text-sky-400 text-[10px] sm:text-xs font-extrabold bg-sky-400/10 px-2.5 py-1 rounded-md tracking-wider uppercase">Ilimitado</span>
+                      <span className="text-white font-medium text-[13px] sm:text-sm">{item.label}</span>
+                      <span className="text-sky-400 text-[10px] sm:text-xs font-medium bg-sky-400/10 px-2.5 py-1 rounded-md tracking-wider uppercase">Ilimitado</span>
                     </div>
                   ))}
                 </div>
@@ -1144,7 +1144,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <div className="pt-10">
                   <button
                     onClick={() => setView('register')}
-                    className="px-8 py-4 bg-sky-500 hover:bg-sky-400 text-white rounded-2xl font-bold text-base transition-all shadow-[0_0_30px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.5)] flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-1 duration-200"
+                    className="px-8 py-4 bg-sky-500 hover:bg-sky-400 text-white rounded-2xl font-medium text-base transition-all shadow-[0_0_30px_rgba(14,165,233,0.3)] hover:shadow-[0_0_40px_rgba(14,165,233,0.5)] flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-1 duration-200"
                   >
                     Empieza Ya - Es Gratis <ArrowRight className="w-5 h-5" />
                   </button>
@@ -1165,11 +1165,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(14,165,233,0.04),transparent_60%)]" />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
-                <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
+                <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-medium uppercase tracking-widest px-4 py-1.5 rounded-full">
                   <Zap className="w-3.5 h-3.5" />
                   Rápido y Sencillo
                 </div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-slate-900 tracking-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-medium text-slate-900 tracking-tight">
                   Empieza a facturar en <span className="text-emerald-600">2 minutos</span>
                 </h2>
                 <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
@@ -1190,8 +1190,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <div className="w-14 h-14 rounded-2xl bg-sky-100 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                       <UserPlus className="w-7 h-7 text-sky-600" />
                     </div>
-                    <div className="text-[11px] font-bold text-sky-600 uppercase tracking-widest mb-2">Paso 1</div>
-                    <h3 className="text-lg font-bold text-slate-900 mb-2 font-heading">Crea tu cuenta gratis</h3>
+                    <div className="text-[11px] font-medium text-sky-600 uppercase tracking-widest mb-2">Paso 1</div>
+                    <h3 className="text-lg font-medium text-slate-900 mb-2 font-heading">Crea tu cuenta gratis</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">Registra tu negocio con nombre, RNC y correo. Sin tarjeta de crédito ni compromisos de pago.</p>
                   </div>
                   <div className="hidden md:block absolute -right-5 top-1/2 -translate-y-1/2 z-10">
@@ -1211,8 +1211,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                       <Settings className="w-7 h-7 text-amber-600" />
                     </div>
-                    <div className="text-[11px] font-bold text-amber-600 uppercase tracking-widest mb-2">Paso 2</div>
-                    <h3 className="text-lg font-bold text-slate-900 mb-2 font-heading">Configura tu secuencia NCF</h3>
+                    <div className="text-[11px] font-medium text-amber-600 uppercase tracking-widest mb-2">Paso 2</div>
+                    <h3 className="text-lg font-medium text-slate-900 mb-2 font-heading">Configura tu secuencia NCF</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">Agrega tus secuencias de comprobantes fiscales (B01, B02, B14, B15) y personaliza tu plantilla.</p>
                   </div>
                   <div className="hidden md:block absolute -right-5 top-1/2 -translate-y-1/2 z-10">
@@ -1232,8 +1232,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                       <Receipt className="w-7 h-7 text-emerald-400" />
                     </div>
-                    <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest mb-2">Paso 3</div>
-                    <h3 className="text-lg font-bold text-white mb-2 font-heading">¡Factura al instante!</h3>
+                    <div className="text-[11px] font-medium text-emerald-400 uppercase tracking-widest mb-2">Paso 3</div>
+                    <h3 className="text-lg font-medium text-white mb-2 font-heading">¡Factura al instante!</h3>
                     <p className="text-sm text-slate-400 leading-relaxed">Emite facturas, cotizaciones y recibos con NCF válido. Imprime o envía por correo directamente.</p>
                   </div>
                 </motion.div>
@@ -1242,7 +1242,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               <div className="text-center mt-12">
                 <button
                   onClick={() => setView('register')}
-                  className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer mx-auto hover:-translate-y-0.5 duration-150"
+                  className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-medium text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer mx-auto hover:-translate-y-0.5 duration-150"
                 >
                   <Rocket className="w-5 h-5" />
                   Crear mi cuenta ahora — Es gratis
@@ -1264,11 +1264,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
-                <span className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-flex items-center gap-2">
+                <span className="px-4 py-1.5 rounded-full text-xs font-medium uppercase tracking-widest bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-flex items-center gap-2">
                   <FolderOpen className="w-4 h-4 text-indigo-400" />
                   Migración sin Esfuerzo en 1 Clic
                 </span>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold text-white tracking-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-medium text-white tracking-tight">
                   ¿Vienes de <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-300 to-emerald-400">WooCommerce, Shopify, Alegra o QuickBooks?</span>
                 </h2>
                 <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto">
@@ -1281,11 +1281,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Store className="w-6 h-6 text-purple-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 font-heading">WooCommerce / WordPress</h3>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">WooCommerce / WordPress</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     Importa productos, SKU, precios regulares y de oferta, existencias de stock y categorías de tu tienda WordPress en formato CSV o Excel.
                   </p>
-                  <span className="text-[11px] font-bold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">
+                  <span className="text-[11px] font-medium text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">
                     E-Commerce Listo ✓
                   </span>
                 </div>
@@ -1294,11 +1294,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <ShoppingBag className="w-6 h-6 text-emerald-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 font-heading">Shopify Store</h3>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Shopify Store</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     Reconoce la estructura nativa exportada de Shopify (<code className="text-emerald-300">Title</code>, <code className="text-emerald-300">Variant SKU</code>, <code className="text-emerald-300">Variant Price</code>) y la convierte en comprobantes NCF.
                   </p>
-                  <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                  <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
                     Sincronización Total ✓
                   </span>
                 </div>
@@ -1307,11 +1307,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Zap className="w-6 h-6 text-indigo-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 font-heading">Alegra & Cashflow</h3>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Alegra & Cashflow</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     Sube tus reportes de clientes con RNC/Cédula, catálogo de ítems y listas de precios para activarte sin perder historial contable.
                   </p>
-                  <span className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
+                  <span className="text-[11px] font-medium text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
                     Dominicano 100% ✓
                   </span>
                 </div>
@@ -1320,11 +1320,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Building className="w-6 h-6 text-blue-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 font-heading">QuickBooks & Odoo / Zoho</h3>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">QuickBooks & Odoo / Zoho</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     Exporta desde Customers, Vendor List o Item List y FacturaDo desinfectará los campos de forma automática.
                   </p>
-                  <span className="text-[11px] font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                  <span className="text-[11px] font-medium text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
                     Compatibilidad ERP ✓
                   </span>
                 </div>
@@ -1333,25 +1333,25 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Database className="w-6 h-6 text-amber-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 font-heading">Excel, CSV o XML Libre</h3>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Excel, CSV o XML Libre</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     Sube cualquier archivo Excel sin formato rígido. Nuestro asistente con inteligencia de sinónimos empareja tus columnas.
                   </p>
-                  <span className="text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                  <span className="text-[11px] font-medium text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
                     Plantillas Gratis ✓
                   </span>
                 </div>
 
                 <div className="bg-gradient-to-br from-indigo-900 to-purple-950 border border-indigo-500/50 rounded-3xl p-6 flex flex-col justify-between text-center sm:text-left">
                   <div>
-                    <h3 className="text-lg font-bold text-white mb-2 font-heading">¿Listo para probar la migración?</h3>
+                    <h3 className="text-lg font-medium text-white mb-2 font-heading">¿Listo para probar la migración?</h3>
                     <p className="text-xs text-indigo-200 leading-relaxed mb-4">
                       Prueba el asistente interactivo en 4 pasos con mapeo manual de columnas e inspección de RNCs en vivo.
                     </p>
                   </div>
                   <button
                     onClick={() => setView('register')}
-                    className="w-full py-3 bg-indigo-500 hover:bg-indigo-400 text-white rounded-2xl font-bold text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3 bg-indigo-500 hover:bg-indigo-400 text-white rounded-2xl font-medium text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Probar Asistente de Migración <ArrowRight className="w-4 h-4" />
                   </button>
@@ -1364,8 +1364,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           <motion.section initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.6 }} id="funcionalidades" className="py-16 sm:py-24 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-12">
               <div className="max-w-3xl mx-auto text-center space-y-4">
-                <span className="text-sky-600 font-bold uppercase tracking-widest text-xs sm:text-sm block">Poderosas Funcionalidades</span>
-                <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900 tracking-tight">Todo lo que tu comercio necesita</h2>
+                <span className="text-sky-600 font-medium uppercase tracking-widest text-xs sm:text-sm block">Poderosas Funcionalidades</span>
+                <h2 className="text-3xl sm:text-4xl font-heading font-medium text-slate-900 tracking-tight">Todo lo que tu comercio necesita</h2>
                 <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
                   Diseñado para simplificar tu operación comercial y fiscal sin complicaciones financieras ni barreras tecnológicas.
                 </p>
@@ -1376,86 +1376,86 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* 1. Controla tu flujo de caja */}
                 <div className="bg-white border border-slate-100 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left space-y-3 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <span className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 font-extrabold shrink-0">
+                    <span className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 font-medium shrink-0">
                       <TrendingUp className="w-5 h-5" />
                     </span>
-                    <h3 className="text-base font-bold text-slate-900 tracking-wide">Caja y Flujo de Efectivo</h3>
+                    <h3 className="text-base font-medium text-slate-900 tracking-wide">Caja y Flujo de Efectivo</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">
                       Lleva un control diario de aperturas, egresos, ventas en efectivo o tarjeta, y haz tus cuadres de caja sin errores.
                     </p>
                   </div>
-                  <span className="text-xs text-slate-400 font-bold tracking-wide block pt-2 border-t border-slate-50 uppercase">Cuadre rápido integrado</span>
+                  <span className="text-xs text-slate-400 font-medium tracking-wide block pt-2 border-t border-slate-50 uppercase">Cuadre rápido integrado</span>
                 </div>
 
                 {/* 2. Gestiona tu inventario */}
                 <div className="bg-white border border-slate-100 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left space-y-3 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <span className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600 font-extrabold shrink-0">
+                    <span className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600 font-medium shrink-0">
                       <FolderOpen className="w-5 h-5" />
                     </span>
-                    <h3 className="text-base font-bold text-slate-900 tracking-wide">Inventario e Historial</h3>
+                    <h3 className="text-base font-medium text-slate-900 tracking-wide">Inventario e Historial</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">
                       Conoce las existencias exactas en tus almacenes, configura alertas de stock mínimo y recibe avisos automáticos de reposición.
                     </p>
                   </div>
-                  <span className="text-xs text-slate-400 font-bold tracking-wide block pt-2 border-t border-slate-50 uppercase">Alertas de stock mínimo</span>
+                  <span className="text-xs text-slate-400 font-medium tracking-wide block pt-2 border-t border-slate-50 uppercase">Alertas de stock mínimo</span>
                 </div>
 
                 {/* 3. Accede desde cualquier dispositivo */}
                 <div className="bg-white border border-slate-100 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left space-y-3 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <span className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 font-extrabold shrink-0">
+                    <span className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 font-medium shrink-0">
                       <Laptop className="w-5 h-5" />
                     </span>
-                    <h3 className="text-base font-bold text-slate-900 tracking-wide">Multiplataforma Nube</h3>
+                    <h3 className="text-base font-medium text-slate-900 tracking-wide">Multiplataforma Nube</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">
                       Administra desde tu computadora de escritorio, tablet o celular en tiempo real con sincronización instantánea.
                     </p>
                   </div>
-                  <span className="text-xs text-slate-400 font-bold tracking-wide block pt-2 border-t border-slate-50 uppercase">Acceso ilimitado 24/7</span>
+                  <span className="text-xs text-slate-400 font-medium tracking-wide block pt-2 border-t border-slate-50 uppercase">Acceso ilimitado 24/7</span>
                 </div>
 
                 {/* 4. Decisiones con datos reales */}
                 <div className="bg-white border border-slate-100 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left space-y-3 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <span className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 font-extrabold shrink-0">
+                    <span className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 font-medium shrink-0">
                       <Database className="w-5 h-5" />
                     </span>
-                    <h3 className="text-base font-bold text-slate-900 tracking-wide">Estadísticas y Reportes</h3>
+                    <h3 className="text-base font-medium text-slate-900 tracking-wide">Estadísticas y Reportes</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">
                       Visualiza tus ingresos, egresos y márgenes netos de utilidad en gráficos claros para una toma de decisiones informada.
                     </p>
                   </div>
-                  <span className="text-xs text-slate-400 font-bold tracking-wide block pt-2 border-t border-slate-50 uppercase">Reportes detallados en vivo</span>
+                  <span className="text-xs text-slate-400 font-medium tracking-wide block pt-2 border-t border-slate-50 uppercase">Reportes detallados en vivo</span>
                 </div>
 
                 {/* 5. Clientes y Proveedores */}
                 <div className="bg-white border border-slate-100 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left space-y-3 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <span className="w-10 h-10 rounded-xl bg-yellow-50 border border-yellow-100 flex items-center justify-center text-yellow-600 font-extrabold shrink-0">
+                    <span className="w-10 h-10 rounded-xl bg-yellow-50 border border-yellow-100 flex items-center justify-center text-yellow-600 font-medium shrink-0">
                       <Users className="w-5 h-5" />
                     </span>
-                    <h3 className="text-base font-bold text-slate-900 tracking-wide">Directorio Inteligente</h3>
+                    <h3 className="text-base font-medium text-slate-900 tracking-wide">Directorio Inteligente</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">
                       Registra clientes y proveedores con RNC/Cédula y gestiona cuentas por cobrar de manera centralizada y ágil.
                     </p>
                   </div>
-                  <span className="text-xs text-slate-400 font-bold tracking-wide block pt-2 border-t border-slate-50 uppercase">Cuentas por cobrar integradas</span>
+                  <span className="text-xs text-slate-400 font-medium tracking-wide block pt-2 border-t border-slate-50 uppercase">Cuentas por cobrar integradas</span>
                 </div>
 
                 {/* 6. Formaliza tu negocio con la DGII */}
                 <div className="bg-white border border-emerald-100 p-6 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left space-y-3 flex flex-col justify-between shadow-sm relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl"></div>
                   <div className="space-y-3">
-                    <span className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 font-extrabold shrink-0">
+                    <span className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 font-medium shrink-0">
                       <ShieldCheck className="w-5 h-5" />
                     </span>
-                    <h3 className="text-base font-bold text-slate-900 tracking-wide">Formatos 606 y 607 DGII</h3>
+                    <h3 className="text-base font-medium text-slate-900 tracking-wide">Formatos 606 y 607 DGII</h3>
                     <p className="text-sm text-slate-500 leading-relaxed">
                       Genera automáticamente los formatos exigidos por la DGII listos para enviar a la oficina virtual, eliminando el trabajo manual.
                     </p>
                   </div>
-                  <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded font-bold block text-center uppercase">100% libre de errores</span>
+                  <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded font-medium block text-center uppercase">100% libre de errores</span>
                 </div>
 
               </div>
@@ -1463,7 +1463,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               <div className="pt-4">
                 <button
                   onClick={() => setView('register')}
-                  className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-base transition-all cursor-pointer shadow-md hover:-translate-y-0.5 duration-150"
+                  className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium text-base transition-all cursor-pointer shadow-md hover:-translate-y-0.5 duration-150"
                 >
                   Comenzar gratis ahora
                 </button>
@@ -1475,8 +1475,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           <motion.section initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.6 }} id="comparativa" className="py-16 sm:py-24 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
               <div className="max-w-3xl mx-auto text-center space-y-4">
-                <span className="text-sky-600 font-bold uppercase tracking-widest text-xs sm:text-sm block">Comparación Transparente</span>
-                <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900 tracking-tight">FacturaDo frente a las alternativas</h2>
+                <span className="text-sky-600 font-medium uppercase tracking-widest text-xs sm:text-sm block">Comparación Transparente</span>
+                <h2 className="text-3xl sm:text-4xl font-heading font-medium text-slate-900 tracking-tight">FacturaDo frente a las alternativas</h2>
                 <p className="text-base sm:text-lg text-slate-500">
                   Compara por qué cientos de comerciantes dominicanos han migrado su facturación fiscal con nosotros.
                 </p>
@@ -1487,10 +1487,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <table className="w-full min-w-[640px] text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200">
-                      <th className="p-4 sm:p-5 text-sm font-bold text-slate-700 w-1/3">Características</th>
-                      <th className="p-4 sm:p-5 text-sm font-bold text-sky-700 bg-sky-50/50 border-x border-sky-100 text-center w-1/4">
-                        <span className="inline-block px-2.5 py-0.5 text-[10px] bg-sky-100 text-sky-800 rounded-full font-bold uppercase tracking-wider mb-1">Tu Opción</span>
-                        <span className="block text-base font-extrabold text-slate-900">FacturaDo</span>
+                      <th className="p-4 sm:p-5 text-sm font-medium text-slate-700 w-1/3">Características</th>
+                      <th className="p-4 sm:p-5 text-sm font-medium text-sky-700 bg-sky-50/50 border-x border-sky-100 text-center w-1/4">
+                        <span className="inline-block px-2.5 py-0.5 text-[10px] bg-sky-100 text-sky-800 rounded-full font-medium uppercase tracking-wider mb-1">Tu Opción</span>
+                        <span className="block text-base font-medium text-slate-900">FacturaDo</span>
                       </th>
                       <th className="p-4 sm:p-5 text-sm font-semibold text-slate-500 text-center w-1/4">Sistemas Tradicionales</th>
                       <th className="p-4 sm:p-5 text-sm font-semibold text-slate-500 text-center w-1/4">Excel o Papel</th>
@@ -1500,7 +1500,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     
                     <tr>
                       <td className="p-4 sm:p-5 font-semibold text-slate-800 text-sm">Costo Mensual</td>
-                      <td className="p-4 sm:p-5 bg-sky-50/30 border-x border-sky-100 text-center text-sm font-bold text-emerald-600">
+                      <td className="p-4 sm:p-5 bg-sky-50/30 border-x border-sky-100 text-center text-sm font-medium text-emerald-600">
                         RD$ 0 <span className="block text-[10px] text-slate-400 font-normal">Gratis de por vida</span>
                       </td>
                       <td className="p-4 sm:p-5 text-center text-sm text-slate-500">RD$ 3,000 - RD$ 6,000+</td>
@@ -1510,7 +1510,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <tr>
                       <td className="p-4 sm:p-5 font-semibold text-slate-800 text-sm">Validación DGII R.D.</td>
                       <td className="p-4 sm:p-5 bg-sky-50/30 border-x border-sky-100 text-center text-sm text-slate-700 font-medium">
-                        <span className="text-emerald-600 font-bold block">✓ Automática</span>
+                        <span className="text-emerald-600 font-medium block">✓ Automática</span>
                         <span className="text-[10px] text-slate-400">Consulta en vivo padrón DGII</span>
                       </td>
                       <td className="p-4 sm:p-5 text-center text-sm text-slate-500">Manual / Requiere módulo de costo adicional</td>
@@ -1520,7 +1520,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <tr>
                       <td className="p-4 sm:p-5 font-semibold text-slate-800 text-sm">Reportes 606 y 607</td>
                       <td className="p-4 sm:p-5 bg-sky-50/30 border-x border-sky-100 text-center text-sm text-slate-700 font-medium">
-                        <span className="text-emerald-600 font-bold block">✓ 1 Solo Clic</span>
+                        <span className="text-emerald-600 font-medium block">✓ 1 Solo Clic</span>
                         <span className="text-[10px] text-slate-400">Listos para subir a oficina virtual</span>
                       </td>
                       <td className="p-4 sm:p-5 text-center text-sm text-slate-500">Complejo / Requiere intervención contable</td>
@@ -1530,7 +1530,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <tr>
                       <td className="p-4 sm:p-5 font-semibold text-slate-800 text-sm">Dispositivos en Simultáneo</td>
                       <td className="p-4 sm:p-5 bg-sky-50/30 border-x border-sky-100 text-center text-sm text-slate-700 font-medium">
-                        <span className="text-emerald-600 font-bold block">✓ Ilimitados</span>
+                        <span className="text-emerald-600 font-medium block">✓ Ilimitados</span>
                         <span className="text-[10px] text-slate-400">Celular, Tablet y PC sync</span>
                       </td>
                       <td className="p-4 sm:p-5 text-center text-sm text-slate-500">Instalación local por máquina (cobro extra)</td>
@@ -1540,7 +1540,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <tr>
                       <td className="p-4 sm:p-5 font-semibold text-slate-800 text-sm">Módulo Inventario / POS</td>
                       <td className="p-4 sm:p-5 bg-sky-50/30 border-x border-sky-100 text-center text-sm text-slate-700 font-medium">
-                        <span className="text-emerald-600 font-bold block">✓ Incluidos</span>
+                        <span className="text-emerald-600 font-medium block">✓ Incluidos</span>
                         <span className="text-[10px] text-slate-400">Todo en una sola cuenta</span>
                       </td>
                       <td className="p-4 sm:p-5 text-center text-sm text-slate-500">Se cobran como módulos separados</td>
@@ -1553,12 +1553,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
               <div className="bg-sky-50 border border-sky-100 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between text-left gap-4 max-w-4xl mx-auto">
                 <div className="space-y-1">
-                  <h4 className="font-bold text-slate-900 text-base">Únete gratis y simplifica la administración de tu negocio</h4>
+                  <h4 className="font-medium text-slate-900 text-base">Únete gratis y simplifica la administración de tu negocio</h4>
                   <p className="text-sm text-slate-500">Disfruta de todos los beneficios premium de FacturaDo sin pagar suscripciones ni licencias.</p>
                 </div>
                 <button
                   onClick={() => setView('register')}
-                  className="px-6 py-3.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white rounded-xl font-bold text-sm tracking-wide shadow-md hover:shadow-lg shrink-0 transition-all cursor-pointer"
+                  className="px-6 py-3.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white rounded-xl font-medium text-sm tracking-wide shadow-md hover:shadow-lg shrink-0 transition-all cursor-pointer"
                 >
                   Registrarse Gratis de Por Vida
                 </button>
@@ -1582,11 +1582,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* Left Column - Text */}
                 <div className="space-y-8">
                   <div className="space-y-5">
-                    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 text-sky-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
+                    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 text-sky-300 text-xs font-medium uppercase tracking-widest px-4 py-1.5 rounded-full">
                       <Sparkles className="w-3.5 h-3.5" />
                       Para Emprendedores
                     </div>
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold tracking-tight leading-tight">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-medium tracking-tight leading-tight">
                       Diseñado para <span className="bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent">emprendedores</span> dominicanos
                     </h2>
                     <p className="text-base sm:text-lg text-slate-400 max-w-lg leading-relaxed">
@@ -1613,7 +1613,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                           <item.icon className="w-5 h-5 text-sky-400" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-white mb-0.5">{item.title}</h4>
+                          <h4 className="text-sm font-medium text-white mb-0.5">{item.title}</h4>
                           <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
                         </div>
                       </motion.div>
@@ -1622,7 +1622,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                   <button
                     onClick={() => setView('register')}
-                    className="px-7 py-3.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white rounded-2xl font-bold text-sm transition-all shadow-lg hover:shadow-xl cursor-pointer hover:-translate-y-0.5 duration-150 flex items-center gap-2"
+                    className="px-7 py-3.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white rounded-2xl font-medium text-sm transition-all shadow-lg hover:shadow-xl cursor-pointer hover:-translate-y-0.5 duration-150 flex items-center gap-2"
                   >
                     <Rocket className="w-4 h-4" />
                     Regístrate ahora
@@ -1651,7 +1651,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           <section className="py-16 bg-slate-50 border-y border-slate-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-10">
               <div className="max-w-3xl mx-auto space-y-3">
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 font-heading">Diseñado para todo tipo de comercio en R.D.</h2>
+                <h2 className="text-2xl sm:text-3xl font-medium text-slate-900 font-heading">Diseñado para todo tipo de comercio en R.D.</h2>
                 <p className="text-sm sm:text-base text-slate-500">FacturaDo es flexible y está adaptado para acomodar las necesidades comerciales locales.</p>
               </div>
 
@@ -1659,14 +1659,14 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* Gastronómico */}
                 <div className="bg-white border border-slate-150 p-6 rounded-xl space-y-4 flex flex-col justify-between hover:shadow-md transition-shadow">
                   <div className="space-y-3">
-                    <h3 className="text-base font-bold text-slate-800 uppercase tracking-wide">Gastronomía</h3>
+                    <h3 className="text-base font-medium text-slate-800 uppercase tracking-wide">Gastronomía</h3>
                     <ul className="text-sm text-slate-500 space-y-1.5 font-medium">
                       <li>• Restaurantes y Pizzerías</li>
                       <li>• Cafeterías y Reposterías</li>
                       <li>• Bares y Foodtrucks Dominicanos</li>
                     </ul>
                   </div>
-                  <button onClick={() => setView('register')} className="text-xs text-sky-600 font-bold flex items-center group cursor-pointer bg-transparent border-0 p-0 text-left">
+                  <button onClick={() => setView('register')} className="text-xs text-sky-600 font-medium flex items-center group cursor-pointer bg-transparent border-0 p-0 text-left">
                     Conocer más <ChevronRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 duration-100" />
                   </button>
                 </div>
@@ -1674,14 +1674,14 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* Comercio */}
                 <div className="bg-white border border-slate-150 p-6 rounded-xl space-y-4 flex flex-col justify-between hover:shadow-md transition-shadow">
                   <div className="space-y-3">
-                    <h3 className="text-base font-bold text-slate-800 uppercase tracking-wide">Comercios</h3>
+                    <h3 className="text-base font-medium text-slate-800 uppercase tracking-wide">Comercios</h3>
                     <ul className="text-sm text-slate-500 space-y-1.5 font-medium">
                       <li>• Tiendas de Ropa y Calzado</li>
                       <li>• Ferreterías y Constructoras</li>
                       <li>• Farmacias y Tiendas de Celulares</li>
                     </ul>
                   </div>
-                  <button onClick={() => setView('register')} className="text-xs text-sky-600 font-bold flex items-center group cursor-pointer bg-transparent border-0 p-0 text-left">
+                  <button onClick={() => setView('register')} className="text-xs text-sky-600 font-medium flex items-center group cursor-pointer bg-transparent border-0 p-0 text-left">
                     Conocer más <ChevronRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 duration-100" />
                   </button>
                 </div>
@@ -1689,14 +1689,14 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* Servicios */}
                 <div className="bg-white border border-slate-150 p-6 rounded-xl space-y-4 flex flex-col justify-between hover:shadow-md transition-shadow">
                   <div className="space-y-3">
-                    <h3 className="text-base font-bold text-slate-800 uppercase tracking-wide">Servicios</h3>
+                    <h3 className="text-base font-medium text-slate-800 uppercase tracking-wide">Servicios</h3>
                     <ul className="text-sm text-slate-500 space-y-1.5 font-medium">
                       <li>• Consultorías Profesionales</li>
                       <li>• Clínicas y Salones de Estética</li>
                       <li>• Talleres mecánicos y Courier</li>
                     </ul>
                   </div>
-                  <button onClick={() => setView('register')} className="text-xs text-sky-600 font-bold flex items-center group cursor-pointer bg-transparent border-0 p-0 text-left">
+                  <button onClick={() => setView('register')} className="text-xs text-sky-600 font-medium flex items-center group cursor-pointer bg-transparent border-0 p-0 text-left">
                     Conocer más <ChevronRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 duration-100" />
                   </button>
                 </div>
@@ -1704,14 +1704,14 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* Mercados */}
                 <div className="bg-white border border-slate-150 p-6 rounded-xl space-y-4 flex flex-col justify-between hover:shadow-md transition-shadow">
                   <div className="space-y-3">
-                    <h3 className="text-base font-bold text-slate-800 uppercase tracking-wide">Distribución / Retail</h3>
+                    <h3 className="text-base font-medium text-slate-800 uppercase tracking-wide">Distribución / Retail</h3>
                     <ul className="text-sm text-slate-500 space-y-1.5 font-medium">
                       <li>• Colmados y Minimarkets</li>
                       <li>• Repuestos e Importadoras</li>
                       <li>• Mayoristas y Suplidores</li>
                     </ul>
                   </div>
-                  <button onClick={() => setView('register')} className="text-xs text-sky-600 font-bold flex items-center group cursor-pointer bg-transparent border-0 p-0 text-left">
+                  <button onClick={() => setView('register')} className="text-xs text-sky-600 font-medium flex items-center group cursor-pointer bg-transparent border-0 p-0 text-left">
                     Conocer más <ChevronRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 duration-100" />
                   </button>
                 </div>
@@ -1724,8 +1724,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
               
               <div className="max-w-2xl mx-auto space-y-3">
-                <span className="text-xs font-bold uppercase text-sky-700 block tracking-widest bg-sky-50 max-w-max mx-auto px-3.5 py-1 rounded-full border border-sky-100">Sin Suscripción • 100% Libre</span>
-                <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900 tracking-tight leading-none">FacturaDo es 100% Gratis para Todos</h2>
+                <span className="text-xs font-medium uppercase text-sky-700 block tracking-widest bg-sky-50 max-w-max mx-auto px-3.5 py-1 rounded-full border border-sky-100">Sin Suscripción • 100% Libre</span>
+                <h2 className="text-3xl sm:text-4xl font-heading font-medium text-slate-900 tracking-tight leading-none">FacturaDo es 100% Gratis para Todos</h2>
                 <p className="text-sm sm:text-base text-slate-500 max-w-lg mx-auto">Creemos en el desarrollo de las pymes dominicanas. Utiliza todos los módulos premium sin trucos de cobro ni límites de facturación.</p>
               </div>
 
@@ -1737,8 +1737,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                   <div className="space-y-5">
                     <div className="space-y-1.5">
-                      <span className="text-emerald-600 text-sm font-bold uppercase tracking-wider block">✔ Todo Incluido de Por Vida</span>
-                      <h3 className="text-xl font-extrabold text-slate-950 font-heading">¿Cómo es posible?</h3>
+                      <span className="text-emerald-600 text-sm font-medium uppercase tracking-wider block">✔ Todo Incluido de Por Vida</span>
+                      <h3 className="text-xl font-medium text-slate-950 font-heading">¿Cómo es posible?</h3>
                       <p className="text-sm text-slate-600 leading-relaxed">
                         Nuestra meta es facilitar la digitalización contable en República Dominicana. Automatiza tu facturación fiscal, controla tus inventarios y genera tus reportes 606/607 sin pagar licencias de software complejas.
                       </p>
@@ -1766,14 +1766,14 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                   <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/60 text-center space-y-6 shadow-sm">
                     <div className="space-y-1">
-                      <span className="text-5xl sm:text-6xl font-heading font-extrabold text-slate-900 tracking-tight block">RD$ 0</span>
-                      <span className="text-xs font-bold text-slate-450 uppercase tracking-widest block">Cero mensualidades • Cero costos ocultos</span>
+                      <span className="text-5xl sm:text-6xl font-heading font-medium text-slate-900 tracking-tight block">RD$ 0</span>
+                      <span className="text-xs font-medium text-slate-450 uppercase tracking-widest block">Cero mensualidades • Cero costos ocultos</span>
                     </div>
 
                     <div className="space-y-2">
                       <button
                         onClick={() => setView('register')}
-                        className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold rounded-2xl text-sm sm:text-base tracking-wide transition-all block text-center cursor-pointer uppercase shadow-sm h-14 flex items-center justify-center"
+                        className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-medium rounded-2xl text-sm sm:text-base tracking-wide transition-all block text-center cursor-pointer uppercase shadow-sm h-14 flex items-center justify-center"
                       >
                         Crear Cuenta Gratis Ahora
                       </button>
@@ -1790,7 +1790,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           <motion.section initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.6 }} id="testimonios" className="py-16 bg-slate-50 border-b border-slate-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-12">
               <div className="max-w-xl mx-auto space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 tracking-tight leading-none">Historias de Éxito Locales</h2>
+                <h2 className="text-2xl sm:text-3xl font-medium font-heading text-slate-900 tracking-tight leading-none">Historias de Éxito Locales</h2>
                 <p className="text-xs sm:text-sm text-slate-500 leading-normal">Miles de comerciantes dominicanos respaldan la velocidad de FacturaDo para automatizar su administración.</p>
               </div>
 
@@ -1800,7 +1800,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <div className="flex items-center gap-3">
                     <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80" alt="Carlos Rodriguez" className="w-10 h-10 rounded-full object-cover shrink-0" />
                     <div>
-                      <span className="text-xs font-bold block text-slate-900 leading-none">Carlos Rodríguez</span>
+                      <span className="text-xs font-medium block text-slate-900 leading-none">Carlos Rodríguez</span>
                       <span className="text-[10px] text-slate-400 block leading-none mt-1">Ferretería El Canal SRL, Santo Domingo</span>
                     </div>
                   </div>
@@ -1814,7 +1814,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <div className="flex items-center gap-3">
                     <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="Ana Herrera" className="w-10 h-10 rounded-full object-cover shrink-0" />
                     <div>
-                      <span className="text-xs font-bold block text-slate-900 leading-none">Ana M. Herrera</span>
+                      <span className="text-xs font-medium block text-slate-900 leading-none">Ana M. Herrera</span>
                       <span className="text-[10px] text-slate-400 block leading-none mt-1">Salón & Estética Glamour, Santiago</span>
                     </div>
                   </div>
@@ -1828,7 +1828,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <div className="flex items-center gap-3">
                     <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80" alt="Joel Almonte" className="w-10 h-10 rounded-full object-cover shrink-0" />
                     <div>
-                      <span className="text-xs font-bold block text-slate-900 leading-none">Joel Almonte</span>
+                      <span className="text-xs font-medium block text-slate-900 leading-none">Joel Almonte</span>
                       <span className="text-[10px] text-slate-400 block leading-none mt-1">Súper Colmado El Sol, La Romana</span>
                     </div>
                   </div>
@@ -1844,11 +1844,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           <section className="py-16 sm:py-20 bg-gradient-to-b from-slate-900 to-black text-white relative overflow-hidden font-sans">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 relative z-10">
               <div className="max-w-3xl mx-auto text-center space-y-3">
-                <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-flex items-center gap-1.5">
+                <span className="px-3.5 py-1 rounded-full text-xs font-medium uppercase tracking-widest bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 inline-flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
                   Migración e Importación Inteligente
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-white tracking-tight leading-tight">
+                <h2 className="text-3xl sm:text-4xl font-medium font-heading text-white tracking-tight leading-tight">
                   Importa tus Productos, Clientes, Facturas y Cotizaciones desde Cualquier Sistema
                 </h2>
                 <p className="text-sm sm:text-base text-slate-300">
@@ -1859,32 +1859,32 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-left">
                 <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-3 hover:bg-white/10 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">1</div>
-                  <h3 className="text-base font-bold text-white">Compatibilidad Total</h3>
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-medium">1</div>
+                  <h3 className="text-base font-medium text-white">Compatibilidad Total</h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
                     Reconoce encabezados en español e inglés: <em>RNC, Cédula, Razón Social, SKU, Precio de Venta, Tax ID, Qty On Hand</em> y más.
                   </p>
                 </div>
 
                 <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-3 hover:bg-white/10 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">2</div>
-                  <h3 className="text-base font-bold text-white">Desinfección de RNCs</h3>
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-medium">2</div>
+                  <h3 className="text-base font-medium text-white">Desinfección de RNCs</h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
                     Limpia guiones, puntos y espacios automáticamente. Clasifica entre Persona Física (11 dígitos) y Empresa (9 dígitos).
                   </p>
                 </div>
 
                 <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-3 hover:bg-white/10 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">3</div>
-                  <h3 className="text-base font-bold text-white">Monedas y Precios</h3>
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-medium">3</div>
+                  <h3 className="text-base font-medium text-white">Monedas y Precios</h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
                     Detecta precios con símbolos monetarios (<code>RD$ 1,500.00</code> ➔ <code>1500</code>) y costos unitarios sin margen de error.
                   </p>
                 </div>
 
                 <div className="bg-white/5 border border-white/10 p-6 rounded-2xl space-y-3 hover:bg-white/10 transition-all">
-                  <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">4</div>
-                  <h3 className="text-base font-bold text-white">Vista Previa & Algoritmo Fuzzy</h3>
+                  <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-medium">4</div>
+                  <h3 className="text-base font-medium text-white">Vista Previa & Algoritmo Fuzzy</h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
                     Verifica las columnas mapeadas y la vista previa de datos antes de importar miles de filas a tu base de datos PostgreSQL.
                   </p>
@@ -1900,8 +1900,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
               
               <div className="space-y-2">
-                <span className="text-sky-600 font-bold uppercase tracking-widest text-xs block">Respuestas Rápidas</span>
-                <h2 className="text-xl sm:text-2xl font-bold font-heading text-slate-900 tracking-tight leading-none">Preguntas frecuentes sobre FacturaDo</h2>
+                <span className="text-sky-600 font-medium uppercase tracking-widest text-xs block">Respuestas Rápidas</span>
+                <h2 className="text-xl sm:text-2xl font-medium font-heading text-slate-900 tracking-tight leading-none">Preguntas frecuentes sobre FacturaDo</h2>
                 <p className="text-xs text-slate-400">Resolvemos las principales dudas sobre la integración fiscal dominicana y la facturación digital.</p>
               </div>
 
@@ -1912,10 +1912,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <button
                     type="button"
                     onClick={() => toggleFaq(0)}
-                    className="w-full flex items-center justify-between p-4 font-bold text-slate-800 hover:bg-slate-100 text-left outline-none gap-2 border-0 bg-transparent"
+                    className="w-full flex items-center justify-between p-4 font-medium text-slate-800 hover:bg-slate-100 text-left outline-none gap-2 border-0 bg-transparent"
                   >
                     <span>¿Qué es FacturaDo y cómo funciona para declarar a la DGII?</span>
-                    <span className="font-bold text-slate-400 text-lg">{faqOpen[0] ? '−' : '+'}</span>
+                    <span className="font-medium text-slate-400 text-lg">{faqOpen[0] ? '−' : '+'}</span>
                   </button>
                   {faqOpen[0] && (
                     <div className="px-4 pb-4 text-slate-500 leading-relaxed font-normal border-t border-slate-200/50 pt-3">
@@ -1929,10 +1929,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <button
                     type="button"
                     onClick={() => toggleFaq(1)}
-                    className="w-full flex items-center justify-between p-4 font-bold text-slate-800 hover:bg-slate-100 text-left outline-none gap-2 border-0 bg-transparent"
+                    className="w-full flex items-center justify-between p-4 font-medium text-slate-800 hover:bg-slate-100 text-left outline-none gap-2 border-0 bg-transparent"
                   >
                     <span>¿Requiere conexión a internet activa para facturar en el POS?</span>
-                    <span className="font-bold text-slate-400 text-lg">{faqOpen[1] ? '−' : '+'}</span>
+                    <span className="font-medium text-slate-400 text-lg">{faqOpen[1] ? '−' : '+'}</span>
                   </button>
                   {faqOpen[1] && (
                     <div className="px-4 pb-4 text-slate-500 leading-relaxed font-normal border-t border-slate-200/50 pt-3">
@@ -1946,10 +1946,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <button
                     type="button"
                     onClick={() => toggleFaq(2)}
-                    className="w-full flex items-center justify-between p-4 font-bold text-slate-800 hover:bg-slate-100 text-left outline-none gap-2 border-0 bg-transparent"
+                    className="w-full flex items-center justify-between p-4 font-medium text-slate-800 hover:bg-slate-100 text-left outline-none gap-2 border-0 bg-transparent"
                   >
                     <span>¿Es seguro guardar mi información contable e inventarios en la nube?</span>
-                    <span className="font-bold text-slate-400 text-lg">{faqOpen[2] ? '−' : '+'}</span>
+                    <span className="font-medium text-slate-400 text-lg">{faqOpen[2] ? '−' : '+'}</span>
                   </button>
                   {faqOpen[2] && (
                     <div className="px-4 pb-4 text-slate-500 leading-relaxed font-normal border-t border-slate-200/50 pt-3">
@@ -1969,8 +1969,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             <div className="absolute top-0 right-0 w-96 h-96 bg-amber-50/50 rounded-full blur-3xl -z-10 -mr-20 -mt-20" />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
               <div className="max-w-3xl mx-auto text-center space-y-4">
-                <span className="text-amber-600 font-bold uppercase tracking-widest text-xs sm:text-sm block">Casos de Éxito</span>
-                <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900 tracking-tight">Comercios que confían en FacturaDo</h2>
+                <span className="text-amber-600 font-medium uppercase tracking-widest text-xs sm:text-sm block">Casos de Éxito</span>
+                <h2 className="text-3xl sm:text-4xl font-heading font-medium text-slate-900 tracking-tight">Comercios que confían en FacturaDo</h2>
                 <p className="text-base sm:text-lg text-slate-500">
                   No tome solo nuestra palabra. Vea lo que dueños de negocios dominicanos opinan de nuestra plataforma.
                 </p>
@@ -1984,9 +1984,9 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </div>
                   <p className="text-slate-700 italic mb-6">"Poder facturar y generar los reportes de la DGII en un solo clic me ahorra días de trabajo y pago de igualas complejas. Mi negocio está más organizado que nunca."</p>
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-bold">C</div>
+                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-medium">C</div>
                     <div>
-                      <p className="text-sm font-bold text-slate-900">Carlos Méndez</p>
+                      <p className="text-sm font-medium text-slate-900">Carlos Méndez</p>
                       <p className="text-xs text-slate-500">Ferretería Méndez, Santiago</p>
                     </div>
                   </div>
@@ -1999,9 +1999,9 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </div>
                   <p className="text-slate-700 italic mb-6">"El módulo de POS es rapidísimo y el cuadre de caja al final del día ahora es exacto. Saber que todo está guardado en la nube me da mucha tranquilidad."</p>
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">M</div>
+                    <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-medium">M</div>
                     <div>
-                      <p className="text-sm font-bold text-slate-900">María Rosario</p>
+                      <p className="text-sm font-medium text-slate-900">María Rosario</p>
                       <p className="text-xs text-slate-500">Boutique MR, Distrito Nacional</p>
                     </div>
                   </div>
@@ -2014,9 +2014,9 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </div>
                   <p className="text-slate-700 italic mb-6">"Antes gastaba miles de pesos en sistemas lentos de escritorio. FacturaDo no solo es más moderno y fácil de usar, ¡sino que no pago licencias!"</p>
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-700 font-bold">J</div>
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-700 font-medium">J</div>
                     <div>
-                      <p className="text-sm font-bold text-slate-900">José Pimentel</p>
+                      <p className="text-sm font-medium text-slate-900">José Pimentel</p>
                       <p className="text-xs text-slate-500">Super Colmado José, La Romana</p>
                     </div>
                   </div>
@@ -2030,8 +2030,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             <div className="absolute top-1/2 left-0 w-96 h-96 bg-sky-100/40 rounded-full blur-3xl -z-10 -ml-20 -mt-20" />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
               <div className="max-w-3xl mx-auto text-center space-y-4">
-                <span className="text-sky-600 font-bold uppercase tracking-widest text-xs sm:text-sm block">Análisis Competitivo</span>
-                <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-slate-900 tracking-tight">La mejor alternativa a QuickBooks, Alegra y Odoo en RD</h2>
+                <span className="text-sky-600 font-medium uppercase tracking-widest text-xs sm:text-sm block">Análisis Competitivo</span>
+                <h2 className="text-3xl sm:text-4xl font-heading font-medium text-slate-900 tracking-tight">La mejor alternativa a QuickBooks, Alegra y Odoo en RD</h2>
                 <p className="text-base sm:text-lg text-slate-500">
                   Descubre por qué cientos de pymes locales están migrando a FacturaDo, el único software diseñado 100% en torno al cumplimiento fiscal de la DGII.
                 </p>
@@ -2042,40 +2042,40 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <table className="w-full text-left border-collapse min-w-[700px]">
                   <thead>
                     <tr className="border-b border-slate-100">
-                      <th className="p-6 text-sm font-bold text-slate-900 uppercase tracking-wide bg-slate-50 rounded-tl-3xl">Característica</th>
-                      <th className="p-6 text-sm font-extrabold text-sky-700 bg-sky-50 border-x border-sky-100 text-center">FacturaDo</th>
-                      <th className="p-6 text-sm font-bold text-slate-500 text-center">QuickBooks / Odoo</th>
-                      <th className="p-6 text-sm font-bold text-slate-500 text-center rounded-tr-3xl">Alegra / Cashflow</th>
+                      <th className="p-6 text-sm font-medium text-slate-900 uppercase tracking-wide bg-slate-50 rounded-tl-3xl">Característica</th>
+                      <th className="p-6 text-sm font-medium text-sky-700 bg-sky-50 border-x border-sky-100 text-center">FacturaDo</th>
+                      <th className="p-6 text-sm font-medium text-slate-500 text-center">QuickBooks / Odoo</th>
+                      <th className="p-6 text-sm font-medium text-slate-500 text-center rounded-tr-3xl">Alegra / Cashflow</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     <tr className="hover:bg-slate-50/50 transition-colors">
                       <td className="p-5 text-sm font-semibold text-slate-800">Costo Mensual Base</td>
-                      <td className="p-5 text-center font-extrabold text-emerald-600 bg-sky-50/30 border-x border-sky-100/50">RD$ 0 (Gratis)</td>
+                      <td className="p-5 text-center font-medium text-emerald-600 bg-sky-50/30 border-x border-sky-100/50">RD$ 0 (Gratis)</td>
                       <td className="p-5 text-center text-sm text-slate-500">$30+ USD al mes</td>
                       <td className="p-5 text-center text-sm text-slate-500">$25+ USD al mes</td>
                     </tr>
                     <tr className="hover:bg-slate-50/50 transition-colors">
                       <td className="p-5 text-sm font-semibold text-slate-800">Formatos DGII 606 y 607 Nativos</td>
-                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Automático</span></td>
+                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium">Automático</span></td>
                       <td className="p-5 text-center text-sm text-slate-500"><span className="text-red-500">Módulo Externo</span></td>
                       <td className="p-5 text-center text-sm text-slate-500">Incluido</td>
                     </tr>
                     <tr className="hover:bg-slate-50/50 transition-colors">
                       <td className="p-5 text-sm font-semibold text-slate-800">Punto de Venta (POS) Ilimitado</td>
-                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Sí</span></td>
+                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium">Sí</span></td>
                       <td className="p-5 text-center text-sm text-slate-500">Costo Extra</td>
                       <td className="p-5 text-center text-sm text-slate-500">Límites por Plan</td>
                     </tr>
                     <tr className="hover:bg-slate-50/50 transition-colors">
                       <td className="p-5 text-sm font-semibold text-slate-800">Validación RNC en Tiempo Real</td>
-                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Sí</span></td>
+                      <td className="p-5 text-center bg-sky-50/30 border-x border-sky-100/50"><span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium">Sí</span></td>
                       <td className="p-5 text-center text-sm text-slate-500"><span className="text-red-500">No soportado</span></td>
                       <td className="p-5 text-center text-sm text-slate-500">Sí</td>
                     </tr>
                     <tr className="hover:bg-slate-50/50 transition-colors border-b border-slate-100">
                       <td className="p-5 text-sm font-semibold text-slate-800 rounded-bl-3xl">Límites de Emisión de Facturas</td>
-                      <td className="p-5 text-center font-bold text-slate-900 bg-sky-50 border-x border-sky-100">Ilimitado</td>
+                      <td className="p-5 text-center font-medium text-slate-900 bg-sky-50 border-x border-sky-100">Ilimitado</td>
                       <td className="p-5 text-center text-sm text-slate-500">Según Plan</td>
                       <td className="p-5 text-center text-sm text-slate-500 rounded-br-3xl">Límite de Documentos</td>
                     </tr>
@@ -2088,12 +2088,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           {/* CTA Footer Form */}
           <section className="py-16 bg-[#1A2732] text-white text-center space-y-6">
             <div className="max-w-3xl mx-auto px-4 space-y-4">
-              <h2 className="text-xl sm:text-2xl font-bold font-heading">Únete hoy a la comunidad de FacturaDo</h2>
+              <h2 className="text-xl sm:text-2xl font-medium font-heading">Únete hoy a la comunidad de FacturaDo</h2>
               <p className="text-xs text-white/70">Eleve el control financiero de su negocio dominicano con la plataforma de mayor crecimiento local.</p>
               <div className="pt-2">
                 <button
                   onClick={() => setView('register')}
-                  className="px-6 py-3.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs sm:text-sm font-bold uppercase rounded-xl shadow-lg cursor-pointer transition-all duration-150 hover:-translate-y-0.5"
+                  className="px-6 py-3.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white text-xs sm:text-sm font-medium uppercase rounded-xl shadow-lg cursor-pointer transition-all duration-150 hover:-translate-y-0.5"
                 >
                   Registrar mi cuenta gratis
                 </button>
@@ -2111,7 +2111,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <p className="text-[11px] text-neutral-500">Simplificando las operaciones tributarias dominicanas.</p>
               </div>
               <div className="space-y-1">
-                <span className="font-bold text-neutral-200 block uppercase text-[10px] tracking-wider mb-2">Producto</span>
+                <span className="font-medium text-neutral-200 block uppercase text-[10px] tracking-wider mb-2">Producto</span>
                 <span className="block">Facturación Clásica</span>
                 <button onClick={() => setView('ayuda')} className="block text-left text-neutral-400 hover:text-white transition-colors bg-transparent border-0 p-0 text-xs cursor-pointer mx-auto md:mx-0 outline-none pb-0.5 font-sans">
                   Centro de Ayuda
@@ -2120,7 +2120,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <span className="block">Puntos de Ventas (Cafés/Retail)</span>
               </div>
               <div className="space-y-1">
-                <span className="font-bold text-neutral-200 block uppercase text-[10px] tracking-wider mb-2">Legal</span>
+                <span className="font-medium text-neutral-200 block uppercase text-[10px] tracking-wider mb-2">Legal</span>
                 <button
                   type="button"
                   onClick={() => setShowTermsModal(true)}
@@ -2161,12 +2161,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 {/* Mobile Logo using favicon */}
                 <div className="block sm:hidden flex items-center gap-2">
                   <img src="/facturaDonuevologo_favicon.svg" alt="FacturaDo" className="w-8 h-8 shrink-0 object-contain" referrerPolicy="no-referrer" />
-                  <span className="text-lg font-bold tracking-tight text-[#1A2732] font-sans">FacturaDo</span>
+                  <span className="text-lg font-medium tracking-tight text-[#1A2732] font-sans">FacturaDo</span>
                 </div>
               </div>
               <button
                 onClick={() => setView('landing')}
-                className="px-5 py-2.5 text-xs font-bold text-[#1A2732] hover:bg-neutral-100 rounded-xl transition-all cursor-pointer border border-neutral-200"
+                className="px-5 py-2.5 text-xs font-medium text-[#1A2732] hover:bg-neutral-100 rounded-xl transition-all cursor-pointer border border-neutral-200"
               >
                 ← Volver al Portal
               </button>
@@ -2200,7 +2200,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
             <div className="relative z-10">
               <button
                 onClick={() => setView('landing')}
-                className="flex items-center gap-1.5 text-xs font-bold hover:text-white/85 transition-colors cursor-pointer text-left focus:outline-none"
+                className="flex items-center gap-1.5 text-xs font-medium hover:text-white/85 transition-colors cursor-pointer text-left focus:outline-none"
               >
                 ← Volver a Inicio
               </button>
@@ -2222,10 +2222,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   transition={{ duration: 0.25 }}
                   className="space-y-4"
                 >
-                  <span className="px-2.5 py-0.5 bg-white/10 text-white text-[9.5px] font-extrabold uppercase rounded border border-white/20 tracking-wider">
+                  <span className="px-2.5 py-0.5 bg-white/10 text-white text-[9.5px] font-medium uppercase rounded border border-white/20 tracking-wider">
                     {slides[activeSlide].benefit}
                   </span>
-                  <h3 className="text-2xl font-bold tracking-tight text-white font-heading">
+                  <h3 className="text-2xl font-medium tracking-tight text-white font-heading">
                     {slides[activeSlide].title}
                   </h3>
                   <p className="text-neutral-400 text-xs sm:text-sm font-normal leading-relaxed">
@@ -2264,7 +2264,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   setView('landing');
                   setAuthStage('methods');
                 }}
-                className="text-xs font-bold text-neutral-600 hover:text-neutral-900 cursor-pointer animate-fade-in"
+                className="text-xs font-medium text-neutral-600 hover:text-neutral-900 cursor-pointer animate-fade-in"
               >
                 ← Volver al Inicio
               </button>
@@ -2287,12 +2287,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   {/* Mobile Mobile/Tablet Logo using favicon */}
                   <div className="flex items-center justify-center lg:justify-start lg:hidden mb-4 gap-2">
                     <img src="/facturaDonuevologo_favicon.svg" alt="FacturaDo" className="w-8 h-8 shrink-0 object-contain" referrerPolicy="no-referrer" />
-                    <span className="text-lg font-bold tracking-tight text-[#1A2732] font-sans">FacturaDo</span>
+                    <span className="text-lg font-medium tracking-tight text-[#1A2732] font-sans">FacturaDo</span>
                   </div>
                   
                   {authStage === 'methods' && (
                     <>
-                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 font-heading">
+                      <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-900 font-heading">
                         {view === 'login' ? 'Inicia sesión en FacturaDo' : 'Crea tu cuenta de comercio'}
                       </h2>
                       <p className="text-sm text-neutral-500 leading-normal">
@@ -2303,7 +2303,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                   {authStage === 'email_credentials' && (
                     <>
-                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 font-heading">
+                      <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-900 font-heading">
                         {isEmailRegisterMode ? 'Registrarme con Correo' : 'Iniciar sesión con Correo'}
                       </h2>
                       <p className="text-sm text-neutral-500 leading-normal">
@@ -2316,10 +2316,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                   {authStage === 'remaining_details' && (
                     <>
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-extrabold uppercase rounded-full border border-emerald-150 tracking-wider">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium uppercase rounded-full border border-emerald-150 tracking-wider">
                         Paso 2: Datos de Registro
                       </div>
-                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 font-heading">
+                      <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-neutral-900 font-heading">
                         Completar Datos de tu Comercio
                       </h2>
                       <p className="text-sm text-neutral-500 leading-normal">
@@ -2332,7 +2332,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
               {loginError && !registerSuccess && (
                 <div className="p-3.5 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl font-sans text-left animate-fade-in flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 font-bold flex items-center justify-center text-[10px] shrink-0 mt-0.5">!</span>
+                  <span className="w-4 h-4 rounded-full bg-red-100 text-red-600 font-medium flex items-center justify-center text-[10px] shrink-0 mt-0.5">!</span>
                   <span>{loginError}</span>
                 </div>
               )}
@@ -2404,7 +2404,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         setIsSubmitting(false);
                       }
                     }}
-                    className="w-full h-12 bg-white hover:bg-neutral-50 border border-neutral-250 hover:border-neutral-400 text-neutral-800 font-bold rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
+                    className="w-full h-12 bg-white hover:bg-neutral-50 border border-neutral-250 hover:border-neutral-400 text-neutral-800 font-medium rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
                   >
                     <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92(3.28-4.74 3.28-8.09z" />
@@ -2438,7 +2438,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         setIsSubmitting(false);
                       }
                     }}
-                    className="w-full h-12 bg-neutral-900 hover:bg-neutral-850 text-white font-bold rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
+                    className="w-full h-12 bg-neutral-900 hover:bg-neutral-850 text-white font-medium rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
                   >
                     <svg className="w-5 h-5 shrink-0 fill-current" viewBox="0 0 24 24">
                       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.82M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.13.67-2.85 1.49-.62.72-1.16 1.87-1.01 2.98 1.1.09 2.16-.57 2.87-1.41Z" />
@@ -2451,7 +2451,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <button
                       type="button"
                       onClick={handlePasskeyLogin}
-                      className="w-full h-12 bg-neutral-900 hover:bg-black border border-neutral-800 text-white font-bold rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
+                      className="w-full h-12 bg-neutral-900 hover:bg-black border border-neutral-800 text-white font-medium rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
                     >
                       <ShieldCheck className="w-5 h-5 text-white shrink-0" />
                       <span>Iniciar con Huella / Rostro</span>
@@ -2470,7 +2470,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                       setIsEmailRegisterMode(view === 'register');
                       setLoginError('');
                     }}
-                    className="w-full h-12 bg-white hover:bg-neutral-55 border border-neutral-250 text-[#1A2732] font-bold rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
+                    className="w-full h-12 bg-white hover:bg-neutral-55 border border-neutral-250 text-[#1A2732] font-medium rounded-xl transition-all shadow-xs flex items-center justify-center gap-3 cursor-pointer text-sm uppercase tracking-wider"
                   >
                     <Mail className="w-5 h-5 text-neutral-500 shrink-0" />
                     <span>{view === 'register' ? 'Registrarse con Correo' : 'Iniciar con Correo'}</span>
@@ -2486,7 +2486,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                           const targetView = view === 'register' ? 'login' : 'register';
                           setView(targetView);
                         }}
-                        className="text-[#1A2732] font-bold hover:underline cursor-pointer bg-transparent border-0 p-0"
+                        className="text-[#1A2732] font-medium hover:underline cursor-pointer bg-transparent border-0 p-0"
                       >
                         {view === 'register' ? 'Inicia sesión aquí' : 'Regístrate totalmente gratis'}
                       </span>
@@ -2513,7 +2513,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         setTotpVerificationError('');
                         setLoginError('');
                       }}
-                      className="text-[#1A2732] font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1 hover:underline cursor-pointer bg-transparent border-0 outline-none"
+                      className="text-[#1A2732] font-medium text-xs uppercase tracking-wider mb-2 flex items-center gap-1 hover:underline cursor-pointer bg-transparent border-0 outline-none"
                     >
                       ← Cancelar verificación 2FA
                     </button>
@@ -2522,7 +2522,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                       <div className="inline-flex items-center justify-center p-2 bg-[#1A2732]/10 border border-[#1A2732]/20 rounded-2xl text-[#1A2732]">
                         <Lock className="w-6 h-6" />
                       </div>
-                      <h3 className="font-extrabold text-neutral-900 text-sm">Autenticación en Dos Pasos (2FA)</h3>
+                      <h3 className="font-medium text-neutral-900 text-sm">Autenticación en Dos Pasos (2FA)</h3>
                       <p className="text-[11px] text-neutral-500 leading-normal max-w-xs mx-auto">
                         Ingrese el código de verificación de 6 dígitos que muestra su aplicación de autenticación (Google Authenticator, Authy, etc.).
                       </p>
@@ -2535,14 +2535,14 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     )}
 
                     <div className="space-y-1.5">
-                      <label className="font-bold text-neutral-700 block uppercase tracking-wider text-[10px] text-center">Código de Seguridad</label>
+                      <label className="font-medium text-neutral-700 block uppercase tracking-wider text-[10px] text-center">Código de Seguridad</label>
                       <input
                         type="text"
                         maxLength={6}
                         placeholder="000000"
                         value={totpVerificationCode}
                         onChange={(e) => setTotpVerificationCode(e.target.value.replace(/\D/g, ''))}
-                        className="w-full text-center font-mono tracking-[0.4em] text-lg font-bold h-12 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent bg-neutral-50 focus:bg-white transition-all"
+                        className="w-full text-center font-mono tracking-[0.4em] text-lg font-medium h-12 border border-neutral-250 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent bg-neutral-50 focus:bg-white transition-all"
                         required
                         autoFocus
                       />
@@ -2550,7 +2550,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                     <button
                       type="submit"
-                      className="w-full h-12 bg-[#1A2732] hover:bg-neutral-800 text-white font-extrabold rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-sm uppercase tracking-wider font-sans"
+                      className="w-full h-12 bg-[#1A2732] hover:bg-neutral-800 text-white font-medium rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-sm uppercase tracking-wider font-sans"
                     >
                       Verificar y Acceder
                     </button>
@@ -2600,13 +2600,13 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         setAuthStage('methods');
                         setLoginError('');
                       }}
-                      className="text-[#1A2732] font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1 hover:underline cursor-pointer bg-transparent border-0 outline-none"
+                      className="text-[#1A2732] font-medium text-xs uppercase tracking-wider mb-2 flex items-center gap-1 hover:underline cursor-pointer bg-transparent border-0 outline-none"
                     >
                       ← Volver a opciones de acceso
                     </button>
 
                     <div className="space-y-1">
-                      <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Correo Electrónico *</label>
+                      <label className="font-medium text-neutral-700 block uppercase tracking-wider text-xs">Correo Electrónico *</label>
                       <div className="relative">
                         <input
                           type="email"
@@ -2622,7 +2622,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                     <div className="space-y-1">
                       <div className="flex justify-between items-center">
-                        <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Clave de Acceso *</label>
+                        <label className="font-medium text-neutral-700 block uppercase tracking-wider text-xs">Clave de Acceso *</label>
                         {!isEmailRegisterMode && <span className="text-xs text-neutral-500 hover:underline cursor-pointer">¿Olvidó su clave?</span>}
                       </div>
                       <div className="relative">
@@ -2646,14 +2646,14 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                             <div className={`flex-1 rounded-full transition-all duration-300 ${strength >= 2 ? strengthColors[strength] : 'bg-neutral-200'}`}></div>
                             <div className={`flex-1 rounded-full transition-all duration-300 ${strength >= 3 ? strengthColors[strength] : 'bg-neutral-200'}`}></div>
                           </div>
-                          <span className={`text-[10px] font-extrabold uppercase tracking-wider ${strength === 3 ? 'text-emerald-600' : strength === 2 ? 'text-amber-600' : 'text-red-600'}`}>{strengthLabels[strength]}</span>
+                          <span className={`text-[10px] font-medium uppercase tracking-wider ${strength === 3 ? 'text-emerald-600' : strength === 2 ? 'text-amber-600' : 'text-red-600'}`}>{strengthLabels[strength]}</span>
                         </div>
                       )}
                     </div>
 
                     {isEmailRegisterMode && (
                       <div className="space-y-1">
-                        <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Confirmar Clave de Acceso *</label>
+                        <label className="font-medium text-neutral-700 block uppercase tracking-wider text-xs">Confirmar Clave de Acceso *</label>
                         <div className="relative">
                           <input
                             type={showConfirmPassword ? "text" : "password"}
@@ -2673,7 +2673,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full h-12 bg-[#1A2732] hover:bg-neutral-800 text-white font-extrabold rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-sm uppercase tracking-wider"
+                      className="w-full h-12 bg-[#1A2732] hover:bg-neutral-800 text-white font-medium rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-sm uppercase tracking-wider"
                     >
                       {isSubmitting ? (
                         <>
@@ -2696,7 +2696,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                           setIsEmailRegisterMode(targetView === 'register');
                           setLoginError('');
                         }}
-                        className="text-[#1A2732] font-bold hover:underline cursor-pointer"
+                        className="text-[#1A2732] font-medium hover:underline cursor-pointer"
                       >
                         {isEmailRegisterMode ? 'Inicia sesión aquí' : 'Crea una cuenta gratis'}
                       </span>
@@ -2715,7 +2715,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                       setAuthStage(socialProviderName ? 'methods' : 'email_credentials');
                       setLoginError('');
                     }}
-                    className="text-[#1A2732] font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1 hover:underline cursor-pointer bg-transparent border-0 outline-none"
+                    className="text-[#1A2732] font-medium text-xs uppercase tracking-wider mb-2 flex items-center gap-1 hover:underline cursor-pointer bg-transparent border-0 outline-none"
                   >
                     ← Volver atrás
                   </button>
@@ -2729,7 +2729,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   )}
 
                   <div className="space-y-1">
-                    <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Nombre del Comercio o Razón Social *</label>
+                    <label className="font-medium text-neutral-700 block uppercase tracking-wider text-xs">Nombre del Comercio o Razón Social *</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -2744,7 +2744,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Nombre de Propietario o Representante *</label>
+                    <label className="font-medium text-neutral-700 block uppercase tracking-wider text-xs">Nombre de Propietario o Representante *</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -2759,7 +2759,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-neutral-700 block uppercase tracking-wider text-xs">Celular / WhatsApp (Opcional)</label>
+                    <label className="font-medium text-neutral-700 block uppercase tracking-wider text-xs">Celular / WhatsApp (Opcional)</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -2808,7 +2808,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   <button
                     type="submit"
                     disabled={isSubmitting || !registerForm.agree}
-                    className="w-full h-12 bg-[#1A2732] hover:bg-neutral-800 text-white font-extrabold rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-sm uppercase tracking-wider"
+                    className="w-full h-12 bg-[#1A2732] hover:bg-neutral-800 text-white font-medium rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-sm uppercase tracking-wider"
                   >
                     {isSubmitting ? (
                       <>
@@ -2829,7 +2829,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <Mail className="w-9 h-9 text-blue-600" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-base font-bold text-neutral-900 leading-none">¡Confirma tu correo electrónico!</h3>
+                    <h3 className="text-base font-medium text-neutral-900 leading-none">¡Confirma tu correo electrónico!</h3>
                     <p className="text-xs text-neutral-600 leading-relaxed">
                       Hemos enviado un enlace de confirmación a <strong className="text-neutral-900">{registerForm.email}</strong>.
                     </p>
@@ -2846,7 +2846,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                         setEmailConfirmationRequired(false);
                         setView('login');
                       }}
-                      className="w-full h-11 bg-[#1A2732] hover:bg-neutral-800 text-white font-extrabold rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer text-xs uppercase tracking-wider"
+                      className="w-full h-11 bg-[#1A2732] hover:bg-neutral-800 text-white font-medium rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer text-xs uppercase tracking-wider"
                     >
                       Ir a Iniciar Sesión
                     </button>
@@ -2860,7 +2860,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     <CheckCircle2 className="w-9 h-9 text-emerald-600" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-base font-bold text-neutral-900 leading-none">¡Felicidades, registro completo!</h3>
+                    <h3 className="text-base font-medium text-neutral-900 leading-none">¡Felicidades, registro completo!</h3>
                     <p className="text-xs text-neutral-500">Estamos preparando su almacén, base de datos de comprobantes y padrón fiscal DGII dominicano.</p>
                   </div>
                   <div className="pt-2 flex items-center justify-center gap-2 text-[#1A2732] font-semibold text-[11px]">
@@ -2888,12 +2888,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 </div>
                 <div className="block sm:hidden flex items-center gap-2">
                   <img src="/facturaDonuevologo_favicon.svg" alt="FacturaDo" className="w-8 h-8 shrink-0 object-contain" referrerPolicy="no-referrer" />
-                  <span className="text-lg font-extrabold tracking-tight text-slate-900 font-sans">FacturaDo</span>
+                  <span className="text-lg font-medium tracking-tight text-slate-900 font-sans">FacturaDo</span>
                 </div>
               </div>
               <button
                 onClick={() => setView('landing')}
-                className="whitespace-nowrap px-4 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200 flex items-center gap-2"
+                className="whitespace-nowrap px-4 py-2 text-[13px] font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border border-slate-200 flex items-center gap-2"
               >
                 <ArrowRight className="w-4 h-4 rotate-180" />
                 Volver al inicio
@@ -2919,7 +2919,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               {/* Header */}
               <div className="p-5 border-b border-neutral-150 flex items-center justify-between bg-neutral-50 shrink-0">
                 <div className="space-y-0.5 animate-fade-in">
-                  <h3 className="text-sm font-extrabold text-neutral-900 uppercase tracking-wider">Términos y Condiciones de Servicio</h3>
+                  <h3 className="text-sm font-medium text-neutral-900 uppercase tracking-wider">Términos y Condiciones de Servicio</h3>
                   <p className="text-[10px] text-neutral-400">Última actualización: 12 de Junio de 2026 • República Dominicana</p>
                 </div>
                 <button
@@ -2938,56 +2938,56 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 </p>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">1. Objeto y Alcance del Servicio</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">1. Objeto y Alcance del Servicio</h4>
                   <p>
                     FacturaDo provee una infraestructura en la nube que permite a los comercios gestionar su facturación diaria. El servicio se provee "tal cual" (As Is) y sujeto a disponibilidad. FacturaDo se reserva el derecho de modificar, actualizar, suspender temporalmente o descontinuar funciones de la plataforma en cualquier momento sin que esto derive en obligaciones de indemnización para el usuario.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">2. Exención de Responsabilidad Tributaria y Fiscal</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">2. Exención de Responsabilidad Tributaria y Fiscal</h4>
                   <p>
                     FacturaDo es estrictamente una herramienta de gestión administrativa y no actúa como representante fiscal, contable ni legal. El usuario asume absoluta responsabilidad civil y penal sobre la legitimidad, montos, impuestos declarados y secuencias de Comprobantes Fiscales (NCF) registradas en nuestro sistema. El usuario garantiza que dichas secuencias corresponden fielmente con autorizaciones vigentes emitidas por la Dirección General de Impuestos Internos (DGII). FacturaDo no asume bajo ningún concepto deudas, multas, recargos, penalidades o contingencias fiscales derivadas de errores de digitación, fraude o declaraciones tributarias anómalas.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">3. Limitación de Responsabilidad (Daños y Pérdida de Datos)</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">3. Limitación de Responsabilidad (Daños y Pérdida de Datos)</h4>
                   <p>
                     En la máxima medida permitida por las leyes dominicanas, FacturaDo, sus creadores, directivos o afiliados no serán responsables de daños directos, indirectos, incidentales, punitivos, especiales o consecuentes (incluyendo, sin limitación, pérdida de lucro cesante, interrupción de negocio, o pérdida de información) resultantes del uso o la incapacidad de usar la plataforma. Aunque realizamos respaldos periódicos, usted es responsable de mantener registros y exportaciones independientes de sus facturas. El servicio no garantiza un 100% de disponibilidad ni la inmunidad absoluta ante ciberataques de terceros ajenos a la empresa.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">4. Seguridad, Cuentas y Uso Adecuado</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">4. Seguridad, Cuentas y Uso Adecuado</h4>
                   <p>
                     Usted es el único responsable de mantener la confidencialidad de sus credenciales de acceso. Cualquier actividad realizada desde su cuenta será considerada autorizada por el titular del RNC registrado. Queda estrictamente prohibido utilizar la plataforma para (i) emitir facturas bajo RNC ajenos o inactivos sin poder representativo legal, (ii) llevar operaciones de "doble contabilidad" o lavado de activos, y (iii) realizar ingeniería inversa o extraer datos masivos (scraping) de nuestra infraestructura.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">5. Suscripciones, Pagos y Políticas de Reembolso</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">5. Suscripciones, Pagos y Políticas de Reembolso</h4>
                   <p>
                     El uso de características avanzadas está sujeto al pago de la suscripción aplicable. Todos los cobros se realizan por adelantado. Las tarifas no son reembolsables, salvo que la ley exija lo contrario. El incumplimiento de pago resultará en la suspensión del acceso a la plataforma o la restricción al plan gratuito. FacturaDo puede modificar los precios informándole con treinta (30) días de antelación.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">6. Propiedad Intelectual y Propiedad de la Información</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">6. Propiedad Intelectual y Propiedad de la Información</h4>
                   <p>
                     Todo el código, diseño gráfico, logos y estructura funcional de FacturaDo son propiedad exclusiva de la empresa y están protegidos por leyes de derechos de autor. No obstante, los datos insertados en su cuenta (clientes, artículos, montos) son de su total propiedad. FacturaDo únicamente actuará como custodio de los mismos.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">7. Terminación y Suspensión de Cuentas</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">7. Terminación y Suspensión de Cuentas</h4>
                   <p>
                     Nos reservamos el derecho de suspender o cancelar su cuenta de manera inmediata, sin previo aviso, en caso de detectar violaciones flagrantes a estos términos, reportes de actividad fraudulenta emitidos por las autoridades, o inactividad prolongada mayor a un (1) año en planes gratuitos.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">8. Ley Aplicable y Jurisdicción</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">8. Ley Aplicable y Jurisdicción</h4>
                   <p>
                     Este acuerdo y su ejecución se interpretarán en virtud de las leyes de la República Dominicana. Para cualquier divergencia en la interpretación o ejecución de los presentes términos que no pudiese ser resuelta de manera amistosa, las partes se someten a la competencia y jurisdicción de los tribunales del Distrito Nacional.
                   </p>
@@ -2999,7 +2999,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <button
                   type="button"
                   onClick={() => setShowTermsModal(false)}
-                  className="px-5 py-2 bg-[#1A2732] hover:bg-neutral-800 text-white font-bold rounded-xl transition-all cursor-pointer text-xs uppercase"
+                  className="px-5 py-2 bg-[#1A2732] hover:bg-neutral-800 text-white font-medium rounded-xl transition-all cursor-pointer text-xs uppercase"
                 >
                   Entendido y Acepto
                 </button>
@@ -3019,7 +3019,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               {/* Header */}
               <div className="p-5 border-b border-neutral-150 flex items-center justify-between bg-neutral-50 shrink-0">
                 <div className="space-y-0.5 animate-fade-in">
-                  <h3 className="text-sm font-extrabold text-neutral-900 uppercase tracking-wider">Políticas de Uso y Privacidad de Datos</h3>
+                  <h3 className="text-sm font-medium text-neutral-900 uppercase tracking-wider">Políticas de Uso y Privacidad de Datos</h3>
                   <p className="text-[10px] text-neutral-400">Última actualización: 12 de Junio de 2026 • República Dominicana</p>
                 </div>
                 <button
@@ -3038,42 +3038,42 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 </p>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">1. Recopilación de Información (Qué recogemos y Por qué)</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">1. Recopilación de Información (Qué recogemos y Por qué)</h4>
                   <p>
                     Recopilamos únicamente los datos operativos y comerciales de su negocio requeridos para la correcta operación del software. Esto abarca: Datos de Creación de Cuenta (Correos, nombres de dueños, RNC, teléfonos), Datos Operacionales (inventario de productos, listas de proveedores y base de clientes) y Datos Transaccionales (facturas emitidas, cotizaciones y cuadres). Además, integramos en tiempo real consultas públicas al padrón oficial de la Dirección General de Impuestos Internos (DGII) para autocompletar formularios basados en su RNC. Adicionalmente recopilamos métricas técnicas automatizadas (Cookies, IP, Tipo de Navegador) para prevenir el fraude, gestionar sesiones activas y asegurar el óptimo funcionamiento.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">2. Uso y Finalidad del Tratamiento de los Datos</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">2. Uso y Finalidad del Tratamiento de los Datos</h4>
                   <p>
                     Toda la información captada se utiliza de manera estricta para: (a) Prestación efectiva del servicio de facturación y control de inventarios, (b) Generación de reportes auxiliares contables (como el 606 y 607), (c) Validación de identidad en integraciones, (d) Asistencia de soporte técnico e (e) Investigaciones internas de control anti-fraude o ataques cibernéticos.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">3. Compartición de Información con Terceros (No Venta de Datos)</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">3. Compartición de Información con Terceros (No Venta de Datos)</h4>
                   <p>
                     FacturaDo se compromete rigurosamente a <strong>no vender, alquilar, sublicenciar ni exponer para fines mercadotécnicos de terceros</strong> sus transacciones comerciales. Solo se compartirá información con: (i) Proveedores de alojamiento en la nube (ej: Supabase, AWS) cuyas políticas cumplen con el cifrado moderno de nivel bancario, (ii) Procesadores de pagos (Stripe, PayPal, Azul) para procesar el pago de su suscripción, y (iii) Entidades gubernamentales dominicanas, tribunales o la Policía Nacional <strong>sólo cuando medie una orden judicial o requerimiento legal válido</strong>.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">4. Seguridad, Cifrado y Retención de la Información</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">4. Seguridad, Cifrado y Retención de la Información</h4>
                   <p>
                     Los datos son resguardados en servidores de infraestructura de alta disponibilidad. Empleamos protocolos de cifrado asimétrico SSL/TLS de 256 bits durante la transmisión y políticas de encriptación en bases de datos en reposo (AES). Los datos comerciales se retienen mientras su cuenta se encuentre activa. Si decide cancelar su suscripción, conservamos la data operacional por un tiempo legal prudente (típicamente hasta 6 meses a solicitud de recuperación) antes de eliminarla definitivamente o anonimizarla irreversiblemente.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">5. Derechos ARCO de los Titulares</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">5. Derechos ARCO de los Titulares</h4>
                   <p>
                     En cumplimiento de la Ley N.º 172-13 que tiene por objeto la protección integral de los datos personales en archivos, registros públicos y bancos de datos privados en República Dominicana, usted tiene el derecho en cualquier momento de solicitar el Acceso, Rectificación, Cancelación u Oposición del uso de sus datos personales. Dicha acción la puede ejercer enviándonos un correo de soporte oficial. Cabe acotar que el ejercicio del derecho a supresión total inhabilitará permanentemente su capacidad de emitir facturas en FacturaDo.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="font-extrabold text-[#1A2732] uppercase text-[10px] tracking-wide">6. Limitación Frente a Fugas Masivas por Ataques Estatales</h4>
+                  <h4 className="font-medium text-[#1A2732] uppercase text-[10px] tracking-wide">6. Limitación Frente a Fugas Masivas por Ataques Estatales</h4>
                   <p>
                     Mientras operamos con estándares de la industria, ninguna transmisión electrónica por el Internet es 100% invulnerable. FacturaDo se exime de responsabilidades en eventuales casos de fuerza mayor relacionados con ataques coordinados de extrema sofisticación o fallas catastróficas del proveedor de la nube.
                   </p>
@@ -3085,7 +3085,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 <button
                   type="button"
                   onClick={() => setShowPrivacyModal(false)}
-                  className="px-5 py-2 bg-[#1A2732] hover:bg-neutral-800 text-white font-bold rounded-xl transition-all cursor-pointer text-xs uppercase"
+                  className="px-5 py-2 bg-[#1A2732] hover:bg-neutral-800 text-white font-medium rounded-xl transition-all cursor-pointer text-xs uppercase"
                 >
                   Entendido y Acepto
                 </button>
