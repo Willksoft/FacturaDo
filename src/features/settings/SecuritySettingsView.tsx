@@ -165,7 +165,7 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
     setTimeout(async () => {
       setIsChangingPassword(false);
       setPasswordNotice({ 
-        text: '¡Contraseña establecida exitosamente! Ahora puedes iniciar sesión tanto con Google/Apple como con tu email y nueva clave.', 
+        text: '¡Contraseña actualizada exitosamente en el servidor de seguridad!', 
         type: 'success' 
       });
       
@@ -333,18 +333,13 @@ export function SecuritySettingsView({ currentUser, logActivity, addNotification
             <CardHeader className="py-4 border-b border-neutral-100 bg-neutral-50/50">
               <CardTitle className="text-sm font-bold text-neutral-900 flex items-center gap-2">
                 <Key className="w-4.5 h-4.5 text-neutral-500" />
-                Actualizar / Crear Contraseña de Acceso
+                Cambiar Contraseña de Acceso
               </CardTitle>
               <CardDescription className="text-xs">
-                Establezca su clave de acceso directamente. No requiere ingresar contraseña previa.
+                Establezca o actualice su contraseña corporativa de forma directa.
               </CardDescription>
             </CardHeader>
             <CardContent className="p-5">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-800 border border-indigo-200 mb-4 w-full">
-                <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0" />
-                <span><strong>Excelente para usuarios Google / Apple:</strong> Define tu contraseña de acceso sin necesidad de ingresar una clave previa.</span>
-              </div>
-
               {passwordNotice && (
                 <div className={`p-3 rounded-lg text-xs mb-4 font-medium flex items-start gap-2 border ${
                   passwordNotice.type === 'success' 
