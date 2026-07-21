@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { usePwaUpdate } from './hooks/usePwaUpdate';
 import { Toaster } from 'sonner';
 import { useLocation, useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import { insforge } from './lib/insforge';
@@ -369,6 +370,9 @@ export default function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [mobileCreateOpen, setMobileCreateOpen] = useState(false);
   const [inventorySubTab, setInventorySubTab] = useState<'stock' | 'warehouses'>('stock');
+
+  // PWA update notification
+  const { updateAvailable, applyUpdate } = usePwaUpdate();
 
   // Sidebar collapsible dropdown folders state
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
@@ -911,6 +915,21 @@ export default function App() {
 
   return (
     <>
+      {/* ── PWA Update Banner ─────────────────────────────────────────────── */}
+      {updateAvailable && (
+        <div className="fixed top-0 left-0 right-0 z-[9999] flex items-center justify-between gap-3 px-4 py-2.5 bg-emerald-600 text-white shadow-lg text-sm font-medium" role="alert">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">🚀</span>
+            <span>¡Nueva versión disponible! Actualiza para ver las mejoras más recientes.</span>
+          </div>
+          <button
+            onClick={applyUpdate}
+            className="flex-shrink-0 bg-white text-emerald-700 font-bold text-xs px-3 py-1.5 rounded-md hover:bg-emerald-50 transition-colors"
+          >
+            Actualizar ahora
+          </button>
+        </div>
+      )}
       <React.Suspense fallback={
         <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
           <Loader2 className="w-8 h-8 text-neutral-400 animate-spin" />

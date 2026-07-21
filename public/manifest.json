@@ -1,6 +1,7 @@
 {
   "short_name": "FacturaDo",
   "name": "FacturaDo — Facturación Fiscal & Control",
+  "version": "2026.07.21",
   "description": "FacturaDo es la plataforma líder y segura en República Dominicana para la emisión de comprobantes fiscales (NCF), gestión comercial de inventarios, reportes de formatos 606 y 607 para la DGII y control POS.",
   "icons": [
     {
