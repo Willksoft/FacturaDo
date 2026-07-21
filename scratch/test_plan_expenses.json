@@ -1,0 +1,25 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Registro de Gastos y Reporte 606",
+  "description": "Verifica el registro de compras/gastos comerciales con comprobantes NCF B11/B01 y su consolidación en el reporte 606 de la DGII.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar al módulo de Gastos / Compras"
+    },
+    {
+      "type": "action",
+      "description": "Registrar un gasto operacional especificando la categoría y el NCF del comprobante"
+    },
+    {
+      "type": "action",
+      "description": "Navegar a Reportes DGII / Formato 606"
+    },
+    {
+      "type": "assertion",
+      "description": "Confirmar que el gasto registrado aparece correctamente clasificado en el reporte 606"
+    }
+  ]
+}

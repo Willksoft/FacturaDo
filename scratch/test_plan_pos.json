@@ -1,0 +1,25 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Caja Chica y Punto de Venta POS",
+  "description": "Prueba la interfaz de caja registradora POS, búsqueda rápida de productos, cobro en efectivo/tarjeta y emisión del comprobante.",
+  "priority": "p0",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Ingresar al módulo de Punto de Venta (POS)"
+    },
+    {
+      "type": "action",
+      "description": "Buscar y seleccionar productos de la cuadrícula o buscador"
+    },
+    {
+      "type": "action",
+      "description": "Completar la venta seleccionando el método de pago 'Efectivo'"
+    },
+    {
+      "type": "assertion",
+      "description": "Verificar la emisión del recibo/ticket de venta y el cierre correcto de la transacción"
+    }
+  ]
+}

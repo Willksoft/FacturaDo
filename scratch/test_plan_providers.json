@@ -1,0 +1,25 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Gestión de Proveedores y Compras",
+  "description": "Verifica el registro de suplidores/proveedores con RNC/Cédula y la emisión de órdenes de compra.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar a la sección de Suplidores / Proveedores"
+    },
+    {
+      "type": "action",
+      "description": "Registrar un proveedor con nombre, RNC/Cédula y teléfono de contacto"
+    },
+    {
+      "type": "action",
+      "description": "Generar una orden de compra asociada al proveedor"
+    },
+    {
+      "type": "assertion",
+      "description": "Confirmar que la orden de compra y el proveedor quedan guardados correctamente"
+    }
+  ]
+}

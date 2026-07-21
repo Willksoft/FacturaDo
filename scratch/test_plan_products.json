@@ -1,0 +1,25 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Gestión de Productos e Inventarios",
+  "description": "Verifica la creación de un nuevo producto, definición de stock inicial y mínimo, y que los servicios no tengan alerta de stock bajo.",
+  "priority": "p1",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navegar al módulo de Productos / Inventario"
+    },
+    {
+      "type": "action",
+      "description": "Crear un nuevo producto tipo 'Producto' con stock=20 y stock_minimo=5"
+    },
+    {
+      "type": "action",
+      "description": "Crear un nuevo ítem tipo 'Servicio' y verificar que no se le asigne ni requiera stock"
+    },
+    {
+      "type": "assertion",
+      "description": "Validar que ambos ítems aparecen correctamente en el listado y sus cantidades se conservan"
+    }
+  ]
+}
