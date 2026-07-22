@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { 
   UploadCloud, FileSpreadsheet, CheckCircle2, AlertTriangle, ArrowRight, ArrowLeft, 
   RefreshCw, Sparkles, Database, FileText, Users, ShoppingBag, Truck, Download, 
-  HelpCircle, ShieldCheck, Layers, FileCheck, Search, Filter, Info
+  HelpCircle, ShieldCheck, Layers, FileCheck, Search, Filter, Info, ExternalLink
 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -47,7 +47,9 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       logoImg: '/logosbrands/Woo_logo_color.svg',
       badge: 'E-Commerce Popular',
       desc: 'Importa catálogo de productos, SKU, precios regulares/oferta, stock y categorías desde exportación de WordPress.',
-      color: 'border-purple-500/40 bg-purple-50/40 text-purple-950 hover:bg-purple-50'
+      color: 'border-purple-500/40 bg-purple-50/40 text-purple-950 hover:bg-purple-50',
+      url: 'https://woocommerce.com',
+      siteName: 'woocommerce.com'
     },
     {
       id: 'shopify' as OriginSystem,
@@ -56,7 +58,9 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       logoImg: '/logosbrands/shopify_monotone_white.svg',
       badge: 'Tienda Online',
       desc: 'Soporta exportación CSV oficial de productos (Title, Variant SKU, Variant Price, Variant Inventory Qty) y clientes.',
-      color: 'border-emerald-600/40 bg-emerald-50/40 text-emerald-950 hover:bg-emerald-50'
+      color: 'border-emerald-600/40 bg-emerald-50/40 text-emerald-950 hover:bg-emerald-50',
+      url: 'https://www.shopify.com',
+      siteName: 'shopify.com'
     },
     {
       id: 'alegra' as OriginSystem,
@@ -65,7 +69,9 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       logoImg: '/logosbrands/alegra-seeklogo.svg',
       badge: 'Recomendado RD',
       desc: 'Importa clientes, catálogo de productos con stock e historial exportado de Alegra.',
-      color: 'border-emerald-500/40 bg-emerald-50/40 text-emerald-950 hover:bg-emerald-50'
+      color: 'border-emerald-500/40 bg-emerald-50/40 text-emerald-950 hover:bg-emerald-50',
+      url: 'https://www.alegra.com/dominicana/',
+      siteName: 'alegra.com'
     },
     {
       id: 'cashflow' as OriginSystem,
@@ -74,7 +80,9 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       logoImg: '/logosbrands/cahsflow.svg',
       badge: 'Dominicano',
       desc: 'Importación optimizada para RNC, Cédula, Comprobantes Fiscales NCF y Listados.',
-      color: 'border-amber-500/40 bg-amber-50/40 text-amber-950 hover:bg-amber-50'
+      color: 'border-amber-500/40 bg-amber-50/40 text-amber-950 hover:bg-amber-50',
+      url: 'https://www.cashflow.do',
+      siteName: 'cashflow.do'
     },
     {
       id: 'quickbooks' as OriginSystem,
@@ -83,7 +91,9 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       logoImg: '/logosbrands/descarga.svg',
       badge: 'Internacional',
       desc: 'Compatible con reportes CSV de Customers, Item List, Vendor List e Invoices.',
-      color: 'border-blue-500/40 bg-blue-50/40 text-blue-950 hover:bg-blue-50'
+      color: 'border-blue-500/40 bg-blue-50/40 text-blue-950 hover:bg-blue-50',
+      url: 'https://quickbooks.intuit.com',
+      siteName: 'quickbooks.intuit.com'
     },
     {
       id: 'odoo' as OriginSystem,
@@ -92,7 +102,9 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       logoImg: '/logosbrands/odoo-official-partner.png',
       badge: 'Open Source ERP',
       desc: 'Detecta automáticamente campos de Odoo (partner name, internal reference, unit price, qty_available).',
-      color: 'border-purple-500/40 bg-purple-50/40 text-purple-950 hover:bg-purple-50'
+      color: 'border-purple-500/40 bg-purple-50/40 text-purple-950 hover:bg-purple-50',
+      url: 'https://www.odoo.com',
+      siteName: 'odoo.com'
     },
     {
       id: 'zoho' as OriginSystem,
@@ -101,7 +113,9 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       logoImg: '/logosbrands/zoho-logo-web.svg',
       badge: 'Sincronización CRM',
       desc: 'Formato directo para exportaciones de contactos, inventario y facturación de Zoho.',
-      color: 'border-rose-500/40 bg-rose-50/40 text-rose-950 hover:bg-rose-50'
+      color: 'border-rose-500/40 bg-rose-50/40 text-rose-950 hover:bg-rose-50',
+      url: 'https://www.zoho.com',
+      siteName: 'zoho.com'
     },
     {
       id: 'sage_softland' as OriginSystem,
@@ -109,7 +123,9 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       logo: '🏢',
       badge: 'Empresarial',
       desc: 'Soporta plantillas de Sage 50 / Softland con desinfección automática de RNC y monedas.',
-      color: 'border-cyan-500/40 bg-cyan-50/40 text-cyan-950 hover:bg-cyan-50'
+      color: 'border-cyan-500/40 bg-cyan-50/40 text-cyan-950 hover:bg-cyan-50',
+      url: 'https://www.sage.com',
+      siteName: 'sage.com'
     },
     {
       id: 'custom_excel' as OriginSystem,
@@ -317,10 +333,18 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
                           : 'border-slate-200 hover:border-slate-300 bg-white'
                       }`}
                     >
-                      <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center justify-between mb-2">
                         {sys.logoImg ? (
-                          <div className="h-10 flex items-center">
-                            <img src={sys.logoImg} alt={sys.name} className="h-8 sm:h-9 w-auto max-w-[130px] object-contain" />
+                          <div className="h-12 flex items-center overflow-visible">
+                            <img
+                              src={sys.logoImg}
+                              alt={sys.name}
+                              className={
+                                sys.id === 'alegra'
+                                  ? 'h-11 sm:h-13 w-auto max-w-[170px] object-contain scale-110 origin-left'
+                                  : 'h-9 sm:h-10 w-auto max-w-[140px] object-contain'
+                              }
+                            />
                           </div>
                         ) : (
                           <span className="text-2xl">{sys.logo}</span>
@@ -330,7 +354,20 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
                         </span>
                       </div>
                       <div>
-                        <h3 className="text-sm font-bold text-slate-900">{sys.name}</h3>
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-bold text-slate-900">{sys.name}</h3>
+                          {sys.url && (
+                            <a
+                              href={sys.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-[10px] text-indigo-600 hover:underline inline-flex items-center gap-0.5 shrink-0"
+                            >
+                              {sys.siteName} <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          )}
+                        </div>
                         <p className="text-xs text-slate-500 mt-1 leading-relaxed">{sys.desc}</p>
                       </div>
                     </div>
