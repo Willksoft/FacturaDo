@@ -317,10 +317,10 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
                           : 'border-slate-200 hover:border-slate-300 bg-white'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mb-1">
                         {sys.logoImg ? (
-                          <div className="w-8 h-8 rounded-lg bg-slate-100 p-1 flex items-center justify-center">
-                            <img src={sys.logoImg} alt={sys.name} className="w-full h-full object-contain" />
+                          <div className="h-10 flex items-center">
+                            <img src={sys.logoImg} alt={sys.name} className="h-8 sm:h-9 w-auto max-w-[130px] object-contain" />
                           </div>
                         ) : (
                           <span className="text-2xl">{sys.logo}</span>

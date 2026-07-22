@@ -1283,8 +1283,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 {/* 1. WooCommerce */}
                 <div className="bg-slate-800/60 border border-purple-500/30 rounded-3xl p-6 hover:border-purple-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2.5">
-                    <img src="/logosbrands/Woo_logo_color.svg" alt="WooCommerce" className="w-full h-full object-contain" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <img src="/logosbrands/Woo_logo_color.svg" alt="WooCommerce" className="h-10 sm:h-12 w-auto max-w-[150px] object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">WooCommerce / WordPress</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1297,8 +1297,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                 {/* 2. Shopify */}
                 <div className="bg-slate-800/60 border border-emerald-500/30 rounded-3xl p-6 hover:border-emerald-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2.5">
-                    <img src="/logosbrands/shopify_monotone_white.svg" alt="Shopify" className="w-full h-full object-contain" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <img src="/logosbrands/shopify_monotone_white.svg" alt="Shopify" className="h-10 sm:h-12 w-auto max-w-[150px] object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Shopify Store</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1311,8 +1311,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                 {/* 3. Alegra */}
                 <div className="bg-slate-800/60 border border-emerald-400/30 rounded-3xl p-6 hover:border-emerald-400/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
-                    <img src="/logosbrands/alegra-seeklogo.svg" alt="Alegra" className="w-full h-full object-contain" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <img src="/logosbrands/alegra-seeklogo.svg" alt="Alegra" className="h-9 sm:h-11 w-auto max-w-[150px] object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Alegra</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1325,8 +1325,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                 {/* 4. Cashflow */}
                 <div className="bg-slate-800/60 border border-amber-500/30 rounded-3xl p-6 hover:border-amber-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
-                    <img src="/logosbrands/cahsflow.svg" alt="Cashflow" className="w-full h-full object-contain" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <img src="/logosbrands/cahsflow.svg" alt="Cashflow" className="h-9 sm:h-11 w-auto max-w-[150px] object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Cashflow Software</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1339,8 +1339,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                 {/* 5. QuickBooks */}
                 <div className="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 hover:border-blue-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
-                    <img src="/logosbrands/descarga.svg" alt="QuickBooks" className="w-full h-full object-contain" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <img src="/logosbrands/descarga.svg" alt="QuickBooks" className="h-9 sm:h-11 w-auto max-w-[150px] object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">QuickBooks (Online / Desktop)</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1353,8 +1353,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                 {/* 6. Odoo */}
                 <div className="bg-slate-800/60 border border-purple-400/30 rounded-3xl p-6 hover:border-purple-400/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
-                    <img src="/logosbrands/odoo-official-partner.png" alt="Odoo" className="w-full h-full object-contain" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <img src="/logosbrands/odoo-official-partner.png" alt="Odoo" className="h-10 sm:h-12 w-auto max-w-[150px] object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Odoo ERP</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1367,8 +1367,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                 {/* 7. Zoho */}
                 <div className="bg-slate-800/60 border border-rose-500/30 rounded-3xl p-6 hover:border-rose-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
-                    <img src="/logosbrands/zoho-logo-web.svg" alt="Zoho" className="w-full h-full object-contain" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <img src="/logosbrands/zoho-logo-web.svg" alt="Zoho" className="h-9 sm:h-11 w-auto max-w-[150px] object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Zoho CRM & Books</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1381,8 +1381,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                 {/* 8. Sage & Softland */}
                 <div className="bg-slate-800/60 border border-cyan-500/30 rounded-3xl p-6 hover:border-cyan-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Landmark className="w-6 h-6 text-cyan-400" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <Landmark className="w-10 h-10 text-cyan-400" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Sage / Softland ERP</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1395,8 +1395,8 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
 
                 {/* 9. Excel Libre */}
                 <div className="bg-slate-800/60 border border-slate-500/30 rounded-3xl p-6 hover:border-slate-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-slate-500/20 text-slate-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Database className="w-6 h-6 text-slate-300" />
+                  <div className="h-14 flex items-center mb-4 group-hover:scale-105 transition-transform">
+                    <Database className="w-10 h-10 text-slate-300" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Excel, CSV o XML Libre</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1406,7 +1406,6 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                     Plantillas Libre ✓
                   </span>
                 </div>
-
                 {/* Call to Action Card */}
                 <div className="bg-gradient-to-br from-indigo-900 to-purple-950 border border-indigo-500/50 rounded-3xl p-6 flex flex-col justify-between text-center sm:text-left md:col-span-2 lg:col-span-3">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
