@@ -389,8 +389,69 @@ export function useAccountingState() {
     }));
   }, [addJournalEntry]);
 
-  // Close Fiscal Period
+  // Close Fiscal Period with 1-Click Closing Journal Entry
   const closeFiscalPeriod = useCallback((periodId: string, username: string = 'Admin') => {
+    const targetPeriod = fiscalPeriods.find(p => p.id === periodId);
+    if (!targetPeriod || targetPeriod.status === 'CLOSED') return;
+
+    // Calculate Net Profit
+    const totalIncome = accounts.filter(a => a.category === 'INGRESO' && !a.isHeader).reduce((sum, a) => sum + a.balance, 0);
+    const totalCostOfSales = accounts.filter(a => a.category === 'COSTO' && !a.isHeader).reduce((sum, a) => sum + a.balance, 0);
+    const totalExpenses = accounts.filter(a => a.category === 'GASTO' && !a.isHeader).reduce((sum, a) => sum + a.balance, 0);
+    const netProfit = totalIncome - (totalCostOfSales + totalExpenses);
+
+    // Create Closing Journal Entry
+    if (netProfit !== 0) {
+      addJournalEntry({
+        date: new Date().toISOString().split('T')[0],
+        concept: `Asiento de Cierre Fiscal ${targetPeriod.label} - Transferencia de resultado a Utilidades Acumuladas`,
+        reference: `CIERRE-${targetPeriod.id}`,
+        totalDebit: Math.abs(netProfit),
+        totalCredit: Math.abs(netProfit),
+        isAutomatic: true,
+        sourceDocument: 'FISCAL_CLOSE',
+        lines: [
+          {
+            id: `cl-1`,
+            accountCode: '4.1.1.01',
+            accountName: 'Ventas de Productos y Servicios (Cierre)',
+            debit: totalIncome > 0 ? totalIncome : 0,
+            credit: totalIncome < 0 ? Math.abs(totalIncome) : 0
+          },
+          {
+            id: `cl-2`,
+            accountCode: '5.1.1.01',
+            accountName: 'Costo de Mercancías Vendidas (Cierre)',
+            debit: 0,
+            credit: totalCostOfSales
+          },
+          {
+            id: `cl-3`,
+            accountCode: '6.1.1.01',
+            accountName: 'Gastos Operativos (Cierre)',
+            debit: 0,
+            credit: totalExpenses
+          },
+          {
+            id: `cl-4`,
+            accountCode: '3.2.1.01',
+            accountName: 'Utilidades Acumuladas / Ejercicio',
+            debit: netProfit < 0 ? Math.abs(netProfit) : 0,
+            credit: netProfit > 0 ? netProfit : 0
+          }
+        ]
+      });
+    }
+
+    // Reset nominal accounts
+    setAccounts(prev => prev.map(acc => {
+      if (acc.category === 'INGRESO' || acc.category === 'COSTO' || acc.category === 'GASTO') {
+        return { ...acc, balance: 0 };
+      }
+      return acc;
+    }));
+
+    // Mark Period as CLOSED
     setFiscalPeriods(prev => prev.map(period => {
       if (period.id !== periodId) return period;
       return {
@@ -400,7 +461,7 @@ export function useAccountingState() {
         closedBy: username
       };
     }));
-  }, []);
+  }, [fiscalPeriods, accounts, addJournalEntry]);
 
   // Compute Balance Sheet Metrics ($A = P + E$)
   const balanceSheet = useMemo(() => {

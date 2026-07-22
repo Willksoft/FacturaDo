@@ -30,6 +30,8 @@ import {
   Truck
 } from 'lucide-react';
 
+import FiscalAlertsWidget from '../../components/dashboard/FiscalAlertsWidget';
+
 interface DashboardProps {
   invoices: Invoice[];
   clients: Client[];
@@ -326,6 +328,9 @@ export default function Dashboard({
         expenses={expenses}
         setCurrentTab={setCurrentTab}
       />
+
+      {/* Widget de Recordatorios Fiscales DGII */}
+      <FiscalAlertsWidget onNavigateTab={setCurrentTab} />
 
         {/* RATED HIGHER METRIC CARDS (8 CARDS WITH GRADIENTS AND INCREASED SIZE) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" id="supreme-metric-tiles">
