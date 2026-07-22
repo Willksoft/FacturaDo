@@ -18,7 +18,7 @@ interface SystemMigrationViewProps {
   showNotice?: (msg: string, success?: boolean) => void;
 }
 
-type OriginSystem = 'woocommerce' | 'shopify' | 'alegra' | 'quickbooks' | 'cashflow' | 'odoo_zoho' | 'custom_excel';
+type OriginSystem = 'woocommerce' | 'shopify' | 'alegra' | 'quickbooks' | 'cashflow' | 'odoo' | 'zoho' | 'sage_softland' | 'custom_excel';
 
 export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
   onImportClients,
@@ -44,6 +44,7 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       id: 'woocommerce' as OriginSystem,
       name: 'WooCommerce (WordPress)',
       logo: '🛒',
+      logoImg: '/logosbrands/Woo_logo_color.svg',
       badge: 'E-Commerce Popular',
       desc: 'Importa catálogo de productos, SKU, precios regulares/oferta, stock y categorías desde exportación de WordPress.',
       color: 'border-purple-500/40 bg-purple-50/40 text-purple-950 hover:bg-purple-50'
@@ -52,6 +53,7 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       id: 'shopify' as OriginSystem,
       name: 'Shopify Store',
       logo: '🛍️',
+      logoImg: '/logosbrands/shopify_monotone_white.svg',
       badge: 'Tienda Online',
       desc: 'Soporta exportación CSV oficial de productos (Title, Variant SKU, Variant Price, Variant Inventory Qty) y clientes.',
       color: 'border-emerald-600/40 bg-emerald-50/40 text-emerald-950 hover:bg-emerald-50'
@@ -60,33 +62,54 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
       id: 'alegra' as OriginSystem,
       name: 'Alegra',
       logo: '⚡',
+      logoImg: '/logosbrands/alegra-seeklogo.svg',
       badge: 'Recomendado RD',
       desc: 'Importa clientes, catálogo de productos con stock e historial exportado de Alegra.',
       color: 'border-emerald-500/40 bg-emerald-50/40 text-emerald-950 hover:bg-emerald-50'
     },
     {
-      id: 'quickbooks' as OriginSystem,
-      name: 'QuickBooks (Online / Desktop)',
-      logo: '💼',
-      badge: 'Internacional',
-      desc: 'Compatible con reportes CSV de Customers, Item List, Vendor List e Invoices.',
-      color: 'border-blue-500/40 bg-blue-50/40 text-blue-950 hover:bg-blue-50'
-    },
-    {
       id: 'cashflow' as OriginSystem,
       name: 'Cashflow Software',
       logo: '💵',
+      logoImg: '/logosbrands/cahsflow.svg',
       badge: 'Dominicano',
       desc: 'Importación optimizada para RNC, Cédula, Comprobantes Fiscales NCF y Listados.',
       color: 'border-amber-500/40 bg-amber-50/40 text-amber-950 hover:bg-amber-50'
     },
     {
-      id: 'odoo_zoho' as OriginSystem,
-      name: 'Odoo / Zoho / Sage / Softland',
+      id: 'quickbooks' as OriginSystem,
+      name: 'QuickBooks (Online / Desktop)',
+      logo: '💼',
+      logoImg: '/logosbrands/descarga.svg',
+      badge: 'Internacional',
+      desc: 'Compatible con reportes CSV de Customers, Item List, Vendor List e Invoices.',
+      color: 'border-blue-500/40 bg-blue-50/40 text-blue-950 hover:bg-blue-50'
+    },
+    {
+      id: 'odoo' as OriginSystem,
+      name: 'Odoo ERP',
+      logo: '🟣',
+      logoImg: '/logosbrands/odoo-official-partner.png',
+      badge: 'Open Source ERP',
+      desc: 'Detecta automáticamente campos de Odoo (partner name, internal reference, unit price, qty_available).',
+      color: 'border-purple-500/40 bg-purple-50/40 text-purple-950 hover:bg-purple-50'
+    },
+    {
+      id: 'zoho' as OriginSystem,
+      name: 'Zoho CRM & Books',
+      logo: '🚀',
+      logoImg: '/logosbrands/zoho-logo-web.svg',
+      badge: 'Sincronización CRM',
+      desc: 'Formato directo para exportaciones de contactos, inventario y facturación de Zoho.',
+      color: 'border-rose-500/40 bg-rose-50/40 text-rose-950 hover:bg-rose-50'
+    },
+    {
+      id: 'sage_softland' as OriginSystem,
+      name: 'Sage / Softland ERP',
       logo: '🏢',
-      badge: 'ERP Empresarial',
-      desc: 'Detecta automáticamente campos estandarizados de terceros y registros contables.',
-      color: 'border-indigo-500/40 bg-indigo-50/40 text-indigo-950 hover:bg-indigo-50'
+      badge: 'Empresarial',
+      desc: 'Soporta plantillas de Sage 50 / Softland con desinfección automática de RNC y monedas.',
+      color: 'border-cyan-500/40 bg-cyan-50/40 text-cyan-950 hover:bg-cyan-50'
     },
     {
       id: 'custom_excel' as OriginSystem,
@@ -295,7 +318,13 @@ export const SystemMigrationView: React.FC<SystemMigrationViewProps> = ({
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-2xl">{sys.logo}</span>
+                        {sys.logoImg ? (
+                          <div className="w-8 h-8 rounded-lg bg-slate-100 p-1 flex items-center justify-center">
+                            <img src={sys.logoImg} alt={sys.name} className="w-full h-full object-contain" />
+                          </div>
+                        ) : (
+                          <span className="text-2xl">{sys.logo}</span>
+                        )}
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 uppercase">
                           {sys.badge}
                         </span>

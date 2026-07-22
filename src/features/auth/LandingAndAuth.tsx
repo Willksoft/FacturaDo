@@ -43,6 +43,10 @@ import {
   BarChart3,
   Clock,
   UserPlus,
+  DollarSign,
+  Layers,
+  Briefcase,
+  Landmark,
   Receipt,
   Settings,
   Lightbulb,
@@ -1277,9 +1281,10 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                {/* 1. WooCommerce */}
                 <div className="bg-slate-800/60 border border-purple-500/30 rounded-3xl p-6 hover:border-purple-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Store className="w-6 h-6 text-purple-400" />
+                  <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2.5">
+                    <img src="/logosbrands/Woo_logo_color.svg" alt="WooCommerce" className="w-full h-full object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">WooCommerce / WordPress</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -1290,71 +1295,134 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                   </span>
                 </div>
 
+                {/* 2. Shopify */}
                 <div className="bg-slate-800/60 border border-emerald-500/30 rounded-3xl p-6 hover:border-emerald-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <ShoppingBag className="w-6 h-6 text-emerald-400" />
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2.5">
+                    <img src="/logosbrands/shopify_monotone_white.svg" alt="Shopify" className="w-full h-full object-contain" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Shopify Store</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
                     Reconoce la estructura nativa exportada de Shopify (<code className="text-emerald-300">Title</code>, <code className="text-emerald-300">Variant SKU</code>, <code className="text-emerald-300">Variant Price</code>) y la convierte en comprobantes NCF.
                   </p>
-                  <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                  <span className="text-[11px] font-medium text-emerald-400 bg-emerald-50/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
                     Sincronización Total ✓
                   </span>
                 </div>
 
-                <div className="bg-slate-800/60 border border-indigo-500/30 rounded-3xl p-6 hover:border-indigo-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Zap className="w-6 h-6 text-indigo-400" />
+                {/* 3. Alegra */}
+                <div className="bg-slate-800/60 border border-emerald-400/30 rounded-3xl p-6 hover:border-emerald-400/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
+                    <img src="/logosbrands/alegra-seeklogo.svg" alt="Alegra" className="w-full h-full object-contain" />
                   </div>
-                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Alegra & Cashflow</h3>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Alegra</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                    Sube tus reportes de clientes con RNC/Cédula, catálogo de ítems y listas de precios para activarte sin perder historial contable.
+                    Migra de forma directa tu catálogo de ítems, clientes con RNC/Cédula y listas de precios exportadas de Alegra.
                   </p>
-                  <span className="text-[11px] font-medium text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
-                    Dominicano 100% ✓
+                  <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    Soporte Nativo RD ✓
                   </span>
                 </div>
 
-                <div className="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 hover:border-blue-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Building className="w-6 h-6 text-blue-400" />
+                {/* 4. Cashflow */}
+                <div className="bg-slate-800/60 border border-amber-500/30 rounded-3xl p-6 hover:border-amber-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
+                    <img src="/logosbrands/cahsflow.svg" alt="Cashflow" className="w-full h-full object-contain" />
                   </div>
-                  <h3 className="text-lg font-medium text-white mb-2 font-heading">QuickBooks & Odoo / Zoho</h3>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Cashflow Software</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                    Exporta desde Customers, Vendor List o Item List y FacturaDo desinfectará los campos de forma automática.
+                    Carga archivos exportados de Cashflow Dominicano con detección automática de RNCs, NCFs e inventarios.
+                  </p>
+                  <span className="text-[11px] font-medium text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                    Formato Dominicano ✓
+                  </span>
+                </div>
+
+                {/* 5. QuickBooks */}
+                <div className="bg-slate-800/60 border border-blue-500/30 rounded-3xl p-6 hover:border-blue-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
+                    <img src="/logosbrands/descarga.svg" alt="QuickBooks" className="w-full h-full object-contain" />
+                  </div>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">QuickBooks (Online / Desktop)</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Sube reportes CSV de Customers, Vendor List e Item List de QuickBooks sin perder referencias contables.
                   </p>
                   <span className="text-[11px] font-medium text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
-                    Compatibilidad ERP ✓
+                    Líder Mundial ✓
                   </span>
                 </div>
 
-                <div className="bg-slate-800/60 border border-amber-500/30 rounded-3xl p-6 hover:border-amber-500/60 transition-all group">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Database className="w-6 h-6 text-amber-400" />
+                {/* 6. Odoo */}
+                <div className="bg-slate-800/60 border border-purple-400/30 rounded-3xl p-6 hover:border-purple-400/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
+                    <img src="/logosbrands/odoo-official-partner.png" alt="Odoo" className="w-full h-full object-contain" />
+                  </div>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Odoo ERP</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Mapeo instantáneo para exportaciones de Odoo ERP (partner name, internal reference, unit price, stock value).
+                  </p>
+                  <span className="text-[11px] font-medium text-purple-300 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">
+                    Open Source ERP ✓
+                  </span>
+                </div>
+
+                {/* 7. Zoho */}
+                <div className="bg-slate-800/60 border border-rose-500/30 rounded-3xl p-6 hover:border-rose-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform p-2">
+                    <img src="/logosbrands/zoho-logo-web.svg" alt="Zoho" className="w-full h-full object-contain" />
+                  </div>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Zoho CRM & Books</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Compatible con exportaciones de contactos, inventario y cuentas de Zoho Books y Zoho CRM.
+                  </p>
+                  <span className="text-[11px] font-medium text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-full border border-rose-500/20">
+                    Sincronización CRM ✓
+                  </span>
+                </div>
+
+                {/* 8. Sage & Softland */}
+                <div className="bg-slate-800/60 border border-cyan-500/30 rounded-3xl p-6 hover:border-cyan-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Landmark className="w-6 h-6 text-cyan-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-white mb-2 font-heading">Sage / Softland ERP</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                    Soporta plantillas empresariales de Sage 50 / Softland con desinfección automática de RNC y monedas.
+                  </p>
+                  <span className="text-[11px] font-medium text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-full border border-cyan-500/20">
+                    Grado Empresarial ✓
+                  </span>
+                </div>
+
+                {/* 9. Excel Libre */}
+                <div className="bg-slate-800/60 border border-slate-500/30 rounded-3xl p-6 hover:border-slate-500/60 transition-all group">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-500/20 text-slate-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Database className="w-6 h-6 text-slate-300" />
                   </div>
                   <h3 className="text-lg font-medium text-white mb-2 font-heading">Excel, CSV o XML Libre</h3>
                   <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                    Sube cualquier archivo Excel sin formato rígido. Nuestro asistente con inteligencia de sinónimos empareja tus columnas.
+                    Sube cualquier hoja de cálculo. Nuestro motor con inteligencia de sinónimos empareja tus columnas automáticamente.
                   </p>
-                  <span className="text-[11px] font-medium text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
-                    Plantillas Gratis ✓
+                  <span className="text-[11px] font-medium text-slate-300 bg-slate-500/10 px-2.5 py-1 rounded-full border border-slate-500/20">
+                    Plantillas Libre ✓
                   </span>
                 </div>
 
-                <div className="bg-gradient-to-br from-indigo-900 to-purple-950 border border-indigo-500/50 rounded-3xl p-6 flex flex-col justify-between text-center sm:text-left">
-                  <div>
-                    <h3 className="text-lg font-medium text-white mb-2 font-heading">¿Listo para probar la migración?</h3>
-                    <p className="text-xs text-indigo-200 leading-relaxed mb-4">
-                      Prueba el asistente interactivo en 4 pasos con mapeo manual de columnas e inspección de RNCs en vivo.
-                    </p>
+                {/* Call to Action Card */}
+                <div className="bg-gradient-to-br from-indigo-900 to-purple-950 border border-indigo-500/50 rounded-3xl p-6 flex flex-col justify-between text-center sm:text-left md:col-span-2 lg:col-span-3">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div>
+                      <h3 className="text-xl font-medium text-white mb-2 font-heading">¿Listo para migrar tu negocio a FacturaDo?</h3>
+                      <p className="text-xs text-indigo-200 leading-relaxed max-w-2xl">
+                        Prueba nuestro Asistente Inteligente de Migración en 4 pasos con mapeo automático de columnas e inspección de RNCs en vivo.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setView('register')}
+                      className="py-3 px-6 bg-indigo-500 hover:bg-indigo-400 text-white rounded-2xl font-medium text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0"
+                    >
+                      Probar Asistente de Migración <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => setView('register')}
-                    className="w-full py-3 bg-indigo-500 hover:bg-indigo-400 text-white rounded-2xl font-medium text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    Probar Asistente de Migración <ArrowRight className="w-4 h-4" />
-                  </button>
                 </div>
               </div>
             </div>
