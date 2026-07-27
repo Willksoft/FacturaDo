@@ -10,7 +10,8 @@ import {
   User, 
   UserCheck, 
   Sparkles,
-  Sliders
+  Sliders,
+  Edit3
 } from 'lucide-react';
 import { usePayrollState } from './hooks/usePayrollState';
 import { PayrollDashboard } from './components/PayrollDashboard';
@@ -25,11 +26,12 @@ import { EmployeeSelfServicePortal } from './components/EmployeeSelfServicePorta
 import { SupervisorPortal } from './components/SupervisorPortal';
 import { PayrollAiAssistantModal } from './components/PayrollAiAssistantModal';
 import { LaborProfilesRulesView } from './components/LaborProfilesRulesView';
+import { ManualPayrollAndDocsView } from './components/ManualPayrollAndDocsView';
 import { Employee } from '../../types/payroll';
 
 export default function PayrollMainView() {
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'empleados' | 'reglas-perfiles' | 'asistencia' | 'vacaciones' | 'procesar' | 'prestaciones' | 'tss' | 'portal-empleado' | 'portal-supervisor' | 'ia'
+    'dashboard' | 'empleados' | 'reglas-perfiles' | 'asistencia' | 'vacaciones' | 'procesar' | 'nomina-manual' | 'prestaciones' | 'tss' | 'portal-empleado' | 'portal-supervisor' | 'ia'
   >('dashboard');
 
   const {
@@ -69,6 +71,7 @@ export default function PayrollMainView() {
     { id: 'asistencia', label: 'Asistencia & Extras', icon: Clock },
     { id: 'vacaciones', label: 'Vacaciones & Permisos', icon: Calendar },
     { id: 'procesar', label: 'Procesar Nómina', icon: DollarSign },
+    { id: 'nomina-manual', label: 'Nómina & Docs Manuales', icon: Edit3 },
     { id: 'prestaciones', label: 'Prestaciones (Cesantía)', icon: Calculator },
     { id: 'tss', label: 'TSS & DGII Reports', icon: ShieldCheck },
     { id: 'portal-empleado', label: 'Portal Empleado', icon: User },
@@ -158,6 +161,10 @@ export default function PayrollMainView() {
             payrollDetails={payrollDetails}
             onProcessPayroll={processNewPayrollPeriod}
           />
+        )}
+
+        {activeTab === 'nomina-manual' && (
+          <ManualPayrollAndDocsView employees={employees} />
         )}
 
         {activeTab === 'prestaciones' && (
