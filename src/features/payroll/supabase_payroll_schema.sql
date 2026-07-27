@@ -1,9 +1,9 @@
 -- ==============================================================================
 -- FACTURADO S.R.L. - MÓDULO DE NÓMINA EMPRESARIAL COMPLETO & PERFILES FISCALES
--- SCRIPT DE ESQUEMA POSTGRESQL / SUPABASE (CON REGLAS Y MIGRACIÓN)
+-- SCRIPT DE ESQUEMA POSTGRESQL / SUPABASE (ENTORNO DE PRUEBAS: willksoft+test2026@gmail.com)
 -- ==============================================================================
 
--- 1. TABLA DE EMPLEADOS CON CAMPOS MIGRATORIOS Y MATRIZ FISCAL INDIVIDUAL
+-- 1. TABLA DE EMPLEADOS CON CAMPOS MIGRATORIOS, MATRIZ FISCAL Y AISLAMIENTO DE USUARIO
 CREATE TABLE IF NOT EXISTS payroll_employees (
   id VARCHAR(255) PRIMARY KEY,
   code VARCHAR(50) NOT NULL UNIQUE,
@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS payroll_employees (
   national_id VARCHAR(100) NOT NULL,
   doc_expiration_date DATE,
   doc_issuing_country VARCHAR(100) DEFAULT 'República Dominicana',
+  birth_date DATE,
   rnc VARCHAR(100),
   address TEXT,
   province VARCHAR(100) DEFAULT 'Distrito Nacional',
@@ -66,28 +67,28 @@ CREATE TABLE IF NOT EXISTS payroll_employees (
   afp_name VARCHAR(100) DEFAULT 'AFP Popular',
   ars_name VARCHAR(100) DEFAULT 'ARS Humano',
   dependents_count INT DEFAULT 0,
+
+  -- AISLAMIENTO DE ENTORNO DE PRUEBAS
+  created_by_email VARCHAR(255) DEFAULT 'willksoft+test2026@gmail.com',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- INDEXES PARA BÚSQUEDA RÁPIDA
+CREATE INDEX IF NOT EXISTS idx_payroll_employees_created_by ON payroll_employees(created_by_email);
 CREATE INDEX IF NOT EXISTS idx_payroll_employees_national_id ON payroll_employees(national_id);
-CREATE INDEX IF NOT EXISTS idx_payroll_employees_status ON payroll_employees(status);
-CREATE INDEX IF NOT EXISTS idx_payroll_employees_department ON payroll_employees(department);
 
--- 2. TABLA DE EXPEDIENTES DIGITALES Y DOCUMENTOS DE EMPLEADOS
+-- 2. TABLA DE EXPEDIENTES DIGITALES
 CREATE TABLE IF NOT EXISTS payroll_documents (
   id VARCHAR(255) PRIMARY KEY,
   employee_id VARCHAR(255) REFERENCES payroll_employees(id) ON DELETE CASCADE,
-  type VARCHAR(100) NOT NULL, -- Contrato, Cedula, Pasaporte, Curriculum, Titulo, CertificadoMedico...
+  type VARCHAR(100) NOT NULL,
   title VARCHAR(255) NOT NULL,
   file_url TEXT NOT NULL,
   upload_date DATE DEFAULT CURRENT_DATE,
   notes TEXT,
+  created_by_email VARCHAR(255) DEFAULT 'willksoft+test2026@gmail.com',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE INDEX IF NOT EXISTS idx_payroll_documents_employee ON payroll_documents(employee_id);
 
 -- 3. TABLA DE PERÍODOS DE NÓMINA PROCESADOS
 CREATE TABLE IF NOT EXISTS payroll_periods (
@@ -98,23 +99,13 @@ CREATE TABLE IF NOT EXISTS payroll_periods (
   end_date DATE NOT NULL,
   status VARCHAR(50) DEFAULT 'Procesada',
   total_gross_salary NUMERIC(15, 2) DEFAULT 0,
-  total_overtime NUMERIC(15, 2) DEFAULT 0,
-  total_commissions NUMERIC(15, 2) DEFAULT 0,
-  total_bonuses NUMERIC(15, 2) DEFAULT 0,
-  total_afp_employee NUMERIC(15, 2) DEFAULT 0,
-  total_ars_employee NUMERIC(15, 2) DEFAULT 0,
-  total_isr NUMERIC(15, 2) DEFAULT 0,
-  total_other_deductions NUMERIC(15, 2) DEFAULT 0,
   total_net_salary NUMERIC(15, 2) DEFAULT 0,
-  total_afp_employer NUMERIC(15, 2) DEFAULT 0,
-  total_ars_employer NUMERIC(15, 2) DEFAULT 0,
-  total_srl_employer NUMERIC(15, 2) DEFAULT 0,
-  total_infotep_employer NUMERIC(15, 2) DEFAULT 0,
   total_employer_cost NUMERIC(15, 2) DEFAULT 0,
+  created_by_email VARCHAR(255) DEFAULT 'willksoft+test2026@gmail.com',
   processed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. TABLA DE DETALLE DE PAGO INDIVIDUAL Y RETENCIONES POR EMPLEADO
+-- 4. TABLA DE DETALLE DE PAGO INDIVIDUAL
 CREATE TABLE IF NOT EXISTS payroll_details (
   id VARCHAR(255) PRIMARY KEY,
   period_id VARCHAR(255) REFERENCES payroll_periods(id) ON DELETE CASCADE,
@@ -124,30 +115,19 @@ CREATE TABLE IF NOT EXISTS payroll_details (
   department VARCHAR(100),
   job_title VARCHAR(150),
   base_salary_period NUMERIC(15, 2) DEFAULT 0,
-  overtime_pay NUMERIC(15, 2) DEFAULT 0,
-  commissions_pay NUMERIC(15, 2) DEFAULT 0,
-  bonuses_pay NUMERIC(15, 2) DEFAULT 0,
   gross_salary NUMERIC(15, 2) DEFAULT 0,
   afp_employee NUMERIC(15, 2) DEFAULT 0,
   ars_employee NUMERIC(15, 2) DEFAULT 0,
   isr_employee NUMERIC(15, 2) DEFAULT 0,
-  loans_deduction NUMERIC(15, 2) DEFAULT 0,
-  advances_deduction NUMERIC(15, 2) DEFAULT 0,
-  other_deductions NUMERIC(15, 2) DEFAULT 0,
   total_deductions NUMERIC(15, 2) DEFAULT 0,
   net_salary NUMERIC(15, 2) DEFAULT 0,
-  afp_employer NUMERIC(15, 2) DEFAULT 0,
-  ars_employer NUMERIC(15, 2) DEFAULT 0,
-  srl_employer NUMERIC(15, 2) DEFAULT 0,
-  infotep_employer NUMERIC(15, 2) DEFAULT 0,
   total_employer_cost NUMERIC(15, 2) DEFAULT 0,
-  payment_bank VARCHAR(150),
-  account_number VARCHAR(100),
   is_paid BOOLEAN DEFAULT TRUE,
+  created_by_email VARCHAR(255) DEFAULT 'willksoft+test2026@gmail.com',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. TABLA DE REGLAS INTELIGENTES (RULE ENGINE)
+-- 5. TABLA DE REGLAS INTELIGENTES
 CREATE TABLE IF NOT EXISTS payroll_rules (
   id VARCHAR(255) PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
@@ -155,16 +135,11 @@ CREATE TABLE IF NOT EXISTS payroll_rules (
   is_active BOOLEAN DEFAULT TRUE,
   condition_nationality VARCHAR(50),
   condition_migratory_status VARCHAR(100),
-  condition_contract_type VARCHAR(50),
-  condition_identity_doc_type VARCHAR(100),
   set_aplica_isr BOOLEAN,
   set_aplica_tss BOOLEAN,
   set_aplica_afp BOOLEAN,
   set_aplica_ars BOOLEAN,
-  set_aplica_infotep BOOLEAN,
-  set_aplica_regalia BOOLEAN,
-  set_aplica_cesantia BOOLEAN,
   set_cotiza_seguridad_social BOOLEAN,
-  set_es_exento_impuestos BOOLEAN,
+  created_by_email VARCHAR(255) DEFAULT 'willksoft+test2026@gmail.com',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
