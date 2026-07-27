@@ -44,6 +44,7 @@ const VendedoresView = React.lazy(() => import('./features/hr/VendedoresView').t
 const AuditLogsView = React.lazy(() => import('./features/settings/AuditLogsView').then(m => ({ default: m.AuditLogsView })));
 const SecuritySettingsView = React.lazy(() => import('./features/settings/SecuritySettingsView').then(m => ({ default: m.SecuritySettingsView })));
 const SystemMigrationView = React.lazy(() => import('./features/migration/SystemMigrationView').then(m => ({ default: m.SystemMigrationView })));
+const PayrollMainView = React.lazy(() => import('./features/payroll/PayrollMainView'));
 
 const Specialized = import('./features/accounting/SpecializedViews');
 const ClientHistoryView = React.lazy(() => Specialized.then(m => ({ default: m.ClientHistoryView })));
@@ -139,6 +140,7 @@ type TabType =
   | 'edit-document'
   | 'suplidores'
   | 'gastos'
+  | 'nomina'
   | 'analiticas'
   | 'compras-hist'
   | 'estado-cuenta'
@@ -1090,6 +1092,22 @@ export default function App() {
             >
               <TrendingUp className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0`} />
               {!isSidebarCollapsed && <span>Estado de mi negocio</span>}
+            </button>
+          </div>
+
+          <div className="space-y-1 mt-1">
+            <button
+              type="button"
+              title={isSidebarCollapsed ? "Nómina y R.H." : undefined}
+              onClick={() => checkAndNavigate('nomina')}
+              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
+                currentTab === 'nomina'
+                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
+              }`}
+            >
+              <Users className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-indigo-500`} />
+              {!isSidebarCollapsed && <span>Nómina y R.H.</span>}
             </button>
           </div>
 
@@ -2284,6 +2302,10 @@ export default function App() {
               onUpdateSeller={updateSeller}
               onDeleteSeller={deleteSeller}
             />
+          )}
+
+          {currentTab === 'nomina' && (
+            <PayrollMainView />
           )}
 
           {currentTab === 'cfg-roles' && (
