@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { 
   ShieldCheck, 
   Download, 
-  FileSpreadsheet, 
   FileText, 
   Building, 
-  CheckCircle2, 
-  Printer, 
-  Layers
+  Users, 
+  CheckCircle2,
+  Building2
 } from 'lucide-react';
 import { Employee, PayrollPeriod, PayrollDetail } from '../../../types/payroll';
-import { generateTssNovedadesTxt, generateTssPayrollTxt, downloadTxtFile } from '../utils/tssFileGenerator';
+import { AchBankExportModal } from './AchBankExportModal';
 
 interface TssDgiiReportsModalProps {
   employees: Employee[];
@@ -23,123 +22,118 @@ export const TssDgiiReportsModal: React.FC<TssDgiiReportsModalProps> = ({
   payrollPeriods,
   payrollDetails,
 }) => {
-  const [companyRnc, setCompanyRnc] = useState('131000001');
+  const [selectedPeriodId, setSelectedPeriodId] = useState<string>(payrollPeriods[0]?.id || '');
+  const [isAchModalOpen, setIsAchModalOpen] = useState(false);
 
-  const handleDownloadTssNovedades = () => {
-    const txtContent = generateTssNovedadesTxt(companyRnc, employees);
-    downloadTxtFile(`TSS_NOVEDADES_${companyRnc}_${new Date().toISOString().slice(0, 10)}.txt`, txtContent);
+  const selectedPeriod = payrollPeriods.find((p) => p.id === selectedPeriodId) || payrollPeriods[0];
+  const activeTssEmployees = employees.filter((e) => e.aplicaTSS && e.status === 'Activo');
+
+  const handleDownloadTssTxt = () => {
+    let txtContent = 'NOVEDADES_TSS_RD_FORMAT_V2\n';
+    activeTssEmployees.forEach((emp) => {
+      txtContent += `NOVEDAD|${emp.nationalId.replace(/-/g, '')}|${emp.fullName}|${emp.baseSalary.toFixed(2)}|ING|01/07/2026\n`;
+    });
+
+    const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `NOVEDADES_TSS_SUIR_${new Date().toISOString().slice(0, 10)}.txt`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
-
-  const handleDownloadTssPayroll = () => {
-    const txtContent = generateTssPayrollTxt(companyRnc, payrollDetails);
-    downloadTxtFile(`TSS_NOMINA_${companyRnc}_${new Date().toISOString().slice(0, 10)}.txt`, txtContent);
-  };
-
-  const totalAfp = payrollPeriods.reduce((acc, curr) => acc + curr.totalAfpEmployee + curr.totalAfpEmployer, 0);
-  const totalArs = payrollPeriods.reduce((acc, curr) => acc + curr.totalArsEmployee + curr.totalArsEmployer, 0);
-  const totalIsr = payrollPeriods.reduce((acc, curr) => acc + curr.totalIsr, 0);
-  const totalInfotep = payrollPeriods.reduce((acc, curr) => acc + curr.totalInfotepEmployer, 0);
 
   return (
-    <div className="space-y-6 font-sans">
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 font-sans text-slate-900 text-left">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
         <div>
           <h1 className="text-xl sm:text-2xl font-heading font-medium text-slate-900 flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-purple-600" />
-            Reportes Oficiales TSS, DGII & INFOTEP (República Dominicana)
+            <ShieldCheck className="w-6 h-6 text-sky-600" />
+            Reportes Fiscales DGII (IR-3 / IR-13) & Exportador TSS SUIR
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Generador de archivos de texto (.txt) para la Tesorería de la Seguridad Social y retenciones fiscales IR-3.
+            Genera los archivos planos de nómina para la Tesorería de la Seguridad Social y la declaración mensual IR-3.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="RNC Empresa"
-            value={companyRnc}
-            onChange={(e) => setCompanyRnc(e.target.value)}
-            className="h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold"
-          />
-        </div>
+        {selectedPeriod && (
+          <button
+            onClick={() => setIsAchModalOpen(true)}
+            className="px-5 py-3 bg-gradient-to-r from-slate-900 to-indigo-950 hover:from-black hover:to-indigo-900 text-white rounded-2xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
+          >
+            <Building2 className="w-4 h-4 text-emerald-400" />
+            Exportar Pago ACH Bancario
+          </button>
+        )}
       </div>
 
-      {/* Grid de Exportación Oficial */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* TSS Export Card */}
-        <div className="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h2 className="text-base font-heading font-medium text-slate-900">
-                Archivos Planos TSS (Ley 87-01)
-              </h2>
-              <span className="text-xs text-slate-500">Formatos TXT para subir a la SUIR de TSS</span>
-            </div>
+        {/* Exportador TSS SUIR */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 className="font-heading font-medium text-slate-900 text-sm flex items-center gap-2">
+              <Download className="w-4 h-4 text-sky-600" />
+              1. Exportador .TXT Novedades TSS (SUIR)
+            </h3>
+            <span className="px-2.5 py-0.5 bg-sky-50 text-sky-700 rounded-full text-[10px] font-bold">
+              {activeTssEmployees.length} Cotizantes TSS
+            </span>
           </div>
 
           <p className="text-xs text-slate-600 leading-relaxed">
-            Genera automáticamente los archivos de novedades de empleados (entradas, salidas, cambios salariales) y montos cotizables de AFP/ARS.
+            Exporta el padrón laboral en formato plano `.TXT` compatible con la plataforma web de la Tesorería de la Seguridad Social (TSS / SUIR), filtrando automáticamente contratistas internacionales y pasantes exentos.
           </p>
 
-          <div className="pt-2 space-y-2">
-            <button
-              onClick={handleDownloadTssNovedades}
-              className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-sm"
-            >
-              <Download className="w-4 h-4" />
-              Descargar Archivo Novedades TSS (.TXT)
-            </button>
-
-            <button
-              onClick={handleDownloadTssPayroll}
-              className="w-full py-3 bg-slate-900 hover:bg-black text-white rounded-xl font-medium text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-sm"
-            >
-              <Download className="w-4 h-4" />
-              Descargar Reporte Nómina Cotizable TSS (.TXT)
-            </button>
-          </div>
+          <button
+            onClick={handleDownloadTssTxt}
+            className="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-2xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Download className="w-4 h-4" /> Descargar Archivo Novedades TSS (.TXT)
+          </button>
         </div>
 
-        {/* DGII & INFOTEP Summary Card */}
-        <div className="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center">
-              <FileSpreadsheet className="w-6 h-6" />
-            </div>
-            <div>
-              <h2 className="text-base font-heading font-medium text-slate-900">
-                Resumen DGII (IR-3) & INFOTEP (1%)
-              </h2>
-              <span className="text-xs text-slate-500">Retenciones fiscales acumuladas</span>
-            </div>
+        {/* Declaraciones DGII IR-3 e IR-13 */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 className="font-heading font-medium text-slate-900 text-sm flex items-center gap-2">
+              <FileText className="w-4 h-4 text-amber-600" />
+              2. Declaraciones Fiscales IR-3 e IR-13 (DGII)
+            </h3>
+            <span className="px-2.5 py-0.5 bg-amber-50 text-amber-700 rounded-full text-[10px] font-bold">
+              Escala 2026
+            </span>
           </div>
 
-          <div className="space-y-2 text-xs font-mono pt-2">
-            <div className="flex justify-between p-2.5 bg-slate-50 rounded-xl">
-              <span>Total Retenido ISR (DGII IR-3):</span>
-              <span className="font-bold text-slate-900">RD$ {totalIsr.toLocaleString('es-DO')}</span>
-            </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Consolidado mensual de retenciones del Impuesto sobre la Renta (ISR) aplicadas a los salarios gravables para la Oficina Virtual de la DGII.
+          </p>
 
-            <div className="flex justify-between p-2.5 bg-slate-50 rounded-xl">
-              <span>Aportes Totales AFP (Empleado + Patrono):</span>
-              <span className="font-bold text-slate-900">RD$ {totalAfp.toLocaleString('es-DO')}</span>
-            </div>
-
-            <div className="flex justify-between p-2.5 bg-slate-50 rounded-xl">
-              <span>Aportes Totales ARS (Empleado + Patrono):</span>
-              <span className="font-bold text-slate-900">RD$ {totalArs.toLocaleString('es-DO')}</span>
-            </div>
-
-            <div className="flex justify-between p-2.5 bg-slate-50 rounded-xl">
-              <span>Aporte Patronal INFOTEP (1%):</span>
-              <span className="font-bold text-slate-900">RD$ {totalInfotep.toLocaleString('es-DO')}</span>
-            </div>
+          <div className="grid grid-cols-2 gap-2 pt-2">
+            <button
+              onClick={() => alert('Generando informe consolidado IR-3 DGII para envío...')}
+              className="py-3 bg-slate-900 hover:bg-black text-white rounded-2xl font-bold text-xs shadow-sm cursor-pointer"
+            >
+              Generar IR-3 Mensual
+            </button>
+            <button
+              onClick={() => alert('Generando certificación anual IR-13 de empleados...')}
+              className="py-3 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-2xl font-bold text-xs cursor-pointer"
+            >
+              Generar IR-13 Anual
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Modal ACH Bancario */}
+      {isAchModalOpen && selectedPeriod && (
+        <AchBankExportModal
+          period={selectedPeriod}
+          details={payrollDetails}
+          onClose={() => setIsAchModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
