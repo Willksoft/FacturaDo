@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
 import { 
   Clock, 
-  UserCheck, 
-  Calendar, 
   Plus, 
+  Calendar, 
   CheckCircle2, 
   AlertCircle, 
-  Building, 
-  Zap,
-  Sparkles,
-  Smartphone,
+  Sliders, 
+  UserCheck, 
   QrCode,
-  Fingerprint
+  Sparkles
 } from 'lucide-react';
 import { Employee, AttendanceRecord } from '../../../types/payroll';
-import { calculateOvertimePay } from '../utils/dominicanTaxCalculators';
+import { AttendanceKioskModal } from './AttendanceKioskModal';
 
 interface AttendanceOvertimeModalProps {
   employees: Employee[];
   attendanceRecords: AttendanceRecord[];
-  onAddAttendanceRecord: (rec: Omit<AttendanceRecord, 'id'>) => void;
+  onAddAttendanceRecord: (record: Omit<AttendanceRecord, 'id'>) => void;
 }
 
 export const AttendanceOvertimeModal: React.FC<AttendanceOvertimeModalProps> = ({
@@ -28,264 +25,215 @@ export const AttendanceOvertimeModal: React.FC<AttendanceOvertimeModalProps> = (
   onAddAttendanceRecord,
 }) => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>(employees[0]?.id || '');
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [checkIn, setCheckIn] = useState('08:00');
-  const [checkOut, setCheckOut] = useState('17:00');
-  const [dayOvertimeHours, setDayOvertimeHours] = useState(0);
-  const [nightOvertimeHours, setNightOvertimeHours] = useState(0);
-  const [holidayOvertimeHours, setHolidayOvertimeHours] = useState(0);
-  const [isLate, setIsLate] = useState(false);
-  const [lateMinutes, setLateMinutes] = useState(0);
-  const [source, setSource] = useState<AttendanceRecord['source']>('Biométrico');
+  const [recordDate, setRecordDate] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [checkInTime, setCheckInTime] = useState<string>('08:00');
+  const [checkOutTime, setCheckOutTime] = useState<string>('17:00');
+  const [overtime35, setOvertime35] = useState<number>(0);
+  const [overtime100, setOvertime100] = useState<number>(0);
+  const [status, setStatus] = useState<'Puntual' | 'Tardanza' | 'Ausente_Justificada' | 'Ausente_Injustificada'>('Puntual');
+  const [notes, setNotes] = useState<string>('');
 
-  const selectedEmp = employees.find((e) => e.id === selectedEmployeeId);
+  const [isKioskOpen, setIsKioskOpen] = useState<boolean>(false);
 
-  const handleCreateAttendance = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedEmp) return;
-
-    const totalOvertime = Number(dayOvertimeHours) + Number(nightOvertimeHours) + Number(holidayOvertimeHours);
+    const emp = employees.find((e) => e.id === selectedEmployeeId);
+    if (!emp) return;
 
     onAddAttendanceRecord({
-      employeeId: selectedEmp.id,
-      date,
-      checkIn,
-      checkOut,
-      hoursWorked: 8,
-      overtimeHours: Number(dayOvertimeHours),
-      nightOvertimeHours: Number(nightOvertimeHours),
-      holidayOvertimeHours: Number(holidayOvertimeHours),
-      isLate,
-      lateMinutes: Number(lateMinutes),
-      status: isLate ? 'Tardanza' : 'Presente',
-      source
+      employeeId: emp.id,
+      employeeName: emp.fullName,
+      date: recordDate,
+      checkInTime,
+      checkOutTime,
+      regularHours: 8,
+      overtime35Hours: overtime35,
+      overtime100Hours: overtime100,
+      status,
+      notes,
     });
 
-    setDayOvertimeHours(0);
-    setNightOvertimeHours(0);
-    setHolidayOvertimeHours(0);
-    setIsLate(false);
-    setLateMinutes(0);
+    alert(`¡Asistencia de "${emp.fullName}" registrada correctamente!`);
+    setOvertime35(0);
+    setOvertime100(0);
+    setNotes('');
   };
 
-  const calculatedOvertimePay = selectedEmp
-    ? calculateOvertimePay(selectedEmp.hourlyRate, dayOvertimeHours, nightOvertimeHours, holidayOvertimeHours)
-    : 0;
-
   return (
-    <div className="space-y-6 font-sans">
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 font-sans text-slate-900 text-left">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
         <div>
           <h1 className="text-xl sm:text-2xl font-heading font-medium text-slate-900 flex items-center gap-2">
-            <Clock className="w-6 h-6 text-sky-600" />
-            Control de Asistencia & Horas Extras (Ley 16-92 R.D.)
+            <Clock className="w-6 h-6 text-indigo-600" />
+            Control de Asistencia, Tardanzas & Horas Extras (35% y 100%)
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Registro automático de marcajes biométricos, horas diurnas (35%), nocturnas (50%) y días feriados (100%).
+            Registra los marcajes diarios e integra el cómputo de recargos según el Código de Trabajo Ley 16-92.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-sky-50 text-sky-700 border border-sky-100 rounded-full text-xs font-medium flex items-center gap-1.5">
-            <Fingerprint className="w-4 h-4 text-sky-600" />
-            Integración Biométrica Activa
-          </span>
-        </div>
+        <button
+          onClick={() => setIsKioskOpen(true)}
+          className="px-5 py-3 bg-gradient-to-r from-slate-900 to-indigo-950 hover:from-black hover:to-indigo-900 text-white rounded-2xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0"
+        >
+          <QrCode className="w-4 h-4 text-emerald-400" />
+          Abrir Kiosco Checador PIN/QR
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Registrar Marcaje / Horas Extras Form */}
-        <div className="bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
-          <h2 className="text-base font-heading font-medium text-slate-900 flex items-center gap-2">
-            <Plus className="w-5 h-5 text-indigo-600" />
-            Registrar Asistencia u Horas Extras
-          </h2>
+        {/* Formulario de Asistencia */}
+        <form onSubmit={handleSubmit} className="lg:col-span-1 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4 text-xs sm:text-sm">
+          <h3 className="font-heading font-medium text-slate-900 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
+            <UserCheck className="w-4 h-4 text-emerald-600" />
+            Registro Manual de Asistencia
+          </h3>
 
-          <form onSubmit={handleCreateAttendance} className="space-y-4 text-xs sm:text-sm">
-            <div>
-              <label className="font-medium text-slate-700 block mb-1">Empleado *</label>
-              <select
-                value={selectedEmployeeId}
-                onChange={(e) => setSelectedEmployeeId(e.target.value)}
-                className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium"
-              >
-                {employees.map((emp) => (
-                  <option key={emp.id} value={emp.id}>
-                    {emp.fullName} ({emp.department})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="font-medium text-slate-700 block mb-1">Fecha</label>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full h-10 px-3 border border-slate-200 rounded-xl text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="font-medium text-slate-700 block mb-1">Método de Marcaje</label>
-                <select
-                  value={source}
-                  onChange={(e) => setSource(e.target.value as any)}
-                  className="w-full h-10 px-3 border border-slate-200 rounded-xl text-xs"
-                >
-                  <option value="Biométrico">Biométrico / Huella</option>
-                  <option value="Facial">Reconocimiento Facial</option>
-                  <option value="QR">Código QR</option>
-                  <option value="GPS Mobile">GPS App Móvil</option>
-                  <option value="Web Manual">Manual Web</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="font-medium text-slate-700 block mb-1">Hora Entrada</label>
-                <input
-                  type="time"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="w-full h-10 px-3 border border-slate-200 rounded-xl text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="font-medium text-slate-700 block mb-1">Hora Salida</label>
-                <input
-                  type="time"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="w-full h-10 px-3 border border-slate-200 rounded-xl text-xs"
-                />
-              </div>
-            </div>
-
-            {/* Horas Extras Desglose */}
-            <div className="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-3">
-              <span className="font-medium text-slate-900 block text-xs uppercase tracking-wider">
-                Desglose Horas Extras (R.D.)
-              </span>
-
-              <div className="grid grid-cols-3 gap-2">
-                <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">Diurnas (35%)</label>
-                  <input
-                    type="number"
-                    min={0}
-                    value={dayOvertimeHours}
-                    onChange={(e) => setDayOvertimeHours(Number(e.target.value))}
-                    className="w-full h-9 px-2 border border-slate-200 rounded-lg text-xs font-bold text-center"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">Nocturnas (50%)</label>
-                  <input
-                    type="number"
-                    min={0}
-                    value={nightOvertimeHours}
-                    onChange={(e) => setNightOvertimeHours(Number(e.target.value))}
-                    className="w-full h-9 px-2 border border-slate-200 rounded-lg text-xs font-bold text-center"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">Feriados (100%)</label>
-                  <input
-                    type="number"
-                    min={0}
-                    value={holidayOvertimeHours}
-                    onChange={(e) => setHolidayOvertimeHours(Number(e.target.value))}
-                    className="w-full h-9 px-2 border border-slate-200 rounded-lg text-xs font-bold text-center"
-                  />
-                </div>
-              </div>
-
-              {selectedEmp && (
-                <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs">
-                  <span className="text-slate-600 font-medium">Recargo Total a Pagar:</span>
-                  <span className="font-mono font-bold text-emerald-600 text-sm">
-                    RD$ {calculatedOvertimePay.toLocaleString('es-DO', { minimumFractionDigits: 2 })}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs sm:text-sm rounded-xl transition-colors cursor-pointer shadow-sm"
+          <div>
+            <label className="font-medium text-slate-700 block mb-1">Empleado *</label>
+            <select
+              value={selectedEmployeeId}
+              onChange={(e) => setSelectedEmployeeId(e.target.value)}
+              className="w-full h-10 px-3 border border-slate-200 rounded-xl"
             >
-              Guardar Registro de Asistencia
-            </button>
-          </form>
-        </div>
+              {employees.map((emp) => (
+                <option key={emp.id} value={emp.id}>{emp.fullName} ({emp.jobTitle})</option>
+              ))}
+            </select>
+          </div>
 
-        {/* Historial de Asistencia */}
-        <div className="lg:col-span-2 bg-white border border-slate-200/80 p-6 rounded-3xl shadow-sm space-y-4">
-          <h2 className="text-base font-heading font-medium text-slate-900 flex items-center justify-between">
-            <span>Historial de Marcajes y Horas Extras ({attendanceRecords.length})</span>
-            <span className="text-xs text-slate-400 font-normal">Período actual</span>
-          </h2>
+          <div>
+            <label className="font-medium text-slate-700 block mb-1">Fecha *</label>
+            <input
+              type="date"
+              required
+              value={recordDate}
+              onChange={(e) => setRecordDate(e.target.value)}
+              className="w-full h-10 px-3 border border-slate-200 rounded-xl"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="font-medium text-slate-700 block mb-1">Hora Entrada</label>
+              <input
+                type="time"
+                value={checkInTime}
+                onChange={(e) => setCheckInTime(e.target.value)}
+                className="w-full h-10 px-3 border border-slate-200 rounded-xl font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="font-medium text-slate-700 block mb-1">Hora Salida</label>
+              <input
+                type="time"
+                value={checkOutTime}
+                onChange={(e) => setCheckOutTime(e.target.value)}
+                className="w-full h-10 px-3 border border-slate-200 rounded-xl font-mono"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <label className="font-medium text-slate-700 block mb-1">Horas Extras 35%</label>
+              <input
+                type="number"
+                min={0}
+                max={12}
+                value={overtime35}
+                onChange={(e) => setOvertime35(Number(e.target.value))}
+                className="w-full h-10 px-3 border border-slate-200 rounded-xl font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="font-medium text-slate-700 block mb-1">Horas Extras 100%</label>
+              <input
+                type="number"
+                min={0}
+                max={12}
+                value={overtime100}
+                onChange={(e) => setOvertime100(Number(e.target.value))}
+                className="w-full h-10 px-3 border border-slate-200 rounded-xl font-mono"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="font-medium text-slate-700 block mb-1">Estado de Asistencia *</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value as any)}
+              className="w-full h-10 px-3 border border-slate-200 rounded-xl"
+            >
+              <option value="Puntual">Puntual</option>
+              <option value="Tardanza">Tardanza</option>
+              <option value="Ausente_Justificada">Ausencia Justificada (Permiso)</option>
+              <option value="Ausente_Injustificada">Ausencia Injustificada (Descuento)</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-xs shadow-md transition-all cursor-pointer"
+          >
+            Guardar Marcaje
+          </button>
+        </form>
+
+        {/* Tabla de Registros */}
+        <div className="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+          <h3 className="font-heading font-medium text-slate-900 text-sm border-b border-slate-100 pb-3 flex items-center justify-between">
+            <span>Bitácora de Marcajes y Recargos ({attendanceRecords.length})</span>
+            <span className="text-xs text-slate-500 font-mono">Ley 16-92 R.D.</span>
+          </h3>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[600px]">
+            <table className="w-full text-left border-collapse min-w-[550px]">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-500 uppercase">
-                  <th className="p-3">Fecha</th>
                   <th className="p-3">Empleado</th>
-                  <th className="p-3">Entrada / Salida</th>
-                  <th className="p-3">Horas Extras</th>
-                  <th className="p-3">Método</th>
-                  <th className="p-3 text-right">Estado</th>
+                  <th className="p-3">Fecha</th>
+                  <th className="p-3 text-center">Horario</th>
+                  <th className="p-3 text-center">HE 35% / 100%</th>
+                  <th className="p-3 text-center">Estado</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
-                {attendanceRecords.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-400 font-medium">
-                      No hay registros de marcaje aún. Complete el formulario a la izquierda.
+              <tbody className="divide-y divide-slate-100 text-xs font-mono">
+                {attendanceRecords.map((r) => (
+                  <tr key={r.id} className="hover:bg-slate-50">
+                    <td className="p-3 font-semibold text-slate-900 font-sans">{r.employeeName}</td>
+                    <td className="p-3">{r.date}</td>
+                    <td className="p-3 text-center">{r.checkInTime} - {r.checkOutTime || 'En jornada'}</td>
+                    <td className="p-3 text-center">
+                      <span className="text-amber-700 font-bold">{r.overtime35Hours}h</span> / <span className="text-rose-700 font-bold">{r.overtime100Hours}h</span>
+                    </td>
+                    <td className="p-3 text-center">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-sans ${
+                        r.status === 'Puntual' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                      }`}>
+                        {r.status}
+                      </span>
                     </td>
                   </tr>
-                ) : (
-                  attendanceRecords.map((rec) => {
-                    const emp = employees.find((e) => e.id === rec.employeeId);
-                    return (
-                      <tr key={rec.id} className="hover:bg-slate-50/60">
-                        <td className="p-3 font-mono text-slate-600">{rec.date}</td>
-                        <td className="p-3 font-medium text-slate-900">{emp?.fullName || 'Empleado'}</td>
-                        <td className="p-3 font-mono text-xs">
-                          {rec.checkIn} - {rec.checkOut || 'N/A'}
-                        </td>
-                        <td className="p-3 font-bold text-sky-600">
-                          {rec.overtimeHours + rec.nightOvertimeHours + rec.holidayOvertimeHours} hrs
-                        </td>
-                        <td className="p-3 text-slate-500 text-xs">{rec.source}</td>
-                        <td className="p-3 text-right font-medium">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                              rec.status === 'Tardanza'
-                                ? 'bg-amber-100 text-amber-700'
-                                : 'bg-emerald-100 text-emerald-700'
-                            }`}
-                          >
-                            {rec.status}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
+                ))}
               </tbody>
             </table>
           </div>
         </div>
       </div>
+
+      {/* Modal Kiosco Checador PIN/QR */}
+      {isKioskOpen && (
+        <AttendanceKioskModal
+          employees={employees}
+          attendanceRecords={attendanceRecords}
+          onAddAttendanceRecord={onAddAttendanceRecord}
+          onClose={() => setIsKioskOpen(false)}
+        />
+      )}
     </div>
   );
 };
