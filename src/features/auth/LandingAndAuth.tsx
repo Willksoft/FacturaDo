@@ -68,7 +68,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 interface LandingAndAuthProps {
   onLoginSuccess: (user: any) => void;
   usersList: any[];
-  initialView?: 'landing' | 'login' | 'register' | 'ayuda';
+  initialView?: 'landing' | 'login' | 'register' | 'ayuda' | 'privacidad' | 'terminos';
   isLoggedIn?: boolean;
 }
 
@@ -129,7 +129,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
   const { scrollY } = useScroll();
   const yParallax = useTransform(scrollY, [0, 1000], [0, 120]);
   const navigate = useNavigate();
-  const [view, rawSetView] = useState<'landing' | 'login' | 'register' | 'ayuda'>(initialView);
+  const [view, rawSetView] = useState<'landing' | 'login' | 'register' | 'ayuda' | 'privacidad' | 'terminos'>(initialView);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // PWA Install Prompt State
@@ -2412,6 +2412,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
               </div>
               <div className="space-y-1">
                 <span className="font-medium text-neutral-200 block uppercase text-[10px] tracking-wider mb-2">Legal</span>
+                {/* Términos — modal + href para SEO */}
                 <button
                   type="button"
                   onClick={() => setShowTermsModal(true)}
@@ -2419,6 +2420,15 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 >
                   Términos y Condiciones
                 </button>
+                <a
+                  href="/terminos"
+                  onClick={(e) => { e.preventDefault(); setShowTermsModal(true); }}
+                  className="block text-left text-neutral-500 hover:text-neutral-300 text-[10px] cursor-pointer mx-auto md:mx-0 no-underline"
+                  rel="nofollow"
+                >
+                  /terminos
+                </a>
+                {/* Privacidad — modal + href para SEO */}
                 <button
                   type="button"
                   onClick={() => setShowPrivacyModal(true)}
@@ -2426,11 +2436,19 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 >
                   Políticas de Uso y Privacidad
                 </button>
+                <a
+                  href="/privacidad"
+                  onClick={(e) => { e.preventDefault(); setShowPrivacyModal(true); }}
+                  className="block text-left text-neutral-500 hover:text-neutral-300 text-[10px] cursor-pointer mx-auto md:mx-0 no-underline"
+                  rel="nofollow"
+                >
+                  /privacidad
+                </a>
               </div>
 
             </div>
             <div className="text-center pt-8 mt-8 border-t border-neutral-800 text-[10px] text-neutral-600 font-sans">
-              © 2026 FacturaDo. Sincronizado fiscalmente para República Dominicana. Todos los derechos reservados.
+              &copy; {new Date().getFullYear()} FacturaDo. Sincronizado fiscalmente para República Dominicana. Todos los derechos reservados.
             </div>
           </footer>
 

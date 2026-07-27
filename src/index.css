@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600&display=swap');
+/* DM Sans — auto-alojada en /public/fonts/ (sin Google Fonts CDN) */
+/* Los @font-face están en index.html via <link rel="stylesheet" href="/fonts/dm-sans.css"> */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";

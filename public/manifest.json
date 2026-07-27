@@ -1,9 +1,21 @@
 {
+  "id": "https://www.facturadord.com/",
+  "scope": "/",
   "short_name": "FacturaDo",
   "name": "FacturaDo — Facturación Fiscal & Control",
-  "version": "2026.07.21",
+  "version": "2026.07.27",
+  "lang": "es-DO",
+  "dir": "ltr",
   "description": "FacturaDo es la plataforma líder y segura en República Dominicana para la emisión de comprobantes fiscales (NCF), gestión comercial de inventarios, reportes de formatos 606 y 607 para la DGII y control POS.",
+  "categories": ["business", "finance", "productivity"],
+  "orientation": "portrait",
   "icons": [
+    {
+      "src": "/facturaDonuevologo_favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
     {
       "src": "https://res.cloudinary.com/dap38hi9l/image/upload/w_192,h_192,c_fit/v1781252769/facturaDonuevologo_favicon_ej1mlq.png",
       "type": "image/png",
@@ -15,12 +27,6 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
-    },
-    {
-      "src": "https://res.cloudinary.com/dap38hi9l/image/upload/v1781252769/facturaDonuevologo_favicon_ej1mlq.svg",
-      "type": "image/svg+xml",
-      "sizes": "any",
-      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -28,17 +34,36 @@
       "src": "/facturadomockup.png",
       "type": "image/png",
       "sizes": "1280x720",
+      "label": "Dashboard principal de FacturaDo",
       "form_factor": "wide"
     },
     {
       "src": "/facturadomockup.png",
       "type": "image/png",
       "sizes": "720x1280",
+      "label": "FacturaDo en móvil",
       "form_factor": "narrow"
     }
   ],
-  "start_url": ".",
+  "shortcuts": [
+    {
+      "name": "Nueva Factura",
+      "short_name": "Factura",
+      "description": "Crear una nueva factura con NCF",
+      "url": "/dashboard?nueva=factura",
+      "icons": [
+        {
+          "src": "/facturaDonuevologo_favicon.svg",
+          "sizes": "any"
+        }
+      ]
+    }
+  ],
+  "start_url": "/?source=pwa",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "theme_color": "#059669",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "prefer_related_applications": false,
+  "related_applications": []
 }

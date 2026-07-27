@@ -1,114 +1,298 @@
 <!doctype html>
-<html lang="en">
+<html lang="es-DO">
   <head>
-    <!-- Google tag (gtag.js) -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SEO BÁSICO
+    ════════════════════════════════════════════════════ -->
+    <title>FacturaDo — Alternativa Gratis a QuickBooks, Alegra y Cashflow en RD (DGII NCF)</title>
+    <meta name="description" content="FacturaDo es el software de facturación GRATIS para República Dominicana. Emite facturas NCF, genera reportes 606/607 para la DGII, controla inventario y punto de venta (POS). La alternativa ideal a QuickBooks, Alegra, Cashflow y Odoo." />
+    <meta name="keywords" content="facturación dominicana, dgii, ncf, formato 606, formato 607, control de inventario, alternativa quickbooks rd, alternativa alegra rd, alternativa cashflow, alternativa odoo rd, software contable gratis republica dominicana, pos republica dominicana, facturado, sistema de facturacion rd" />
+    <meta name="author" content="FacturaDo SRL" />
+    <meta name="language" content="es-DO" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://www.facturadord.com/" />
+
+    <!-- ═══════════════════════════════════════════════════
+         OPEN GRAPH (Facebook, LinkedIn, WhatsApp)
+    ════════════════════════════════════════════════════ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.facturadord.com/" />
+    <meta property="og:site_name" content="FacturaDo" />
+    <meta property="og:locale" content="es_DO" />
+    <meta property="og:title" content="FacturaDo — Software de Facturación Gratis para RD (NCF · DGII)" />
+    <meta property="og:description" content="Factura con NCF, genera reportes 606/607 para la DGII, controla tu inventario y punto de venta. 100% gratis. Sin instalación. Desde cualquier dispositivo." />
+    <meta property="og:image" content="https://www.facturadord.com/facturadomockup.png" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="720" />
+    <meta property="og:image:alt" content="Dashboard de FacturaDo — Software de facturación para República Dominicana" />
+
+    <!-- ═══════════════════════════════════════════════════
+         TWITTER / X CARDS
+    ════════════════════════════════════════════════════ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@FacturadoRD" />
+    <meta name="twitter:creator" content="@FacturadoRD" />
+    <meta name="twitter:title" content="FacturaDo — Software de Facturación Gratis para RD (NCF · DGII)" />
+    <meta name="twitter:description" content="Factura con NCF, genera reportes 606/607, controla inventario y POS. 100% gratis, sin instalación. La alternativa a QuickBooks y Alegra en República Dominicana." />
+    <meta name="twitter:image" content="https://www.facturadord.com/facturadomockup.png" />
+    <meta name="twitter:image:alt" content="FacturaDo — Software de facturación para República Dominicana" />
+
+    <!-- ═══════════════════════════════════════════════════
+         PWA + TEMA + FAVICONS
+    ════════════════════════════════════════════════════ -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#059669" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="FacturaDo" />
+    <link rel="icon" type="image/svg+xml" href="/facturaDonuevologo_favicon.svg" />
+    <link rel="shortcut icon" type="image/svg+xml" href="/facturaDonuevologo_favicon.svg" />
+    <link rel="apple-touch-icon" href="/facturadomockup.png" />
+
+    <!-- ═══════════════════════════════════════════════════
+         FUENTE DM SANS — AUTO-ALOJADA (sin Google Fonts)
+    ════════════════════════════════════════════════════ -->
+    <link rel="preload" href="/fonts/dm-sans-normal-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/dm-sans-normal-latin-ext.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/fonts/dm-sans.css" />
+
+    <!-- ═══════════════════════════════════════════════════
+         SERVICE WORKER — PWA auto-actualización
+    ════════════════════════════════════════════════════ -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(function(reg) { console.log('[SW] Registrado:', reg.scope); })
+            .catch(function(err) { console.warn('[SW] Error:', err); });
+        });
+      }
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════
+         GOOGLE ANALYTICS (GA4) + GOOGLE SITE VERIFICATION
+    ════════════════════════════════════════════════════ -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SVV18EE1YQ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
-      gtag('config', 'G-SVV18EE1YQ');
+      gtag('config', 'G-SVV18EE1YQ', { anonymize_ip: true });
     </script>
-    <!-- Google Site Verification -->
     <meta name="google-site-verification" content="tJjYxy9JltHvVNVL-E0c3dZBqgZvJKviP1tQqaPtZqA" />
 
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="FacturaDo es la plataforma líder en República Dominicana. La mejor alternativa a QuickBooks, Alegra, Cashflow y Odoo para facturación DGII (NCF), control de inventarios y cuadre de caja POS." />
-    <meta name="keywords" content="dgii, facturacion electronica rd, alternativa a quickbooks republica dominicana, alternativa a alegra rd, alternativa a cashflow, alternativa a odoo rd, ncf republica dominicana, formato 606, formato 607, comprobante de credito fiscal, SistemasHS, FacturandoRD, Xaplu, Factura Dominicana GTI, Gestiono ERP, SFE DGII, EGSOFTWARE, Kuadre ERP, DOMI POS, Metoo Program, Pacioli ERP, Oniux, eFIT ERP, Terminal X POS, ECF3, EF2, DGMax, Alegra, Odoo, SAP Business One, Microsoft Dynamics 365, QuickBooks Online" />
-    <meta name="author" content="FacturaDo SRL" />
-    <link rel="canonical" href="https://www.facturadord.com/" />
-    
-    <!-- Security & Crawling controls -->
-    <meta name="robots" content="index, follow" />
-    
-    <!-- OpenGraph Metadata for Google/Social Previews -->
-    <meta property="og:title" content="FacturaDo — La Alternativa a QuickBooks y Alegra en RD" />
-    <meta property="og:description" content="Software de facturación para República Dominicana. Emita facturas con NCF, controle inventarios y reemplace a QuickBooks, Cashflow, Alegra y Odoo con facilidad." />
-    <meta property="og:image" content="/facturadomockup.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/facturadomockup.png" />
-    <meta property="og:url" content="https://www.facturadord.com/" />
-    <meta property="og:type" content="website" />
-    
-    <!-- Favicon Links for Browsers & Google Search Console -->
-    <link rel="icon" type="image/svg+xml" href="https://res.cloudinary.com/dap38hi9l/image/upload/v1781252769/facturaDonuevologo_favicon_ej1mlq.svg" />
-    <link rel="shortcut icon" type="image/svg+xml" href="https://res.cloudinary.com/dap38hi9l/image/upload/v1781252769/facturaDonuevologo_favicon_ej1mlq.svg" />
-    <link rel="apple-touch-icon" href="/facturadomockup.png" />
-    
-    <!-- PWA Manifest & Service Worker Registration -->
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#059669" />
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js', { scope: '/' })
-            .then(function(reg) {
-              console.log('[SW] ServiceWorker registrado exitosamente:', reg.scope);
-            })
-            .catch(function(err) {
-              console.warn('[SW] Error registrando ServiceWorker:', err);
-            });
-        });
-      }
-    </script>
-    <!-- Google Font: DM Sans (Light 300, Regular 400, Medium 500, SemiBold 600) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600&display=swap" rel="stylesheet">
-    
-    <!-- Google Rich Snippet Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "FacturaDo",
-      "operatingSystem": "All",
-      "applicationCategory": "BusinessApplication",
-      "logo": "https://res.cloudinary.com/dap38hi9l/image/upload/v1781252769/facturaDonuevologo_favicon_ej1mlq.svg",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "DOP"
-      },
-      "description": "Herramienta autorizada para la configuración contable del NCF dominicano, reportes mensuales DGII 606/607, control de almacenes y caja registradora POS."
-    }
-    </script>
+    <!-- ═══════════════════════════════════════════════════
+         JSON-LD STRUCTURED DATA
+    ════════════════════════════════════════════════════ -->
 
-    <title>FacturaDo — Alternativa a QuickBooks, Alegra, Cashflow y Odoo en RD (DGII)</title>
-    <!-- Structured Data (JSON-LD) for SEO -->
+    <!-- 1. SoftwareApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "FacturaDo",
+      "alternateName": "FacturaDo RD",
+      "url": "https://www.facturadord.com/",
       "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web",
+      "operatingSystem": "Web, Android, iOS",
       "offers": {
         "@type": "Offer",
         "price": "0",
-        "priceCurrency": "USD"
+        "priceCurrency": "DOP",
+        "availability": "https://schema.org/InStock",
+        "description": "Plan gratuito con todas las funcionalidades incluidas"
       },
-      "description": "Software de facturación electrónica gratis con NCF para República Dominicana. Alternativa a QuickBooks, Alegra y Cashflow.",
-      "url": "https://www.facturadord.com/",
-      "creator": {
-        "@type": "Organization",
-        "name": "FacturaDo SRL",
-        "url": "https://www.facturadord.com/"
-      },
+      "description": "Software de facturación electrónica gratis con NCF para República Dominicana. Genera reportes 606/607 para la DGII, controla inventario multialmacén, punto de venta POS y reconciliación bancaria.",
+      "screenshot": "https://www.facturadord.com/facturadomockup.png",
+      "logo": "https://www.facturadord.com/facturaDonuevologo.svg",
+      "featureList": [
+        "Facturación NCF con todos los comprobantes fiscales de la DGII",
+        "Generación automática de formatos 606, 607 y 608",
+        "Descarga de archivos TXT para la Oficina Virtual DGII",
+        "Control de inventario multialmacén",
+        "Punto de Venta (POS) con impresión de tickets",
+        "Reconciliación bancaria automática",
+        "Asistente de Inteligencia Artificial fiscal",
+        "Alertas fiscales IT-1 automáticas",
+        "Cierre de periodo fiscal 1-clic",
+        "Gestión de vendedores y comisiones",
+        "Acceso desde cualquier dispositivo (PWA)"
+      ],
       "isSimilarTo": [
         {"@type": "SoftwareApplication", "name": "Alegra"},
         {"@type": "SoftwareApplication", "name": "Odoo"},
         {"@type": "SoftwareApplication", "name": "QuickBooks Online"},
+        {"@type": "SoftwareApplication", "name": "Cashflow"},
         {"@type": "SoftwareApplication", "name": "SistemasHS"},
-        {"@type": "SoftwareApplication", "name": "FacturandoRD"},
-        {"@type": "SoftwareApplication", "name": "Xaplu"},
         {"@type": "SoftwareApplication", "name": "Kuadre ERP"},
         {"@type": "SoftwareApplication", "name": "Pacioli ERP"}
+      ],
+      "creator": {
+        "@type": "Organization",
+        "name": "FacturaDo SRL",
+        "url": "https://www.facturadord.com/"
+      }
+    }
+    </script>
+
+    <!-- 2. Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "FacturaDo SRL",
+      "url": "https://www.facturadord.com/",
+      "logo": "https://www.facturadord.com/facturaDonuevologo.svg",
+      "description": "Empresa dominicana desarrolladora del software de facturación FacturaDo — la alternativa local a QuickBooks y Alegra para pymes de República Dominicana.",
+      "foundingDate": "2024",
+      "areaServed": "DO",
+      "knowsLanguage": ["es-DO", "es"],
+      "sameAs": [],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "availableLanguage": "Spanish",
+        "areaServed": "DO"
+      }
+    }
+    </script>
+
+    <!-- 3. WebSite con SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "FacturaDo",
+      "url": "https://www.facturadord.com/",
+      "description": "Software de facturación electrónica gratis para República Dominicana con NCF y reportes DGII.",
+      "inLanguage": "es-DO",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://www.facturadord.com/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- 4. LocalBusiness -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "FacturaDo SRL",
+      "url": "https://www.facturadord.com/",
+      "logo": "https://www.facturadord.com/facturaDonuevologo.svg",
+      "description": "Software de facturación y contabilidad para pymes dominicanas, con cumplimiento DGII.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "DO",
+        "addressRegion": "Distrito Nacional",
+        "addressLocality": "Santo Domingo"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "18.4861",
+        "longitude": "-69.9312"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Dominican Republic"
+      },
+      "priceRange": "Gratis",
+      "openingHours": "Mo-Su 00:00-24:00"
+    }
+    </script>
+
+    <!-- 5. Service -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "FacturaDo — Facturación Electrónica para RD",
+      "provider": {
+        "@type": "Organization",
+        "name": "FacturaDo SRL",
+        "url": "https://www.facturadord.com/"
+      },
+      "serviceType": "Software de Facturación Electrónica",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Dominican Republic"
+      },
+      "description": "Servicio de software en la nube para emisión de comprobantes fiscales NCF, reportes 606/607/608 para la DGII, control de inventario, POS y contabilidad para pequeñas y medianas empresas dominicanas.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "DOP"
+      }
+    }
+    </script>
+
+    <!-- 6. FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Es FacturaDo realmente gratis?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí, FacturaDo es completamente gratuito. No hay planes de pago, no hay límites de facturas y no se requiere tarjeta de crédito para registrarse."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿FacturaDo cumple con los requerimientos de la DGII?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. FacturaDo genera los formatos 606, 607 y 608 requeridos por la Dirección General de Impuestos Internos (DGII) de República Dominicana, incluyendo archivos TXT para carga masiva en la Oficina Virtual."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Puedo importar mis datos desde QuickBooks, Alegra o Cashflow?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. FacturaDo incluye un asistente de migración que permite importar clientes, proveedores, inventario y facturas desde QuickBooks, Alegra, Cashflow, Odoo, Zoho, WooCommerce, Shopify y archivos Excel/CSV."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Funciona en celular o tablet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. FacturaDo es una Aplicación Web Progresiva (PWA) que funciona en cualquier dispositivo — computadora, tablet o celular — sin necesidad de instalación, y puede usarse sin conexión a internet."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿FacturaDo tiene punto de venta (POS)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. FacturaDo incluye un módulo completo de Punto de Venta (POS) con apertura y cierre de turnos de caja, impresión en impresoras térmicas (80mm/58mm) y facturación ultra-rápida."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cuáles bancos dominicanos son compatibles con la conciliación bancaria?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "FacturaDo soporta la importación de estados de cuenta de Banco Popular, BHD León, Banreservas, y cualquier banco que exporte en formato CSV o Excel estándar."
+          }
+        }
       ]
     }
     </script>
+
   </head>
   <body>
     <div id="root"></div>
