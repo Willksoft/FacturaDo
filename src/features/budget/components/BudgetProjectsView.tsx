@@ -6,7 +6,8 @@ import {
   FileText,
   Paperclip,
   CheckCircle2,
-  FolderOpen
+  FolderOpen,
+  ArrowRight
 } from 'lucide-react';
 import { Card } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
@@ -17,12 +18,14 @@ interface BudgetProjectsViewProps {
   projects: BudgetProject[];
   budgets: Budget[];
   onSaveProject: (project: Omit<BudgetProject, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }) => void;
+  onConvertProjectToQuote?: (projectBudgets: Budget[]) => void;
 }
 
 export default function BudgetProjectsView({
   projects,
   budgets,
-  onSaveProject
+  onSaveProject,
+  onConvertProjectToQuote
 }: BudgetProjectsViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -110,14 +113,35 @@ export default function BudgetProjectsView({
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-neutral-150 flex items-center justify-between">
+              <div className="pt-2 border-t border-neutral-150 flex items-center justify-between gap-2">
                 <div className="text-[10px] text-neutral-400">
                   Creado: {new Date(p.createdAt).toLocaleDateString('es-DO')}
                 </div>
-                <Button variant="ghost" size="sm" className="text-xs text-indigo-600 h-7 px-2">
-                  <FolderOpen className="w-3.5 h-3.5 mr-1" />
-                  Abrir Proyecto
-                </Button>
+                <div className="flex items-center gap-1">
+                  {onConvertProjectToQuote && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const projectBudgets = budgets.filter(b => p.budgetIds.includes(b.id) || b.projectId === p.id);
+                        if (projectBudgets.length > 0) {
+                          onConvertProjectToQuote(projectBudgets);
+                        } else {
+                          alert('Este proyecto aún no tiene presupuestos asociados.');
+                        }
+                      }}
+                      className="text-[11px] h-7 px-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-bold"
+                      title="Convertir todos los presupuestos de este proyecto en 1 Cotización consolidada"
+                    >
+                      <ArrowRight className="w-3 h-3 mr-1" />
+                      Cotizar Proyecto
+                    </Button>
+                  )}
+                  <Button variant="ghost" size="sm" className="text-xs text-indigo-600 h-7 px-2">
+                    <FolderOpen className="w-3.5 h-3.5 mr-1" />
+                    Abrir
+                  </Button>
+                </div>
               </div>
             </Card>
           ))

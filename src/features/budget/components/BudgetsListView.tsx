@@ -40,6 +40,7 @@ interface BudgetsListViewProps {
   onMoveToTrash: (id: string) => void;
   onToggleFavorite: (id: string) => void;
   onConvertToQuote: (budget: Budget) => void;
+  onConvertMultipleToQuote?: (budgets: Budget[]) => void;
   onSaveClientSignature?: (id: string, signatureUrl: string, name: string) => void;
 }
 
@@ -52,10 +53,12 @@ export default function BudgetsListView({
   onMoveToTrash,
   onToggleFavorite,
   onConvertToQuote,
+  onConvertMultipleToQuote,
   onSaveClientSignature
 }: BudgetsListViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('TODOS');
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectedPdfBudget, setSelectedPdfBudget] = useState<Budget | null>(null);
   const [selectedWorkOrderBudget, setSelectedWorkOrderBudget] = useState<Budget | null>(null);
   const [selectedSimulatorBudget, setSelectedSimulatorBudget] = useState<Budget | null>(null);
@@ -71,6 +74,18 @@ export default function BudgetsListView({
     const matchesStatus = statusFilter === 'TODOS' || b.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const handleBatchCombineQuote = () => {
+    const selectedBudgetsList = budgets.filter(b => selectedIds.includes(b.id));
+    if (onConvertMultipleToQuote && selectedBudgetsList.length > 0) {
+      onConvertMultipleToQuote(selectedBudgetsList);
+      setSelectedIds([]);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in" id="budgets-list-view">
@@ -102,13 +117,25 @@ export default function BudgetsListView({
           </Select>
         </div>
 
-        <Button
-          onClick={onCreateNew}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold h-9 px-4 rounded-lg flex items-center gap-1.5 shrink-0 cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          Crear Presupuesto
-        </Button>
+        <div className="flex items-center gap-2">
+          {selectedIds.length > 0 && (
+            <Button
+              onClick={handleBatchCombineQuote}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold h-9 px-3 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-md animate-fade-in"
+            >
+              <ArrowRight className="w-3.5 h-3.5" />
+              Combinar {selectedIds.length} en 1 Cotización
+            </Button>
+          )}
+
+          <Button
+            onClick={onCreateNew}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold h-9 px-4 rounded-lg flex items-center gap-1.5 shrink-0 cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            Crear Presupuesto
+          </Button>
+        </div>
       </div>
 
       {/* BUDGETS CARDS / LIST */}
@@ -119,17 +146,26 @@ export default function BudgetsListView({
           </div>
         ) : (
           filteredBudgets.map(b => (
-            <Card key={b.id} className="border-neutral-200 bg-white rounded-xl p-4 shadow-xs hover:border-neutral-300 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="space-y-1 min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <button onClick={() => onToggleFavorite(b.id)} className="text-neutral-300 hover:text-amber-500 cursor-pointer p-0.5">
-                    <Star className={`w-4 h-4 ${b.isFavorite ? 'text-amber-500 fill-amber-500' : ''}`} />
-                  </button>
-                  <span className="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-150 px-2 py-0.5 rounded-md">
-                    {b.budgetNumber} v{b.version}
-                  </span>
-                  <h3 className="font-extrabold text-sm text-neutral-900 truncate">{b.title}</h3>
-                </div>
+            <Card key={b.id} className={`border-neutral-200 bg-white rounded-xl p-4 shadow-xs hover:border-neutral-300 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+              selectedIds.includes(b.id) ? 'border-indigo-400 bg-indigo-50/20' : ''
+            }`}>
+              <div className="space-y-1 min-w-0 flex-1 flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.includes(b.id)}
+                  onChange={() => toggleSelect(b.id)}
+                  className="mt-1 w-4 h-4 rounded border-neutral-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                />
+                <div className="space-y-1 min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button onClick={() => onToggleFavorite(b.id)} className="text-neutral-300 hover:text-amber-500 cursor-pointer p-0.5">
+                      <Star className={`w-4 h-4 ${b.isFavorite ? 'text-amber-500 fill-amber-500' : ''}`} />
+                    </button>
+                    <span className="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-150 px-2 py-0.5 rounded-md">
+                      {b.budgetNumber} v{b.version}
+                    </span>
+                    <h3 className="font-extrabold text-sm text-neutral-900 truncate">{b.title}</h3>
+                  </div>
 
                 <div className="text-xs text-neutral-500 flex flex-wrap items-center gap-3">
                   <span>Cliente: <strong>{b.clientName || 'General'}</strong></span>
@@ -137,6 +173,7 @@ export default function BudgetsListView({
                   <span>Creado: {new Date(b.createdAt).toLocaleDateString('es-DO')}</span>
                 </div>
               </div>
+            </div>
 
               <div className="flex flex-wrap items-center justify-between md:justify-end gap-4 w-full md:w-auto shrink-0 border-t md:border-t-0 border-neutral-150 pt-3 md:pt-0">
                 <div className="text-left md:text-right">

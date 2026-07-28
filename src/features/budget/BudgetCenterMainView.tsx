@@ -78,25 +78,36 @@ export default function BudgetCenterMainView({
   };
 
   const handleConvertToQuote = (budget: Budget) => {
+    handleConvertMultipleToQuote([budget]);
+  };
+
+  const handleConvertMultipleToQuote = (selectedBudgets: Budget[]) => {
+    if (!selectedBudgets || selectedBudgets.length === 0) return;
+
     if (createInvoiceOrQuote) {
-      // Map Budget Items to Invoice/Quote Items
-      const mappedItems = budget.groups.flatMap(g => 
-        g.items.map(item => ({
-          productId: item.resourceId || 'prod-custom',
-          name: `${g.name} - ${item.resourceName} (${item.quantityCalculated} ${item.unit})`,
-          price: item.unitPrice,
-          quantity: item.quantityCalculated,
-          taxRate: item.taxRate,
-          taxAmount: item.taxAmount,
-          total: item.total
-        }))
+      // Consolidate groups and items across all selected budgets
+      const mappedItems = selectedBudgets.flatMap(budget =>
+        budget.groups.flatMap(g =>
+          g.items.map(item => ({
+            productId: item.resourceId || 'prod-custom',
+            name: `[${budget.budgetNumber}] ${g.name} - ${item.resourceName} (${item.quantityCalculated} ${item.unit})`,
+            price: item.unitPrice,
+            quantity: item.quantityCalculated,
+            taxRate: item.taxRate,
+            taxAmount: item.taxAmount,
+            total: item.total
+          }))
+        )
       );
+
+      const budgetRefs = selectedBudgets.map(b => b.budgetNumber).join(', ');
+      const mainClient = selectedBudgets[0].clientName || 'Cliente General';
 
       const quoteData = {
         type: 'Cotizacion',
         client: {
-          id: budget.clientId || 'cli-consumo',
-          name: budget.clientName || 'Cliente General',
+          id: selectedBudgets[0].clientId || 'cli-consumo',
+          name: mainClient,
           rncOrCedula: '',
           email: '',
           phone: '',
@@ -106,11 +117,21 @@ export default function BudgetCenterMainView({
         items: mappedItems,
         paymentMethod: 'Efectivo',
         ncfType: 'B02',
-        notes: `Generado desde Presupuesto ${budget.budgetNumber} v${budget.version}. ${budget.notes || ''}`
+        notes: `Cotización consolidada a partir de ${selectedBudgets.length} presupuesto(s): ${budgetRefs}.`
       };
 
       const createdQuote = createInvoiceOrQuote(quoteData);
-      if (createdQuote && onNavigateToTab) {
+
+      // Update statuses to 'Convertido'
+      selectedBudgets.forEach(b => {
+        b.status = 'Convertido';
+        if (createdQuote && createdQuote.id) {
+          b.convertedToQuoteId = createdQuote.id;
+          b.convertedToQuoteNo = createdQuote.number || createdQuote.id;
+        }
+      });
+
+      if (onNavigateToTab) {
         onNavigateToTab('cotizaciones');
       }
     }
@@ -244,6 +265,7 @@ export default function BudgetCenterMainView({
           onMoveToTrash={moveToTrash}
           onToggleFavorite={toggleFavoriteBudget}
           onConvertToQuote={handleConvertToQuote}
+          onConvertMultipleToQuote={handleConvertMultipleToQuote}
           onSaveClientSignature={saveClientSignature}
         />
       )}
@@ -253,6 +275,7 @@ export default function BudgetCenterMainView({
           projects={projects}
           budgets={budgets}
           onSaveProject={saveProject}
+          onConvertProjectToQuote={handleConvertMultipleToQuote}
         />
       )}
 
