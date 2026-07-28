@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { 
   Clock, 
   Plus, 
@@ -8,7 +7,8 @@ import {
   Sliders, 
   UserCheck, 
   QrCode,
-  Sparkles
+  Sparkles,
+  Trash2
 } from 'lucide-react';
 import { Employee, AttendanceRecord } from '../../../types/payroll';
 import { AttendanceKioskModal } from './AttendanceKioskModal';
@@ -17,12 +17,14 @@ interface AttendanceOvertimeModalProps {
   employees: Employee[];
   attendanceRecords: AttendanceRecord[];
   onAddAttendanceRecord: (record: Omit<AttendanceRecord, 'id'>) => void;
+  onDeleteAttendanceRecord?: (id: string) => void;
 }
 
 export const AttendanceOvertimeModal: React.FC<AttendanceOvertimeModalProps> = ({
   employees,
   attendanceRecords,
   onAddAttendanceRecord,
+  onDeleteAttendanceRecord,
 }) => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>(employees[0]?.id || '');
   const [recordDate, setRecordDate] = useState<string>(new Date().toISOString().slice(0, 10));
@@ -197,8 +199,9 @@ export const AttendanceOvertimeModal: React.FC<AttendanceOvertimeModalProps> = (
                   <th className="p-3">Empleado</th>
                   <th className="p-3">Fecha</th>
                   <th className="p-3 text-center">Horario</th>
-                  <th className="p-3 text-center">HE 35% / 100%</th>
-                  <th className="p-3 text-center">Estado</th>
+                  <th className="p-3 text-center font-semibold text-slate-500 uppercase">HE 35% / 100%</th>
+                  <th className="p-3 text-center font-semibold text-slate-500 uppercase">Estado</th>
+                  <th className="p-3 text-center font-semibold text-slate-500 uppercase">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs font-mono">
@@ -216,6 +219,21 @@ export const AttendanceOvertimeModal: React.FC<AttendanceOvertimeModalProps> = (
                       }`}>
                         {r.status}
                       </span>
+                    </td>
+                    <td className="p-3 text-center">
+                      {onDeleteAttendanceRecord && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm('¿Eliminar este registro de asistencia?')) {
+                              onDeleteAttendanceRecord(r.id);
+                            }
+                          }}
+                          className="p-1.5 bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
+                          title="Eliminar Registro"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

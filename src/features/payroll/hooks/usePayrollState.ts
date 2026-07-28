@@ -389,6 +389,28 @@ export function usePayrollState() {
     setPayrollRules((prev) => [newRule, ...prev]);
   };
 
+  const deletePayrollRule = (id: string) => {
+    setPayrollRules((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  const deleteVacationRequest = (id: string) => {
+    setVacationRequests((prev) => prev.filter((v) => v.id !== id));
+  };
+
+  const deleteLeaveRequest = (id: string) => {
+    setLeaveRequests((prev) => prev.filter((l) => l.id !== id));
+  };
+
+  const deleteAttendanceRecord = (id: string) => {
+    setAttendanceRecords((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const deletePayrollPeriod = (id: string) => {
+    setPayrollPeriods((prev) => prev.filter((p) => p.id !== id));
+    setPayrollDetails((prev) => prev.filter((d) => d.periodId !== id));
+  };
+
+
   // Procesamiento de Nómina con Reglas Evaluadas por Empleado
   const processNewPayrollPeriod = (
     periodName: string,
@@ -596,6 +618,11 @@ export function usePayrollState() {
     updateLeaveStatus,
     toggleRuleActive,
     addPayrollRule,
+    deletePayrollRule,
+    deleteVacationRequest,
+    deleteLeaveRequest,
+    deleteAttendanceRecord,
+    deletePayrollPeriod,
     processNewPayrollPeriod,
     getPayrollAnomalies
   };

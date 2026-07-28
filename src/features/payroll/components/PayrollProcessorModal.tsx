@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { 
   DollarSign, 
   Calendar, 
@@ -9,7 +8,8 @@ import {
   AlertCircle,
   FileSpreadsheet,
   Layers,
-  Sparkles
+  Sparkles,
+  Trash2
 } from 'lucide-react';
 import { Employee, PayrollPeriod, PayrollDetail } from '../../../types/payroll';
 import { PayrollPayslipTemplateModal } from './PayrollPayslipTemplateModal';
@@ -19,6 +19,7 @@ interface PayrollProcessorModalProps {
   payrollPeriods: PayrollPeriod[];
   payrollDetails: PayrollDetail[];
   onProcessPayroll: (periodName: string, frequency: 'Quincenal' | 'Mensual', startDate: string, endDate: string) => void;
+  onDeletePayrollPeriod?: (id: string) => void;
 }
 
 export const PayrollProcessorModal: React.FC<PayrollProcessorModalProps> = ({
@@ -26,6 +27,7 @@ export const PayrollProcessorModal: React.FC<PayrollProcessorModalProps> = ({
   payrollPeriods,
   payrollDetails,
   onProcessPayroll,
+  onDeletePayrollPeriod,
 }) => {
   const [periodName, setPeriodName] = useState('Nómina 2da Quincena Julio 2026');
   const [frequency, setFrequency] = useState<'Quincenal' | 'Mensual'>('Quincenal');
@@ -165,12 +167,27 @@ export const PayrollProcessorModal: React.FC<PayrollProcessorModalProps> = ({
                       <td className="p-3 text-right font-bold text-emerald-700">RD$ {p.totalNetSalary.toLocaleString('es-DO')}</td>
                       <td className="p-3 text-right text-indigo-700">RD$ {p.totalEmployerCost.toLocaleString('es-DO')}</td>
                       <td className="p-3 text-center">
-                        <button
-                          onClick={() => setSelectedPeriodForPrint(p)}
-                          className="px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-xl text-[11px] font-semibold flex items-center gap-1.5 mx-auto cursor-pointer shadow-xs"
-                        >
-                          <Printer className="w-3.5 h-3.5" /> Volantes / Cheques
-                        </button>
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            onClick={() => setSelectedPeriodForPrint(p)}
+                            className="px-3 py-1.5 bg-slate-900 hover:bg-black text-white rounded-xl text-[11px] font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
+                          >
+                            <Printer className="w-3.5 h-3.5" /> Volantes / Cheques
+                          </button>
+                          {onDeletePayrollPeriod && (
+                            <button
+                              onClick={() => {
+                                if (window.confirm(`¿Eliminar el período "${p.periodName}" y todos sus comprobantes de pago asociados?`)) {
+                                  onDeletePayrollPeriod(p.id);
+                                }
+                              }}
+                              className="p-1.5 bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl cursor-pointer transition-colors"
+                              title="Eliminar Período de Nómina"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))

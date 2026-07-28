@@ -56,6 +56,11 @@ export default function PayrollMainView() {
     updateLeaveStatus,
     toggleRuleActive,
     addPayrollRule,
+    deletePayrollRule,
+    deleteVacationRequest,
+    deleteLeaveRequest,
+    deleteAttendanceRecord,
+    deletePayrollPeriod,
     processNewPayrollPeriod,
     getPayrollAnomalies
   } = usePayrollState();
@@ -143,6 +148,7 @@ export default function PayrollMainView() {
             payrollRules={payrollRules}
             onToggleRuleActive={toggleRuleActive}
             onAddPayrollRule={addPayrollRule}
+            onDeletePayrollRule={deletePayrollRule}
           />
         )}
 
@@ -151,6 +157,7 @@ export default function PayrollMainView() {
             employees={employees}
             attendanceRecords={attendanceRecords}
             onAddAttendanceRecord={addAttendanceRecord}
+            onDeleteAttendanceRecord={deleteAttendanceRecord}
           />
         )}
 
@@ -161,8 +168,10 @@ export default function PayrollMainView() {
             leaveRequests={leaveRequests}
             onAddVacationRequest={addVacationRequest}
             onUpdateVacationStatus={updateVacationStatus}
+            onDeleteVacationRequest={deleteVacationRequest}
             onAddLeaveRequest={addLeaveRequest}
             onUpdateLeaveStatus={updateLeaveStatus}
+            onDeleteLeaveRequest={deleteLeaveRequest}
           />
         )}
 
@@ -172,6 +181,7 @@ export default function PayrollMainView() {
             payrollPeriods={payrollPeriods}
             payrollDetails={payrollDetails}
             onProcessPayroll={processNewPayrollPeriod}
+            onDeletePayrollPeriod={deletePayrollPeriod}
           />
         )}
 

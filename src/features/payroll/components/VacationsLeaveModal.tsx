@@ -8,7 +8,8 @@ import {
   User, 
   FileText, 
   ShieldCheck,
-  Building
+  Building,
+  Trash2
 } from 'lucide-react';
 import { Employee, VacationRequest, LeaveRequest } from '../../../types/payroll';
 
@@ -18,8 +19,10 @@ interface VacationsLeaveModalProps {
   leaveRequests: LeaveRequest[];
   onAddVacationRequest: (req: Omit<VacationRequest, 'id' | 'createdAt'>) => void;
   onUpdateVacationStatus: (id: string, status: 'Aprobado' | 'Rechazado', approvedBy: string) => void;
+  onDeleteVacationRequest?: (id: string) => void;
   onAddLeaveRequest: (req: Omit<LeaveRequest, 'id'>) => void;
   onUpdateLeaveStatus: (id: string, status: 'Aprobado' | 'Rechazado', approvedBy: string) => void;
+  onDeleteLeaveRequest?: (id: string) => void;
 }
 
 export const VacationsLeaveModal: React.FC<VacationsLeaveModalProps> = ({
@@ -28,8 +31,10 @@ export const VacationsLeaveModal: React.FC<VacationsLeaveModalProps> = ({
   leaveRequests,
   onAddVacationRequest,
   onUpdateVacationStatus,
+  onDeleteVacationRequest,
   onAddLeaveRequest,
   onUpdateLeaveStatus,
+  onDeleteLeaveRequest,
 }) => {
   const [activeTab, setActiveTab] = useState<'vacaciones' | 'licencias'>('vacaciones');
 
@@ -257,24 +262,39 @@ export const VacationsLeaveModal: React.FC<VacationsLeaveModalProps> = ({
                             </span>
                           </td>
                           <td className="p-3 text-center">
-                            {v.status === 'Pendiente' && (
-                              <div className="flex items-center justify-center gap-1">
+                            <div className="flex items-center justify-center gap-1">
+                              {v.status === 'Pendiente' && (
+                                <>
+                                  <button
+                                    onClick={() => onUpdateVacationStatus(v.id, 'Aprobado', 'Gerente RRHH')}
+                                    className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg cursor-pointer"
+                                    title="Aprobar"
+                                  >
+                                    <CheckCircle2 className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => onUpdateVacationStatus(v.id, 'Rechazado', 'Gerente RRHH')}
+                                    className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg cursor-pointer"
+                                    title="Rechazar"
+                                  >
+                                    <XCircle className="w-4 h-4" />
+                                  </button>
+                                </>
+                              )}
+                              {onDeleteVacationRequest && (
                                 <button
-                                  onClick={() => onUpdateVacationStatus(v.id, 'Aprobado', 'Gerente RRHH')}
-                                  className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg cursor-pointer"
-                                  title="Aprobar"
+                                  onClick={() => {
+                                    if (window.confirm('¿Eliminar esta solicitud de vacaciones?')) {
+                                      onDeleteVacationRequest(v.id);
+                                    }
+                                  }}
+                                  className="p-1.5 bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
+                                  title="Eliminar Solicitud"
                                 >
-                                  <CheckCircle2 className="w-4 h-4" />
+                                  <Trash2 className="w-4 h-4" />
                                 </button>
-                                <button
-                                  onClick={() => onUpdateVacationStatus(v.id, 'Rechazado', 'Gerente RRHH')}
-                                  className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg cursor-pointer"
-                                  title="Rechazar"
-                                >
-                                  <XCircle className="w-4 h-4" />
-                                </button>
-                              </div>
-                            )}
+                              )}
+                            </div>
                           </td>
                         </tr>
                       );
@@ -447,24 +467,39 @@ export const VacationsLeaveModal: React.FC<VacationsLeaveModalProps> = ({
                             </span>
                           </td>
                           <td className="p-3 text-center">
-                            {l.status === 'Pendiente' && (
-                              <div className="flex items-center justify-center gap-1">
+                            <div className="flex items-center justify-center gap-1">
+                              {l.status === 'Pendiente' && (
+                                <>
+                                  <button
+                                    onClick={() => onUpdateLeaveStatus(l.id, 'Aprobado', 'Gerente RRHH')}
+                                    className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg cursor-pointer"
+                                    title="Aprobar"
+                                  >
+                                    <CheckCircle2 className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => onUpdateLeaveStatus(l.id, 'Rechazado', 'Gerente RRHH')}
+                                    className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg cursor-pointer"
+                                    title="Rechazar"
+                                  >
+                                    <XCircle className="w-4 h-4" />
+                                  </button>
+                                </>
+                              )}
+                              {onDeleteLeaveRequest && (
                                 <button
-                                  onClick={() => onUpdateLeaveStatus(l.id, 'Aprobado', 'Gerente RRHH')}
-                                  className="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-lg cursor-pointer"
-                                  title="Aprobar"
+                                  onClick={() => {
+                                    if (window.confirm('¿Eliminar esta solicitud de licencia?')) {
+                                      onDeleteLeaveRequest(l.id);
+                                    }
+                                  }}
+                                  className="p-1.5 bg-slate-100 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors"
+                                  title="Eliminar Licencia"
                                 >
-                                  <CheckCircle2 className="w-4 h-4" />
+                                  <Trash2 className="w-4 h-4" />
                                 </button>
-                                <button
-                                  onClick={() => onUpdateLeaveStatus(l.id, 'Rechazado', 'Gerente RRHH')}
-                                  className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg cursor-pointer"
-                                  title="Rechazar"
-                                >
-                                  <XCircle className="w-4 h-4" />
-                                </button>
-                              </div>
-                            )}
+                              )}
+                            </div>
                           </td>
                         </tr>
                       );
