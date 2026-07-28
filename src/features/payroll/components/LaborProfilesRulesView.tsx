@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { 
   Sliders, 
   ShieldCheck, 
@@ -12,6 +13,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { LaborProfile, PayrollRule } from '../../../types/payroll';
+
 
 interface LaborProfilesRulesViewProps {
   laborProfiles: LaborProfile[];
