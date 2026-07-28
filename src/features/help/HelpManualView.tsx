@@ -16,7 +16,9 @@ import {
   Database,
   Users,
   ShieldCheck,
-  DollarSign
+  DollarSign,
+  Calculator,
+  RefreshCw
 } from 'lucide-react';
 
 interface HelpManualViewProps {
@@ -25,15 +27,22 @@ interface HelpManualViewProps {
 }
 
 export default function HelpManualView({ onBackToLanding, isInsideApp = false }: HelpManualViewProps) {
-  const [activeTopic, setActiveTopic] = useState<string>('inicio');
+  const [activeTopic, setActiveTopic] = useState<string>('presupuestos');
 
   const topics = [
     {
-      id: 'inicio',
-      title: 'Guía Rápida de Inicio',
-      description: 'Aprende a emitir tu primera factura en menos de 2 minutos.',
-      icon: Compass,
+      id: 'presupuestos',
+      title: 'Centro de Presupuestos',
+      description: 'Estimación inteligente de costos por m², m³, horas y proyectos.',
+      icon: Calculator,
       color: 'text-indigo-600 bg-indigo-50 border-indigo-100'
+    },
+    {
+      id: 'ecf',
+      title: 'Facturación e-CF & MSeller',
+      description: 'Comprobantes electrónicos firmados digitalmente con la DGII.',
+      icon: ShieldCheck,
+      color: 'text-emerald-600 bg-emerald-50 border-emerald-100'
     },
     {
       id: 'nomina',

@@ -10,6 +10,7 @@ import { LandingHeader } from '../landing/components/LandingHeader';
 import { LandingHero } from '../landing/components/LandingHero';
 import { LandingMigrationSection } from '../landing/components/LandingMigrationSection';
 import { LandingFeaturesSection } from '../landing/components/LandingFeaturesSection';
+import { LandingBudgetSection } from '../landing/components/LandingBudgetSection';
 import { LandingPricingSection } from '../landing/components/LandingPricingSection';
 import { LandingFaqSection } from '../landing/components/LandingFaqSection';
 import { LandingFooter } from '../landing/components/LandingFooter';
@@ -725,6 +726,7 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
           <StatCounters />
           <LandingMigrationSection onRegisterClick={() => setView('register')} />
           <LandingFeaturesSection onRegisterClick={() => setView('register')} />
+          <LandingBudgetSection onOpenRegister={() => setView('register')} onOpenGuide={() => setView('ayuda')} />
           <LandingPricingSection onRegisterClick={() => setView('register')} />
           <LandingFaqSection onRegisterClick={() => setView('register')} />
           <LandingFooter
