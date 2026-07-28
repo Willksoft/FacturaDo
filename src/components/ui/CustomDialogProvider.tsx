@@ -16,6 +16,13 @@ interface CustomDialogContextType {
 }
 
 const CustomDialogContext = createContext<CustomDialogContextType | undefined>(undefined);
+export let globalShowConfirm: (message: string, title?: string) => Promise<boolean>;
+export let globalShowAlert: (message: string, type?: 'error' | 'success' | 'info', title?: string) => Promise<void>;
+
+export const DialogService = {
+  confirm: (message: string, title?: string) => globalShowConfirm ? globalShowConfirm(message, title) : window.confirm(message),
+  alert: (message: string, type: 'error' | 'success' | 'info' = 'error', title?: string) => globalShowAlert ? globalShowAlert(message, type, title) : window.alert(message)
+};
 
 export function CustomDialogProvider({ children }: { children: ReactNode }) {
   const [dialog, setDialog] = useState<DialogState>({
@@ -61,6 +68,9 @@ export function CustomDialogProvider({ children }: { children: ReactNode }) {
       });
     });
   };
+
+  globalShowConfirm = showConfirm;
+  globalShowAlert = showAlert;
 
   const handleClose = (result: boolean) => {
     setDialog(prev => ({ ...prev, isOpen: false }));
