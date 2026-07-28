@@ -1,0 +1,9 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "backendProjectId": "623674a4-d789-4ddf-acbc-d0a59bef947a",
+  "targetUrl": "https://facturadord.com",
+  "testAccount": {
+    "email": "willksoft+test2026@gmail.com",
+    "note": "Cuenta de prueba estandar para todos los tests de FacturaDo"
+  }
+}

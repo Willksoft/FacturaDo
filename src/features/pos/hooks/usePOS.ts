@@ -313,7 +313,7 @@ export function usePOS({
     const newDoc = createInvoiceOrQuote({ clientId: selectedClientId, sellerId: selectedSellerId, type: 'Factura', ncfType: selectedNcfType, items, discount: 0, notes: paymentNotes });
     if (!newDoc) return alert('Error al generar factura.');
 
-    const cashAcc = financialAccounts.find(a => a.type === 'Caja' || a.id === 'acc-1') || financialAccounts[0];
+    const cashAcc = (activeShift ? financialAccounts.find(a => a.id === activeShift.cajaId) : null) || financialAccounts.find(a => a.type === 'Caja' || a.id === 'acc-1') || financialAccounts[0];
     const cardAcc = financialAccounts.find(a => a.type === 'Verifone' || a.id === 'acc-3') || financialAccounts[0];
     const bankAcc = financialAccounts.find(a => a.id === selectedBankAccountId) || financialAccounts.find(a => a.type === 'Banco') || financialAccounts[0];
 
