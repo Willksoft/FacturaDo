@@ -1131,38 +1131,9 @@ export default function App() {
             </button>
           </div>
 
-          <div className="space-y-1 mt-1">
-            <button
-              type="button"
-              title={isSidebarCollapsed ? "Nómina y R.H." : undefined}
-              onClick={() => checkAndNavigate('nomina')}
-              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
-                currentTab === 'nomina'
-                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
-              }`}
-            >
-              <Users className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-indigo-500`} />
-              {!isSidebarCollapsed && <span>Nómina y R.H.</span>}
-            </button>
-          </div>
+          {/* Nómina y Presupuestos se muestran DESPUÉS de sidebarCategories (debajo de Reportes) */}
 
-          <div className="space-y-1 mt-1">
-            <button
-              type="button"
-              title={isSidebarCollapsed ? "Centro de Presupuestos" : undefined}
-              onClick={() => checkAndNavigate('centro-presupuestos')}
-              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
-                currentTab === 'centro-presupuestos'
-                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
-              }`}
-            >
-              <Calculator className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-emerald-600`} />
-              {!isSidebarCollapsed && <span>Centro de Presupuestos</span>}
-            </button>
-          </div>
-
+          {/* Eliminar también el botón previo de presupuestos — se renderiza después de sidebarCategories */}
           {sidebarCategories.map((cat, catIdx) => {
             const isOpen = !!openCategories[cat.title];
             return (
@@ -1229,6 +1200,37 @@ export default function App() {
               </div>
             );
           })}
+          {/* Nómina y Centro de Presupuestos — DEBAJO de Reportes */}
+          <div className="space-y-1">
+            <button
+              type="button"
+              title={isSidebarCollapsed ? "Nómina y R.H." : undefined}
+              onClick={() => checkAndNavigate('nomina')}
+              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
+                currentTab === 'nomina'
+                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
+              }`}
+            >
+              <Users className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-indigo-500`} />
+              {!isSidebarCollapsed && <span>Nómina y R.H.</span>}
+            </button>
+          </div>
+          <div className="space-y-1">
+            <button
+              type="button"
+              title={isSidebarCollapsed ? "Centro de Presupuestos" : undefined}
+              onClick={() => checkAndNavigate('centro-presupuestos')}
+              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
+                currentTab === 'centro-presupuestos'
+                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
+              }`}
+            >
+              <Calculator className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-emerald-600`} />
+              {!isSidebarCollapsed && <span>Centro de Presupuestos</span>}
+            </button>
+          </div>
         </div>
 
         {/* LOGGED USER DETAILED DETAILS AT SIDEBAR BOTTOM */}
@@ -1533,10 +1535,11 @@ export default function App() {
                             <div 
                               key={n.id} 
                               onClick={() => {
-                                setNotifications(prev => prev.map(item => item.id === n.id ? { ...item, read: true } : item));
+                                // Eliminar de la lista Y guardar como dismissed para que no reaparezca al recargar
                                 const updatedDismissed = Array.from(new Set([...dismissedNotificationIds, n.id]));
                                 setDismissedNotificationIds(updatedDismissed);
                                 localStorage.setItem('facturado_dismissed_notifications', JSON.stringify(updatedDismissed));
+                                setNotifications(prev => prev.filter(item => item.id !== n.id));
                               }}
                               className={`py-2.5 px-2 flex gap-2.5 items-start cursor-pointer transition-colors rounded-lg ${n.read ? 'opacity-60 hover:bg-neutral-50/55' : 'bg-neutral-50/60 hover:bg-neutral-50'}`}
                             >
@@ -2542,6 +2545,32 @@ export default function App() {
                     </div>
                   );
                 })}
+
+                {/* Nómina y Centro de Presupuestos — DEBAJO de Reportes en móvil */}
+                <button
+                  type="button"
+                  onClick={() => { checkAndNavigate('nomina'); setMobileMenuOpen(false); }}
+                  className={`w-full flex items-center py-3 rounded-xl transition-all text-left text-[14px] px-3 space-x-3 ${
+                    currentTab === 'nomina'
+                      ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                      : 'text-neutral-600 active:bg-neutral-100 font-medium'
+                  }`}
+                >
+                  <Users className="w-5 h-5 shrink-0 text-indigo-500" />
+                  <span>Nómina y R.H.</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { checkAndNavigate('centro-presupuestos'); setMobileMenuOpen(false); }}
+                  className={`w-full flex items-center py-3 rounded-xl transition-all text-left text-[14px] px-3 space-x-3 ${
+                    currentTab === 'centro-presupuestos'
+                      ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                      : 'text-neutral-600 active:bg-neutral-100 font-medium'
+                  }`}
+                >
+                  <Calculator className="w-5 h-5 shrink-0 text-emerald-600" />
+                  <span>Centro de Presupuestos</span>
+                </button>
 
                 <div className="space-y-1 mt-4">
                   <button

@@ -38,6 +38,7 @@ interface BudgetsListViewProps {
   onDuplicateBudget: (id: string) => void;
   onCreateVersion: (id: string) => void;
   onMoveToTrash: (id: string) => void;
+  onDeletePermanently?: (id: string) => void;
   onToggleFavorite: (id: string) => void;
   onConvertToQuote: (budget: Budget) => void;
   onConvertMultipleToQuote?: (budgets: Budget[]) => void;
@@ -51,6 +52,7 @@ export default function BudgetsListView({
   onDuplicateBudget,
   onCreateVersion,
   onMoveToTrash,
+  onDeletePermanently,
   onToggleFavorite,
   onConvertToQuote,
   onConvertMultipleToQuote,
@@ -297,6 +299,21 @@ export default function BudgetsListView({
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>
+                  {onDeletePermanently && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (window.confirm(`¿Eliminar permanentemente "${b.title}"? Esta acción no se puede deshacer.`)) {
+                          onDeletePermanently(b.id);
+                        }
+                      }}
+                      className="h-8 w-8 text-rose-700 hover:bg-rose-100 rounded-md"
+                      title="Eliminar Permanentemente"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 fill-rose-200" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </Card>

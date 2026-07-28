@@ -217,7 +217,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <LayoutDashboard className="w-4 h-4 shrink-0" />
-            <span>🏠 Dashboard</span>
+            <span>Dashboard</span>
           </button>
 
           <button
@@ -227,7 +227,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <FileText className="w-4 h-4 shrink-0" />
-            <span>📄 Presupuestos</span>
+            <span>Presupuestos</span>
           </button>
 
           <button
@@ -237,7 +237,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <Briefcase className="w-4 h-4 shrink-0" />
-            <span>📁 Proyectos</span>
+            <span>Proyectos</span>
           </button>
 
           <button
@@ -247,7 +247,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <Layers className="w-4 h-4 shrink-0" />
-            <span>🧩 Plantillas</span>
+            <span>Plantillas</span>
           </button>
 
           <button
@@ -257,7 +257,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <Package className="w-4 h-4 shrink-0" />
-            <span>📦 Recursos</span>
+            <span>Recursos</span>
           </button>
 
           <button
@@ -267,7 +267,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <Sliders className="w-4 h-4 shrink-0" />
-            <span>🧮 Variables & Categorías</span>
+            <span>Variables & Categorías</span>
           </button>
 
           <button
@@ -277,7 +277,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <Star className="w-4 h-4 shrink-0 fill-amber-200" />
-            <span>⭐ Favoritos</span>
+            <span>Favoritos</span>
           </button>
 
           <button
@@ -287,7 +287,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <History className="w-4 h-4 shrink-0" />
-            <span>📜 Historial & Papelera</span>
+            <span>Historial & Papelera</span>
           </button>
 
           <button
@@ -297,7 +297,7 @@ export default function BudgetCenterMainView({
             }`}
           >
             <Settings className="w-4 h-4 shrink-0" />
-            <span>⚙ Configuración</span>
+            <span>Configuración</span>
           </button>
         </nav>
       </aside>
@@ -328,6 +328,7 @@ export default function BudgetCenterMainView({
           onDuplicateBudget={duplicateBudget}
           onCreateVersion={createNewVersionBudget}
           onMoveToTrash={moveToTrash}
+          onDeletePermanently={deleteBudgetPermanently}
           onToggleFavorite={toggleFavoriteBudget}
           onConvertToQuote={handleConvertToQuote}
           onConvertMultipleToQuote={handleConvertMultipleToQuote}
