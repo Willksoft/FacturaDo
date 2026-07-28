@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import {
   X,
   Plus,
@@ -9,7 +8,11 @@ import {
   Save,
   CheckCircle2,
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  Copy,
+  GitBranch,
+  FileEdit,
+  ArrowRight
 } from 'lucide-react';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
@@ -21,6 +24,7 @@ import {
   BudgetItem,
   BudgetItemInput,
   BudgetResource,
+  BudgetStatus,
   BudgetTemplate
 } from '../../../types/budget';
 import { calculateBudgetItemQuantity } from '../../../hooks/useBudgetState';
@@ -32,6 +36,10 @@ interface BudgetEditorModalProps {
   onClose: () => void;
   onSave: (budget: Partial<Budget> & { title: string }) => void;
   onConvertToQuote?: (budget: Budget) => void;
+  onDuplicateBudget?: (id: string) => void;
+  onCreateVersion?: (id: string) => void;
+  onMoveToTrash?: (id: string) => void;
+  onDeletePermanently?: (id: string) => void;
 }
 
 export default function BudgetEditorModal({
@@ -40,12 +48,17 @@ export default function BudgetEditorModal({
   templates,
   onClose,
   onSave,
-  onConvertToQuote
+  onConvertToQuote,
+  onDuplicateBudget,
+  onCreateVersion,
+  onMoveToTrash,
+  onDeletePermanently
 }: BudgetEditorModalProps) {
   const [title, setTitle] = useState(budget?.title || '');
   const [clientName, setClientName] = useState(budget?.clientName || '');
   const [projectName, setProjectName] = useState(budget?.projectName || '');
   const [notes, setNotes] = useState(budget?.notes || '');
+  const [status, setStatus] = useState<BudgetStatus>(budget?.status || 'Borrador');
   const [viewMode, setViewMode] = useState<'cliente' | 'interno' | 'produccion' | 'contabilidad'>(budget?.viewMode || 'interno');
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
 
@@ -244,11 +257,13 @@ export default function BudgetEditorModal({
   const globalProfitAmount = globalSubtotalPrice - globalSubtotalCost;
   const globalProfitPct = globalSubtotalCost > 0 ? (globalProfitAmount / globalSubtotalCost) * 100 : 0;
 
-  const handleSaveBudgetForm = () => {
+  const handleSaveBudgetForm = (overrideStatus?: BudgetStatus) => {
     if (!title.trim()) {
       alert("Por favor ingrese el título del presupuesto.");
       return;
     }
+
+    const finalStatus = overrideStatus || status || 'Borrador';
 
     onSave({
       id: budget?.id,
@@ -257,7 +272,7 @@ export default function BudgetEditorModal({
       clientName: clientName || 'Cliente General',
       projectName,
       version: budget?.version || 1,
-      status: budget?.status || 'Borrador',
+      status: finalStatus,
       viewMode,
       groups,
       subtotalCost: globalSubtotalCost,
@@ -324,8 +339,8 @@ export default function BudgetEditorModal({
         {/* BODY CONTAINER WITH SCROLL */}
         <div className="space-y-6 overflow-y-auto pr-1 flex-1">
           {/* HEADER FORM INPUTS */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-neutral-50 p-4 rounded-xl border border-neutral-200">
-            <div className="space-y-1 md:col-span-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-neutral-50 p-4 rounded-xl border border-neutral-200">
+            <div className="space-y-1 sm:col-span-2 md:col-span-1">
               <Label className="text-[11px] font-bold text-neutral-700">Título del Presupuesto *</Label>
               <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="Ej. Remodelación Local Comercial" className="text-xs h-9 bg-white" />
             </div>
@@ -333,6 +348,22 @@ export default function BudgetEditorModal({
             <div className="space-y-1">
               <Label className="text-[11px] font-bold text-neutral-700">Cliente / Proyecto</Label>
               <Input value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Empresa o Persona" className="text-xs h-9 bg-white" />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-[11px] font-bold text-neutral-700">Estado del Presupuesto</Label>
+              <Select value={status} onValueChange={(val) => setStatus(val as BudgetStatus)}>
+                <SelectTrigger className="text-xs h-9 bg-white font-bold">
+                  <SelectValue placeholder="Estado..." />
+                </SelectTrigger>
+                <SelectContent className="text-xs">
+                  <SelectItem value="Borrador">📝 Borrador</SelectItem>
+                  <SelectItem value="Enviado">📩 Enviado</SelectItem>
+                  <SelectItem value="Aprobado">✅ Aprobado</SelectItem>
+                  <SelectItem value="Rechazado">❌ Rechazado</SelectItem>
+                  <SelectItem value="Convertido">🔄 Convertido</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1">
@@ -620,15 +651,81 @@ export default function BudgetEditorModal({
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <Button variant="outline" onClick={onClose} className="w-full sm:w-auto text-xs h-10 px-5">
-              Cancelar
-            </Button>
-
             <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Button variant="outline" onClick={onClose} className="text-xs h-10 px-4">
+                Cancelar
+              </Button>
+              {budget?.id && (onMoveToTrash || onDeletePermanently) && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    if (window.confirm(`¿Está seguro de eliminar el presupuesto "${title}"?`)) {
+                      if (onDeletePermanently) {
+                        onDeletePermanently(budget.id!);
+                      } else if (onMoveToTrash) {
+                        onMoveToTrash(budget.id!);
+                      }
+                      onClose();
+                    }
+                  }}
+                  className="text-xs h-10 px-3 border-rose-200 text-rose-600 hover:bg-rose-50 font-bold flex items-center gap-1.5 cursor-pointer"
+                  title="Eliminar este presupuesto"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Eliminar
+                </Button>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+              {budget?.id && onDuplicateBudget && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    onDuplicateBudget(budget.id!);
+                    onClose();
+                  }}
+                  className="text-xs h-10 px-3 border-neutral-300 text-neutral-700 hover:bg-neutral-100 font-bold flex items-center gap-1.5 cursor-pointer"
+                  title="Crear una copia idéntica de este presupuesto"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  Duplicar
+                </Button>
+              )}
+
+              {budget?.id && onCreateVersion && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    onCreateVersion(budget.id!);
+                    onClose();
+                  }}
+                  className="text-xs h-10 px-3 border-indigo-200 text-indigo-700 hover:bg-indigo-50 font-bold flex items-center gap-1.5 cursor-pointer"
+                  title="Generar nueva versión (v+1)"
+                >
+                  <GitBranch className="w-3.5 h-3.5" />
+                  Crear Versión
+                </Button>
+              )}
+
               <Button
                 type="button"
-                onClick={handleSaveBudgetForm}
-                className="flex-1 sm:flex-initial bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-10 px-6 font-bold flex items-center gap-2 cursor-pointer"
+                variant="outline"
+                onClick={() => handleSaveBudgetForm('Borrador')}
+                className="text-xs h-10 px-4 font-bold text-neutral-700 border-neutral-300 hover:bg-neutral-100 flex items-center gap-1.5 cursor-pointer"
+                title="Guardar estado de trabajo en Borrador"
+              >
+                <FileEdit className="w-4 h-4" />
+                Guardar Borrador
+              </Button>
+
+              <Button
+                type="button"
+                onClick={() => handleSaveBudgetForm(status)}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-10 px-5 font-bold flex items-center gap-2 cursor-pointer shadow-sm"
               >
                 <Save className="w-4 h-4" />
                 Guardar Presupuesto

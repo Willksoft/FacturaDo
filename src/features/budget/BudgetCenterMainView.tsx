@@ -415,6 +415,10 @@ export default function BudgetCenterMainView({
           onClose={() => setShowEditorModal(false)}
           onSave={saveBudget}
           onConvertToQuote={handleConvertToQuote}
+          onDuplicateBudget={duplicateBudget}
+          onCreateVersion={createNewVersionBudget}
+          onMoveToTrash={moveToTrash}
+          onDeletePermanently={deleteBudgetPermanently}
         />
       )}
 
