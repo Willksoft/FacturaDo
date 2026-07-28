@@ -394,6 +394,65 @@ export default function BudgetEditorModal({
                   </div>
                 </div>
 
+                {/* UNIFIED GROUP DIMENSION BAR (VARIABLES AUTOMÁTICAS) */}
+                {grp.items.some(i => i.calculationType === 'area') && (
+                  <div className="bg-indigo-50/80 p-2.5 rounded-lg border border-indigo-150 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-1.5 font-bold text-indigo-900">
+                      <Sparkles className="w-4 h-4 text-indigo-600" />
+                      <span>Variables Automáticas del Grupo (Área)</span>
+                      <span className="text-[9px] bg-indigo-100 text-indigo-700 font-normal px-2 py-0.5 rounded-md">
+                        Aplica a todos los recursos de área en este grupo
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-bold text-indigo-700">Ancho (m):</span>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          defaultValue={grp.items.find(i => i.calculationType === 'area')?.inputs.ancho || 1}
+                          onChange={(e) => {
+                            const val = parseFloat(e.target.value) || 0;
+                            grp.items.filter(i => i.calculationType === 'area').forEach(i => {
+                              handleUpdateItemInputs(grp.id, i.id, { ancho: val });
+                            });
+                          }}
+                          className="h-7 w-20 text-xs font-bold bg-white"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-bold text-indigo-700">Alto (m):</span>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          defaultValue={grp.items.find(i => i.calculationType === 'area')?.inputs.alto || 1}
+                          onChange={(e) => {
+                            const val = parseFloat(e.target.value) || 0;
+                            grp.items.filter(i => i.calculationType === 'area').forEach(i => {
+                              handleUpdateItemInputs(grp.id, i.id, { alto: val });
+                            });
+                          }}
+                          className="h-7 w-20 text-xs font-bold bg-white"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-bold text-indigo-700">Cantidad:</span>
+                        <Input
+                          type="number"
+                          defaultValue={grp.items.find(i => i.calculationType === 'area')?.inputs.cantidad || 1}
+                          onChange={(e) => {
+                            const val = parseFloat(e.target.value) || 0;
+                            grp.items.filter(i => i.calculationType === 'area').forEach(i => {
+                              handleUpdateItemInputs(grp.id, i.id, { cantidad: val });
+                            });
+                          }}
+                          className="h-7 w-20 text-xs font-bold bg-white"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* ITEMS TABLE IN GROUP */}
                 {grp.items.length === 0 ? (
                   <div className="py-6 text-center text-xs text-neutral-400 italic">

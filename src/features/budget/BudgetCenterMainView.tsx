@@ -24,6 +24,7 @@ import BudgetAuditTrashView from './components/BudgetAuditTrashView';
 import BudgetSettingsView from './components/BudgetSettingsView';
 import BudgetFavoritesView from './components/BudgetFavoritesView';
 import BudgetEditorModal from './components/BudgetEditorModal';
+import NewBudgetWizardModal from './components/NewBudgetWizardModal';
 
 interface BudgetCenterMainViewProps {
   onNavigateToTab?: (tab: string, params?: any) => void;
@@ -64,11 +65,68 @@ export default function BudgetCenterMainView({
     saveClientSignature
   } = useBudgetState();
 
+  const [showWizardModal, setShowWizardModal] = useState(false);
   const [showEditorModal, setShowEditorModal] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Partial<Budget> | null>(null);
 
   const handleOpenNewBudget = () => {
-    setEditingBudget(null);
+    setShowWizardModal(true);
+  };
+
+  const handleStartBudgetFromWizard = (config: {
+    title: string;
+    clientName: string;
+    projectName?: string;
+    templateId?: string;
+    duplicateFromBudgetId?: string;
+    mode: 'template' | 'blank' | 'duplicate' | 'import';
+  }) => {
+    setShowWizardModal(false);
+
+    if (config.mode === 'template' && config.templateId) {
+      const tpl = templates.find(t => t.id === config.templateId);
+      if (tpl) {
+        setEditingBudget({
+          title: config.title,
+          clientName: config.clientName,
+          projectName: config.projectName,
+          groups: [
+            {
+              id: `grp-${Date.now()}`,
+              name: tpl.name,
+              items: [],
+              subtotalCost: 0,
+              subtotalPrice: 0,
+              taxTotal: 0,
+              total: 0
+            }
+          ]
+        });
+        setShowEditorModal(true);
+        return;
+      }
+    } else if (config.mode === 'duplicate' && config.duplicateFromBudgetId) {
+      const source = budgets.find(b => b.id === config.duplicateFromBudgetId);
+      if (source) {
+        setEditingBudget({
+          ...source,
+          id: undefined,
+          budgetNumber: undefined,
+          title: config.title,
+          clientName: config.clientName || source.clientName,
+          projectName: config.projectName || source.projectName,
+          status: 'Borrador'
+        });
+        setShowEditorModal(true);
+        return;
+      }
+    }
+
+    setEditingBudget({
+      title: config.title,
+      clientName: config.clientName,
+      projectName: config.projectName
+    });
     setShowEditorModal(true);
   };
 
@@ -329,6 +387,17 @@ export default function BudgetCenterMainView({
         <BudgetSettingsView />
       )}
 
+      {/* NEW BUDGET WIZARD MODAL */}
+      {showWizardModal && (
+        <NewBudgetWizardModal
+          templates={templates}
+          existingBudgets={budgets}
+          resources={resources}
+          onClose={() => setShowWizardModal(false)}
+          onStartBudget={handleStartBudgetFromWizard}
+        />
+      )}
+
       {/* BUDGET EDITOR MODAL */}
       {showEditorModal && (
         <BudgetEditorModal
@@ -340,6 +409,17 @@ export default function BudgetCenterMainView({
           onConvertToQuote={handleConvertToQuote}
         />
       )}
+
+      {/* FLOATING ACTION BUTTON (+) FOR QUICK CREATION */}
+      <div className="fixed bottom-6 right-6 z-40">
+        <button
+          onClick={handleOpenNewBudget}
+          className="w-13 h-13 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center shadow-2xl cursor-pointer hover:scale-105 transition-all font-bold group"
+          title="Crear Nuevo Presupuesto (Asistente Visual)"
+        >
+          <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
+        </button>
+      </div>
     </div>
   );
 }
