@@ -1,0 +1,14 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Nómina y R.H., Eliminación de Registros y Menú Secundario",
+  "description": "Verifica que en el módulo de Nómina & R.H. se puedan eliminar períodos de nómina, vacaciones, licencias y reglas fiscales activas.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navegar a la pestaña Nómina y R.H. en la barra lateral principal" },
+    { "type": "action", "description": "Ir a Procesar Nómina y verificar que los períodos procesados contengan botón de eliminar" },
+    { "type": "action", "description": "Ir a Vacaciones y Permisos y verificar la presencia del botón de eliminación en las tablas de vacaciones y licencias" },
+    { "type": "action", "description": "Ir a Perfiles y Reglas Fiscales y verificar la opción de eliminar reglas inteligentes" },
+    { "type": "assertion", "description": "Verificar que todas las vistas del módulo de Nómina cuenten con sus acciones de edición y eliminación completas" }
+  ]
+}

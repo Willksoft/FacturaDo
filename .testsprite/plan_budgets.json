@@ -1,0 +1,15 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Centro de Presupuestos, Borradores y Operaciones CRUD",
+  "description": "Verifica que en el Centro de Presupuestos se puedan crear presupuestos como Borrador, cambiar estado, duplicar, crear versión y eliminar permanentemente desde el editor.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navegar a la sección Centro de Presupuestos en el menú principal" },
+    { "type": "action", "description": "Hacer clic en el botón Nuevo Presupuesto para abrir el modal del editor" },
+    { "type": "action", "description": "Ingresar el título del presupuesto y seleccionar el estado Borrador en el selector" },
+    { "type": "action", "description": "Hacer clic en el botón Guardar Borrador" },
+    { "type": "action", "description": "Abrir nuevamente el presupuesto creado en el editor y probar la función Duplicar" },
+    { "type": "assertion", "description": "Verificar que el presupuesto duplique correctamente y los botones Borrador, Duplicar, Versión y Eliminar estén disponibles y funcionando" }
+  ]
+}

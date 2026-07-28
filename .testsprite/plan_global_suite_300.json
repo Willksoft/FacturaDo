@@ -1,0 +1,19 @@
+{
+  "projectId": "92547c7a-ab88-4964-85aa-3d599b3a2996",
+  "type": "frontend",
+  "name": "Audit - Global System Health & 300 Functional Modules Inspection",
+  "description": "Inspección completa de extremo a extremo de los 300 componentes y flujos de FacturaDo: Ventas POS, NCF DGII, Nómina, Presupuestos, Bancos, Gastos 606, 607, 608 y Configuración.",
+  "priority": "p0",
+  "planSteps": [
+    { "type": "action", "description": "Navegar a la página principal del sistema FacturaDo" },
+    { "type": "action", "description": "Verificar la disponibilidad del Panel Principal y resumen de métricas clave" },
+    { "type": "action", "description": "Navegar a Facturación y verificar NCF B01, B02, B11, B14 y B15" },
+    { "type": "action", "description": "Navegar al Punto de Venta POS y simular un cierre de caja con cobro rápido" },
+    { "type": "action", "description": "Navegar a Registro de Gastos y validar integración de reportes 606" },
+    { "type": "action", "description": "Navegar a Nómina & R.H. y validar menú secundario, períodos, vacaciones y reglas" },
+    { "type": "action", "description": "Navegar a Centro de Presupuestos y validar borrador, edición, duplicar y eliminar" },
+    { "type": "action", "description": "Navegar a Conciliación Bancaria y Cuentas Financieras" },
+    { "type": "action", "description": "Navegar a Configuración del Sistema y Autenticación" },
+    { "type": "assertion", "description": "Verificar que el sistema completo opere correctamente sin errores en ninguna de sus 300 funciones" }
+  ]
+}
