@@ -9,6 +9,7 @@ import {
   Sliders,
   History,
   Settings,
+  Star,
   Plus
 } from 'lucide-react';
 import { useBudgetState } from '../../hooks/useBudgetState';
@@ -21,6 +22,7 @@ import BudgetProjectsView from './components/BudgetProjectsView';
 import BudgetVariablesCategoriesView from './components/BudgetVariablesCategoriesView';
 import BudgetAuditTrashView from './components/BudgetAuditTrashView';
 import BudgetSettingsView from './components/BudgetSettingsView';
+import BudgetFavoritesView from './components/BudgetFavoritesView';
 import BudgetEditorModal from './components/BudgetEditorModal';
 
 interface BudgetCenterMainViewProps {
@@ -33,7 +35,7 @@ export default function BudgetCenterMainView({
   createInvoiceOrQuote
 }: BudgetCenterMainViewProps) {
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'presupuestos' | 'proyectos' | 'plantillas' | 'recursos' | 'variables' | 'auditoria' | 'config'
+    'dashboard' | 'presupuestos' | 'proyectos' | 'plantillas' | 'recursos' | 'variables' | 'favoritos' | 'auditoria' | 'config'
   >('dashboard');
 
   const {
@@ -188,6 +190,15 @@ export default function BudgetCenterMainView({
           </button>
 
           <button
+            onClick={() => setActiveTab('favoritos')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'favoritos' ? 'bg-amber-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            }`}
+          >
+            <Star className="w-3.5 h-3.5 fill-amber-300" /> Favoritos
+          </button>
+
+          <button
             onClick={() => setActiveTab('auditoria')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'auditoria' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
@@ -267,6 +278,16 @@ export default function BudgetCenterMainView({
           globalVariables={globalVariables}
           onSaveGlobalVariable={saveGlobalVariable}
           onDeleteGlobalVariable={deleteGlobalVariable}
+        />
+      )}
+
+      {activeTab === 'favoritos' && (
+        <BudgetFavoritesView
+          resources={resources}
+          templates={templates}
+          budgets={budgets}
+          projects={projects}
+          onSelectBudget={handleOpenEditBudget}
         />
       )}
 

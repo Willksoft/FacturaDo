@@ -19,6 +19,7 @@ import {
   Budget,
   BudgetGroup,
   BudgetItem,
+  BudgetItemInput,
   BudgetResource,
   BudgetTemplate
 } from '../../../types/budget';
@@ -371,7 +372,7 @@ export default function BudgetEditorModal({
 
                   <div className="flex items-center gap-2">
                     {/* Add Resource Selector */}
-                    <Select onValueChange={(resId) => handleAddItemToGroup(grp.id, resId)}>
+                    <Select onValueChange={(resId: string) => handleAddItemToGroup(grp.id, resId)}>
                       <SelectTrigger className="text-xs h-8 bg-indigo-50 border-indigo-200 text-indigo-700 font-bold">
                         <Plus className="w-3.5 h-3.5 mr-1" />
                         <span>Agregar Recurso</span>
