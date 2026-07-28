@@ -4,8 +4,8 @@ export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 1,
-  workers: 4,
+  retries: 2,
+  workers: 2, // Reducido para evitar saturar la base de datos de Vercel (Timeouts)
   reporter: [
     ["html", { outputFolder: "tests/playwright-report", open: "never" }],
     ["list"],
@@ -16,8 +16,8 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
-    actionTimeout: 15000,
-    navigationTimeout: 30000,
+    actionTimeout: 30000, // Incrementado a 30s
+    navigationTimeout: 60000, // Incrementado a 60s
   },
   projects: [
     {
