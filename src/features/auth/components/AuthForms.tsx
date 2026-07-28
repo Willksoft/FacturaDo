@@ -59,6 +59,12 @@ interface AuthFormsProps {
   strength: number;
   strengthColors: string[];
   strengthLabels: string[];
+  verificationOtp: string;
+  setVerificationOtp: (otp: string) => void;
+  handleVerifyEmailOtp: (e: React.FormEvent) => void;
+  handleResendEmailOtp: () => void;
+  isResendingOtp: boolean;
+  resendMessage: string;
   handleLoginSubmit: (e: React.FormEvent) => void;
   handlePasskeyLogin: () => void;
   handleVerifyTwoFactorLogin: (e: React.FormEvent) => void;
@@ -105,6 +111,12 @@ export const AuthForms: React.FC<AuthFormsProps> = ({
   strength,
   strengthColors,
   strengthLabels,
+  verificationOtp,
+  setVerificationOtp,
+  handleVerifyEmailOtp,
+  handleResendEmailOtp,
+  isResendingOtp,
+  resendMessage,
   handleLoginSubmit,
   handlePasskeyLogin,
   handleVerifyTwoFactorLogin,
@@ -597,36 +609,72 @@ export const AuthForms: React.FC<AuthFormsProps> = ({
         </form>
       )}
 
-      {/* Simulated success animation and loaders */}
+      {/* EMAIL VERIFICATION CODE (OTP) STEP */}
       {registerSuccess && emailConfirmationRequired && (
-        <div className="text-center py-8 space-y-5 font-sans text-xs animate-fade-in max-w-sm mx-auto">
-          <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center mx-auto text-xl animate-bounce">
-            <Mail className="w-9 h-9 text-blue-600" />
+        <form className="space-y-4 font-sans text-xs animate-fade-in max-w-sm mx-auto text-left" onSubmit={handleVerifyEmailOtp}>
+          <div className="w-14 h-14 rounded-2xl bg-[#1A2732]/10 text-[#1A2732] border border-[#1A2732]/20 flex items-center justify-center mx-auto text-xl">
+            <Mail className="w-7 h-7" />
           </div>
-          <div className="space-y-2">
-            <h3 className="text-base font-medium text-neutral-900 leading-none">¡Confirma tu correo electrónico!</h3>
+
+          <div className="space-y-1 text-center">
+            <h3 className="text-base font-semibold text-neutral-900 leading-snug">Confirmar Correo Electrónico</h3>
             <p className="text-xs text-neutral-600 leading-relaxed">
-              Hemos enviado un enlace de confirmación a <strong className="text-neutral-900">{registerForm.email}</strong>.
+              Enviamos un código de 6 dígitos a <strong className="text-neutral-900">{registerForm.email || email}</strong>.
             </p>
-            <p className="text-[11px] text-neutral-500 leading-relaxed">
-              Por favor, revisa tu bandeja de entrada (y la carpeta de spam o correo no deseado) y haz clic en el enlace para activar tu cuenta antes de iniciar sesión.
+            <p className="text-[11px] text-neutral-500">
+              Por favor introduce el código a continuación para verificar tu cuenta e ingresar al sistema.
             </p>
           </div>
-          
-          <div className="pt-3">
+
+          {resendMessage && (
+            <div className="p-3 rounded-xl text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 text-center">
+              {resendMessage}
+            </div>
+          )}
+
+          <div className="space-y-1.5 pt-1">
+            <label className="font-medium text-neutral-700 block uppercase tracking-wider text-[10px] text-center">
+              Código de Verificación (6 dígitos)
+            </label>
+            <input
+              type="text"
+              maxLength={6}
+              placeholder="000000"
+              value={verificationOtp}
+              onChange={(e) => setVerificationOtp(e.target.value.replace(/\D/g, ''))}
+              className="w-full text-center font-mono tracking-[0.4em] text-xl font-bold h-13 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-[#1A2732] focus:border-transparent bg-neutral-50 focus:bg-white transition-all shadow-inner"
+              required
+              autoFocus
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting || verificationOtp.length !== 6}
+            className="w-full h-12 bg-[#1A2732] hover:bg-neutral-850 text-white font-medium rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm uppercase tracking-wider"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Verificando código...
+              </>
+            ) : (
+              'Verificar y Acceder'
+            )}
+          </button>
+
+          <div className="pt-2 flex items-center justify-between text-xs text-neutral-500 border-t border-neutral-150 font-sans">
+            <span>¿No recibiste el código?</span>
             <button
               type="button"
-              onClick={() => {
-                setRegisterSuccess(false);
-                setEmailConfirmationRequired(false);
-                setView('login');
-              }}
-              className="w-full h-11 bg-[#1A2732] hover:bg-neutral-800 text-white font-medium rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer text-xs uppercase tracking-wider"
+              disabled={isResendingOtp}
+              onClick={handleResendEmailOtp}
+              className="text-[#1A2732] font-semibold hover:underline cursor-pointer disabled:opacity-50 bg-transparent border-0"
             >
-              Ir a Iniciar Sesión
+              {isResendingOtp ? 'Enviando...' : 'Reenviar código'}
             </button>
           </div>
-        </div>
+        </form>
       )}
 
       {registerSuccess && !emailConfirmationRequired && (

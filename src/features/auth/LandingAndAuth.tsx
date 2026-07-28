@@ -243,6 +243,11 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
   const [registerSuccess, setRegisterSuccess] = useState(false);
   const [emailConfirmationRequired, setEmailConfirmationRequired] = useState(false);
 
+  // OTP Email Verification States
+  const [verificationOtp, setVerificationOtp] = useState('');
+  const [isResendingOtp, setIsResendingOtp] = useState(false);
+  const [resendMessage, setResendMessage] = useState('');
+
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
@@ -442,6 +447,85 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
       }
     } catch (err: any) {
       setTotpVerificationError('Error al validar el código. Asegúrese de ingresar el código actual de su app.');
+    }
+  };
+
+  const handleVerifyEmailOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    setResendMessage('');
+
+    if (!verificationOtp || verificationOtp.trim().length !== 6) {
+      setLoginError('Por favor ingrese el código completo de 6 dígitos.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const targetEmail = (registerForm.email || email).trim();
+      const { data, error } = await insforge.auth.verifyEmail({
+        email: targetEmail,
+        otp: verificationOtp.trim()
+      });
+
+      if (error) {
+        setLoginError(error.message || 'El código de verificación es incorrecto o ha expirado. Revisa tu correo e intenta nuevamente.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Email successfully verified! InsForge returns user & session token.
+      const userId = data?.user?.id || 'usr_' + Date.now();
+      const userEmail = data?.user?.email || targetEmail;
+
+      const loggedUser = {
+        id: userId,
+        username: registerForm.ownerName || data?.user?.profile?.name || userEmail.split('@')[0],
+        email: userEmail,
+        role: 'Administrador' as const,
+        avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&h=256&q=80',
+        permissions: {
+          canCreateInvoice: true,
+          canEditInvoice: true,
+          canDeleteInvoice: true,
+          canExportReports: true,
+          canManageUsers: true
+        }
+      };
+
+      setIsSubmitting(false);
+      setRegisterSuccess(false);
+      setEmailConfirmationRequired(false);
+
+      // Auto log-in to app immediately ("luego lo que sigue")
+      onLoginSuccess(loggedUser);
+    } catch (err: any) {
+      setLoginError(err.message || 'Error al verificar el código de correo.');
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleResendEmailOtp = async () => {
+    setLoginError('');
+    setResendMessage('');
+    setIsResendingOtp(true);
+
+    try {
+      const targetEmail = (registerForm.email || email).trim();
+      const { error } = await insforge.auth.resendVerificationEmail({
+        email: targetEmail
+      });
+
+      if (error) {
+        setLoginError(error.message || 'No se pudo reenviar el código de verificación.');
+      } else {
+        setResendMessage('Se ha reenviado un nuevo código de 6 dígitos a su correo electrónico.');
+      }
+    } catch (err: any) {
+      setLoginError(err.message || 'Error al solicitar reenvío del código.');
+    } finally {
+      setIsResendingOtp(false);
     }
   };
 
@@ -965,6 +1049,12 @@ export default function LandingAndAuth({ onLoginSuccess, usersList, initialView 
                 strength={strength}
                 strengthColors={strengthColors}
                 strengthLabels={strengthLabels}
+                verificationOtp={verificationOtp}
+                setVerificationOtp={setVerificationOtp}
+                handleVerifyEmailOtp={handleVerifyEmailOtp}
+                handleResendEmailOtp={handleResendEmailOtp}
+                isResendingOtp={isResendingOtp}
+                resendMessage={resendMessage}
                 handleLoginSubmit={handleLoginSubmit}
                 handlePasskeyLogin={handlePasskeyLogin}
                 handleVerifyTwoFactorLogin={handleVerifyTwoFactorLogin}
