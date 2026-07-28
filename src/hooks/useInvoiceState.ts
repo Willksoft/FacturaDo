@@ -820,6 +820,11 @@ export function useInvoiceState() {
       const currentUserId = authData?.user?.id || 'default';
       const userEmail = authData?.user?.email || '';
       const isRealUser = currentUserId !== 'default';
+      // Solo la cuenta oficial de pruebas recibe datos mock iniciales.
+      // Los usuarios reales arrancan con listas vacías para no confundirlos.
+      const isTestAccount = userEmail.toLowerCase() === 'willksoft+test2026@gmail.com' || currentUserId === 'default';
+      // Compartir el flag con useBudgetState (que no tiene acceso directo a auth)
+      localStorage.setItem('budget_is_test_account', isTestAccount ? 'true' : 'false');
 
       // 1. Fetch template settings
       const { data: dbSettings } = await insforge.database.from('template_settings').select('*');
@@ -896,10 +901,30 @@ export function useInvoiceState() {
         }
         setClients(loadedClients);
       } else {
-        const seedMapped = initialClients.map(mapClientToDb);
-        await insforge.database.from('clients').insert(seedMapped);
-        loadedClients = initialClients;
-        setClients(initialClients);
+        if (isTestAccount) {
+          const seedMapped = initialClients.map(mapClientToDb);
+          await insforge.database.from('clients').insert(seedMapped);
+          loadedClients = initialClients;
+          setClients(initialClients);
+        } else {
+          // Usuario real: solo el cliente de consumo base
+          const consumptionClient: Client = {
+            id: 'cli-consumo',
+            type: 'Fisica',
+            name: 'Cliente de Consumo',
+            rncOrCedula: '',
+            email: '',
+            phone: '',
+            address: '',
+            createdAt: new Date().toISOString(),
+            dgiiVerified: false,
+          };
+          const dbCli = mapClientToDb(consumptionClient);
+          dbCli.id = `${currentUserId}_${consumptionClient.id}`;
+          await insforge.database.from('clients').insert([dbCli]);
+          loadedClients = [consumptionClient];
+          setClients(loadedClients);
+        }
       }
       localStorage.setItem('inv_clients', JSON.stringify(loadedClients));
 
@@ -932,10 +957,15 @@ export function useInvoiceState() {
         }));
         setProviders(loadedProviders);
       } else {
-        const seedProvidersMapped = initialProviders.map(mapProviderToDb);
-        await insforge.database.from('providers').insert(seedProvidersMapped);
-        loadedProviders = initialProviders;
-        setProviders(initialProviders);
+        if (isTestAccount) {
+          const seedProvidersMapped = initialProviders.map(mapProviderToDb);
+          await insforge.database.from('providers').insert(seedProvidersMapped);
+          loadedProviders = initialProviders;
+          setProviders(initialProviders);
+        } else {
+          loadedProviders = [];
+          setProviders([]);
+        }
       }
       localStorage.setItem('inv_providers', JSON.stringify(loadedProviders));
 
@@ -970,10 +1000,15 @@ export function useInvoiceState() {
         }));
         setProducts(loadedProducts);
       } else {
-        const seedProdMapped = initialProducts.map(mapProductToDb);
-        await insforge.database.from('products').insert(seedProdMapped);
-        loadedProducts = initialProducts;
-        setProducts(initialProducts);
+        if (isTestAccount) {
+          const seedProdMapped = initialProducts.map(mapProductToDb);
+          await insforge.database.from('products').insert(seedProdMapped);
+          loadedProducts = initialProducts;
+          setProducts(initialProducts);
+        } else {
+          loadedProducts = [];
+          setProducts([]);
+        }
       }
       localStorage.setItem('inv_products', JSON.stringify(loadedProducts));
 
@@ -1010,8 +1045,13 @@ export function useInvoiceState() {
         });
         setInvoices(loadedInvoices);
       } else {
-        loadedInvoices = initialInvoices;
-        setInvoices(initialInvoices);
+        if (isTestAccount) {
+          loadedInvoices = initialInvoices;
+          setInvoices(initialInvoices);
+        } else {
+          loadedInvoices = [];
+          setInvoices([]);
+        }
       }
       localStorage.setItem('inv_invoices', JSON.stringify(loadedInvoices));
 
@@ -1084,8 +1124,9 @@ export function useInvoiceState() {
         });
         setExpenses(loadedExpenses);
       } else {
-        loadedExpenses = initialExpenses;
-        setExpenses(initialExpenses);
+        // Los gastos no tienen seed de datos demo — siempre vacío para nuevos usuarios
+        loadedExpenses = [];
+        setExpenses([]);
       }
       localStorage.setItem('inv_expenses', JSON.stringify(loadedExpenses));
 
@@ -1962,6 +2003,11 @@ export function useInvoiceState() {
     originalQuoteNo?: string;
     status?: InvoiceStatus;
     isDraft?: boolean;
+    isEcf?: boolean;
+    ecfTrackId?: string;
+    ecfQrUrl?: string;
+    sellerId?: string;
+    discount?: number;
   }) => {
     const isQuote = data.type === 'Cotizacion';
     

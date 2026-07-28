@@ -268,24 +268,38 @@ export function calculateBudgetItemQuantity(type: CalculationType, inputs: Budge
 }
 
 export function useBudgetState() {
+  // Determinar si es cuenta de pruebas: la semilla mock solo aplica para el test account
+  const getIsTestAccount = (): boolean => {
+    try {
+      const cached = localStorage.getItem('budget_is_test_account');
+      return cached === 'true';
+    } catch {
+      return false;
+    }
+  };
+
   const [resources, setResources] = useState<BudgetResource[]>(() => {
     const saved = localStorage.getItem('budget_resources');
-    return saved ? JSON.parse(saved) : INITIAL_RESOURCES;
+    if (saved) return JSON.parse(saved);
+    return getIsTestAccount() ? INITIAL_RESOURCES : [];
   });
 
   const [globalVariables, setGlobalVariables] = useState<BudgetGlobalVariable[]>(() => {
     const saved = localStorage.getItem('budget_global_vars');
-    return saved ? JSON.parse(saved) : INITIAL_VARIABLES;
+    if (saved) return JSON.parse(saved);
+    return getIsTestAccount() ? INITIAL_VARIABLES : [];
   });
 
   const [templates, setTemplates] = useState<BudgetTemplate[]>(() => {
     const saved = localStorage.getItem('budget_templates');
-    return saved ? JSON.parse(saved) : INITIAL_TEMPLATES;
+    if (saved) return JSON.parse(saved);
+    return getIsTestAccount() ? INITIAL_TEMPLATES : [];
   });
 
   const [budgets, setBudgets] = useState<Budget[]>(() => {
     const saved = localStorage.getItem('budget_budgets');
-    return saved ? JSON.parse(saved) : INITIAL_BUDGETS;
+    if (saved) return JSON.parse(saved);
+    return getIsTestAccount() ? INITIAL_BUDGETS : [];
   });
 
   const [projects, setProjects] = useState<BudgetProject[]>(() => {
