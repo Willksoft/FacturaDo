@@ -5,9 +5,10 @@ import { insforge } from '../../lib/insforge';
 
 interface OnboardingWizardProps {
   onComplete: (settings: any) => Promise<void>;
+  onSkip?: () => void;
 }
 
-export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
+export default function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) {
   const [step, setStep] = useState<1 | 2>(1);
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -435,17 +436,26 @@ export default function OnboardingWizard({ onComplete }: OnboardingWizardProps) 
 
         {/* Footer controls */}
         <div className="p-6 bg-neutral-50 border-t border-neutral-100 flex items-center justify-between gap-4">
-          {step > 1 ? (
-            <button
-              type="button"
-              onClick={handlePrevStep}
-              className="px-6 py-3 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-[#1A2732] font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer bg-white h-11 flex items-center"
-            >
-              Atrás
-            </button>
-          ) : (
-            <div />
-          )}
+          <div className="flex items-center gap-2">
+            {step > 1 && (
+              <button
+                type="button"
+                onClick={handlePrevStep}
+                className="px-5 py-2.5 rounded-xl border border-neutral-300 hover:bg-neutral-100 text-[#1A2732] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer bg-white h-11 flex items-center"
+              >
+                Atrás
+              </button>
+            )}
+            {onSkip && (
+              <button
+                type="button"
+                onClick={onSkip}
+                className="px-4 py-2.5 rounded-xl border border-neutral-200 hover:bg-neutral-100 hover:border-neutral-300 text-neutral-600 hover:text-neutral-900 font-bold text-xs uppercase tracking-wider transition-all cursor-pointer bg-white h-11"
+              >
+                Omitir por ahora
+              </button>
+            )}
+          </div>
 
           {step === 1 ? (
             <button

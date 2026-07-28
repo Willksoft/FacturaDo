@@ -3,11 +3,10 @@
  * Provee búsqueda en tiempo real (autocomplete), validación de RNC/Cédulas y validación de NCFs.
  */
 
-const DEFAULT_API_KEY = 'dgii_9b3fe9dcc6c44e5ebdde4eaa7e6f8f7c';
 const BASE_URL = 'https://pptonanntevatndjyzmk.supabase.co/functions/v1/dgii-api';
 
 function getApiKey(): string {
-  return ((import.meta as any).env?.VITE_DGII_API_KEY as string) || DEFAULT_API_KEY;
+  return ((import.meta as any).env?.VITE_DGII_API_KEY as string) || '';
 }
 
 export interface DgiiSuggestion {

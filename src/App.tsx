@@ -386,6 +386,11 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
 
+  // Onboarding Skip State
+  const [isOnboardingSkipped, setIsOnboardingSkipped] = useState<boolean>(() => {
+    return localStorage.getItem('inv_onboarding_skipped') === 'true';
+  });
+
   React.useEffect(() => {
     // Inicializar estado desde la sesión de InsForge
     insforge.auth.getCurrentUser().then(({ data: { user } }) => {
@@ -1073,13 +1078,22 @@ export default function App() {
         element={
           !isLoggedIn ? (
             <Navigate to="/" replace />
-          ) : !needsOnboarding ? (
+          ) : !needsOnboarding && !isOnboardingSkipped ? (
             <Navigate to="/dashboard" replace />
           ) : (
             <OnboardingWizard
               onComplete={async (newSettings) => {
                 setNeedsOnboarding(false);
+                setIsOnboardingSkipped(false);
+                localStorage.removeItem('inv_onboarding_skipped');
                 await loadAllDataFromPostgres();
+                navigate('/dashboard');
+              }}
+              onSkip={() => {
+                setNeedsOnboarding(false);
+                setIsOnboardingSkipped(true);
+                localStorage.setItem('inv_onboarding_skipped', 'true');
+                navigate('/dashboard');
               }}
             />
           )
@@ -1091,7 +1105,7 @@ export default function App() {
         element={
           !isLoggedIn ? (
             <Navigate to="/" replace />
-          ) : needsOnboarding ? (
+          ) : (needsOnboarding && !isOnboardingSkipped) ? (
             <Navigate to="/onboarding" replace />
           ) : (
             <div id="full-system-container" className="flex flex-col lg:flex-row min-h-screen bg-[#fafafa] text-neutral-950 font-sans">
@@ -1847,6 +1861,35 @@ export default function App() {
       <main id="applet-primary-stage" className="flex-1 p-4 md:p-8 overflow-y-auto relative">
         {/* DYNAMIC TAB SWITCH RENDERER */}
         <div className="max-w-7xl mx-auto space-y-6">
+          
+          {/* ONBOARDING PENDING WARNING BANNER */}
+          {(needsOnboarding || isOnboardingSkipped) && (templateSettings.businessName === 'Mi Comercio Nuevo' || !templateSettings.businessRNC) && (
+            <div className="bg-amber-50/90 border border-amber-200/90 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-amber-900 animate-fade-in shadow-xs backdrop-blur-xs">
+              <div className="flex items-center gap-3 text-xs">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0 text-lg font-bold border border-amber-300/40">
+                  ⚠️
+                </div>
+                <div>
+                  <span className="font-extrabold text-amber-950 block text-xs tracking-tight">Configuración Inicial de Empresa Pendiente</span>
+                  <span className="text-amber-800 text-[11px] leading-relaxed block mt-0.5">
+                    Tu negocio opera con datos por defecto. Completa la información legal y RNC para validar tus comprobantes fiscales y NCF en la DGII.
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setNeedsOnboarding(true);
+                  setIsOnboardingSkipped(false);
+                  navigate('/onboarding');
+                }}
+                className="whitespace-nowrap px-4 py-2.5 bg-amber-900 hover:bg-amber-950 text-white font-extrabold text-xs rounded-xl shadow-sm transition-all cursor-pointer border-0 uppercase tracking-wider shrink-0 active:scale-95"
+              >
+                Completar Configuración
+              </button>
+            </div>
+          )}
+
           {currentTab === 'user-manual' && <UserManual />}
           
           {currentTab === 'dashboard' && (

@@ -24,7 +24,7 @@ export interface EcfCertificateInfo {
 }
 
 const MSELLER_BASE_URL = (import.meta as any).env?.VITE_MSELLER_BASE_URL || 'https://api.mseller.app/v1';
-const MSELLER_API_KEY = (import.meta as any).env?.VITE_MSELLER_API_KEY || 'dd3bb871-fe7f-4204-9540-5abf51c382b9';
+const MSELLER_API_KEY = (import.meta as any).env?.VITE_MSELLER_API_KEY || '';
 
 export async function uploadCertificateP12(file: File, password: string): Promise<{ success: boolean; message: string }> {
   console.log('Cargando certificado digital .p12 a MSeller encriptado:', file.name);

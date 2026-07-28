@@ -31,7 +31,7 @@ export const EcfMsellerView: React.FC = () => {
   const [certFile, setCertFile] = useState<File | null>(null);
   const [certPassword, setCertPassword] = useState('');
   const [certUploadedSuccess, setCertUploadedSuccess] = useState(false);
-  const [apiKeyGenerated, setApiKeyGenerated] = useState('dd3bb871-fe7f-4204-9540-5abf51c382b9');
+  const [apiKeyGenerated, setApiKeyGenerated] = useState((import.meta as any).env?.VITE_MSELLER_API_KEY || '');
 
   // ---------------------------------------------------------------------------
   // ESTADO DOCUMENTOS EMITIDOS
