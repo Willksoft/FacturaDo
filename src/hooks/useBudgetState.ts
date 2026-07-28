@@ -522,6 +522,26 @@ export function useBudgetState() {
     setBudgets(prev => prev.filter(b => b.id !== id));
   };
 
+  const toggleFavoriteBudget = (id: string) => {
+    setBudgets(prev => prev.map(b => b.id === id ? { ...b, isFavorite: !b.isFavorite } : b));
+  };
+
+  // Projects CRUD
+  const saveProject = (projectData: Omit<BudgetProject, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }) => {
+    if (projectData.id) {
+      setProjects(prev => prev.map(p => p.id === projectData.id ? { ...p, ...projectData, updatedAt: new Date().toISOString() } as BudgetProject : p));
+    } else {
+      const newPrj: BudgetProject = {
+        ...projectData,
+        id: `prj-${Date.now()}`,
+        projectNumber: `PRJ-${new Date().getFullYear()}-${String(projects.length + 1).padStart(3, '0')}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      setProjects(prev => [newPrj, ...prev]);
+    }
+  };
+
   const saveClientSignature = (id: string, signatureDataUrl: string, signerName: string) => {
     const target = budgets.find(b => b.id === id);
     if (!target) return;
@@ -543,9 +563,9 @@ export function useBudgetState() {
       budgetId: target.id,
       budgetNumber: target.budgetNumber,
       action: 'APROBAR',
-      userName: signerName || 'Cliente (Firma Digital)',
+      userName: signerName || 'Cliente (Firma Digital Opción)',
       date: new Date().toISOString(),
-      reason: 'Aprobado con firma digital en pantalla y reserva automática de stock.'
+      reason: 'Aprobado con firma digital en pantalla (opcional) y reserva de stock.'
     }, ...prev]);
   };
 

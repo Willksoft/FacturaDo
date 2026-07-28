@@ -67,14 +67,10 @@ export default function BudgetClientSignatureModal({
     setHasSignature(false);
   };
 
-  const handleConfirmSignature = () => {
+  const handleConfirmSignature = (skipSignature: boolean = false) => {
     const canvas = canvasRef.current;
-    if (!canvas || !hasSignature) {
-      alert('Por favor firme en el recuadro antes de confirmar.');
-      return;
-    }
-    const signatureDataUrl = canvas.toDataURL('image/png');
-    onSaveSignature(budget.id, signatureDataUrl, signerName);
+    const signatureDataUrl = (!skipSignature && canvas && hasSignature) ? canvas.toDataURL('image/png') : '';
+    onSaveSignature(budget.id, signatureDataUrl, signerName || 'Aprobado sin Firma');
     onClose();
   };
 
@@ -87,7 +83,7 @@ export default function BudgetClientSignatureModal({
             <PenTool className="w-5 h-5 text-emerald-600" />
             <div>
               <h2 className="text-sm font-extrabold text-neutral-900">
-                Aprobación & Firma Digital del Cliente
+                Aprobación Rápida & Firma (Opcional)
               </h2>
               <span className="text-[10px] text-neutral-500 font-mono">{budget.budgetNumber} — RD$ {budget.total.toLocaleString('es-DO')}</span>
             </div>
@@ -100,19 +96,19 @@ export default function BudgetClientSignatureModal({
         {/* SIGNATURE FORM */}
         <div className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-neutral-800">Nombre del Firmante / Representante Legal</label>
+            <label className="text-xs font-bold text-neutral-800">Nombre del Cliente / Representante (Opcional)</label>
             <Input
               type="text"
               value={signerName}
               onChange={(e) => setSignerName(e.target.value)}
-              placeholder="Ej: Lic. Carlos Pérez"
+              placeholder="Ej: Lic. Carlos Pérez (Opcional)"
               className="text-xs h-9 bg-neutral-50"
             />
           </div>
 
           <div className="space-y-1">
             <div className="flex justify-between items-center text-xs font-bold text-neutral-800">
-              <span>Trazo de Firma Digital en Pantalla</span>
+              <span>Trazo de Firma (Opcional)</span>
               <button
                 type="button"
                 onClick={clearCanvas}
@@ -137,27 +133,35 @@ export default function BudgetClientSignatureModal({
               />
               {!hasSignature && (
                 <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-neutral-400 text-xs font-semibold">
-                  Firme aquí con el mouse o pantalla táctil
+                  Firme aquí si lo desea (Opcional)
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* FOOTER */}
+        {/* FOOTER WITH QUICK EXIT */}
         <div className="flex items-center justify-between border-t border-neutral-150 pt-3">
           <Button variant="outline" onClick={onClose} className="text-xs h-9">
             Cancelar
           </Button>
 
-          <Button
-            onClick={handleConfirmSignature}
-            disabled={!hasSignature || !signerName}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9 px-5 flex items-center gap-1.5 cursor-pointer shadow-md disabled:opacity-50"
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            Aprobar y Registrar Firma
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => handleConfirmSignature(true)}
+              className="text-xs h-9 text-neutral-700 hover:bg-neutral-100 font-bold"
+            >
+              Aprobar Directamente (Sin Firma)
+            </Button>
+            <Button
+              onClick={() => handleConfirmSignature(false)}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9 px-4 flex items-center gap-1.5 cursor-pointer shadow-md"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              Guardar con Firma
+            </Button>
+          </div>
         </div>
       </div>
     </div>
