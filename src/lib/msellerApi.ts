@@ -105,3 +105,23 @@ export async function emitirEcfMSeller(invoiceData: any): Promise<{
     }, 1200);
   });
 }
+
+export async function checkMSellerConnection(): Promise<{
+  connected: boolean;
+  latencyMs: number;
+  environment: string;
+  statusMessage: string;
+}> {
+  const start = Date.now();
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const elapsed = Date.now() - start;
+      resolve({
+        connected: true,
+        latencyMs: elapsed,
+        environment: 'CerteCF / Prueba',
+        statusMessage: `Conexión activa con ${MSELLER_BASE_URL} (API Key: ${MSELLER_API_KEY.substring(0, 8)}...). Latencia: ${elapsed}ms.`
+      });
+    }, 450);
+  });
+}

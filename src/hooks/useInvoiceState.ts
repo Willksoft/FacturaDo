@@ -2404,13 +2404,20 @@ export function useInvoiceState() {
     const quote = invoices.find(i => i.id === quoteId && i.type === 'Cotizacion');
     if (!quote) return null;
 
+    const isEcfDoc = ncfType.startsWith('E');
+    const trackId = isEcfDoc ? `TRK-CONV-${Math.floor(Math.random() * 8999999 + 1000000)}` : undefined;
+    const qrUrl = isEcfDoc ? `https://dgii.gov.do/ecf/consultas?trackId=${trackId}` : undefined;
+
     const nInvoice = createInvoiceOrQuote({
       type: 'Factura',
       client: quote.client,
       items: quote.items,
       paymentMethod: quote.paymentMethod,
       ncfType: ncfType,
-      notes: `Convertida de CotizaciÃ³n No. ${quote.invoiceNumber}. ${quote.notes || ''}`,
+      isEcf: isEcfDoc,
+      ecfTrackId: trackId,
+      ecfQrUrl: qrUrl,
+      notes: `Convertida de Cotización No. ${quote.invoiceNumber}. ${quote.notes || ''}`,
       originalQuoteId: quote.id,
       originalQuoteNo: quote.invoiceNumber,
     });

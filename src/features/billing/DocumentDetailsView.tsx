@@ -840,11 +840,15 @@ export default function DocumentDetailsView({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="text-xs">
-                  <SelectItem value="B02">B02 - Consumidor Final / Consumo</SelectItem>
-                  <SelectItem value="B01">B01 - Crédito Fiscal (Válido para Costos y Gastos)</SelectItem>
-                  <SelectItem value="B14">B14 - Regímenes Especiales de Tributación</SelectItem>
-                  <SelectItem value="B15">B15 - Gubernamental</SelectItem>
-                  <SelectItem value="SIN">SIN COMPROBANTE - Consumo Interno</SelectItem>
+                  <SelectItem value="B02">🏢 B02 - Consumidor Final (NCF Tradicional)</SelectItem>
+                  <SelectItem value="B01">🏢 B01 - Crédito Fiscal (NCF Tradicional)</SelectItem>
+                  <SelectItem value="E32">⚡ E32 - Consumo Electrónico (e-CF MSeller)</SelectItem>
+                  <SelectItem value="E31">⚡ E31 - Crédito Fiscal Electrónico (e-CF MSeller)</SelectItem>
+                  <SelectItem value="E44">⚡ E44 - Especial Electrónico (e-CF MSeller)</SelectItem>
+                  <SelectItem value="E45">⚡ E45 - Gubernamental Electrónico (e-CF MSeller)</SelectItem>
+                  <SelectItem value="B14">🏢 B14 - Regímenes Especiales (NCF Tradicional)</SelectItem>
+                  <SelectItem value="B15">🏢 B15 - Gubernamental (NCF Tradicional)</SelectItem>
+                  <SelectItem value="SIN">🛒 SIN COMPROBANTE - Consumo Interno / Genérico</SelectItem>
                 </SelectContent>
               </Select>
             </div>

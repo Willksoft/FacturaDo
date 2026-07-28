@@ -30,6 +30,7 @@ export default function TemplateSettingsPanel({
   const [footerNote, setFooterNote] = useState(settings.footerNote);
   const [informalMode, setInformalMode] = useState(!!settings.informalMode);
   const [showProductPhotos, setShowProductPhotos] = useState(!!settings.showProductPhotos);
+  const [defaultIssuanceMode, setDefaultIssuanceMode] = useState<'B' | 'E' | 'SIN'>(settings.defaultIssuanceMode || 'B');
 
   const [ncfB01, setNcfB01] = useState(ncfSequences?.find(s => s.type === 'B01')?.currentNumber || 1);
   const [ncfB02, setNcfB02] = useState(ncfSequences?.find(s => s.type === 'B02')?.currentNumber || 1);
@@ -151,6 +152,7 @@ export default function TemplateSettingsPanel({
       bankAccountCurrency: showBankAccountsOnQuote ? 'true' : (bankAccounts[0]?.currency || 'false'),
       templateStyle,
       informalMode,
+      defaultIssuanceMode,
     };
     saveTemplateSettings(updated);
     setLocalFeedback('¡Perfiles de facturación, cuentas bancarias, estilos y plantillas almacenados de forma segura!');
@@ -217,7 +219,53 @@ export default function TemplateSettingsPanel({
                 <Input id="biz-address" value={businessAddress} onChange={(e) => setBusinessAddress(e.target.value)} placeholder="Av. Principal #123, Distrito Nacional" className="text-xs h-10" />
               </div>
               
-              <div className="pt-4 border-t border-neutral-100 flex justify-end">
+              {/* DEFAULT ISSUANCE MODE SELECTOR */}
+              <div className="pt-4 border-t border-neutral-100 space-y-3">
+                <div>
+                  <Label className="text-xs font-bold text-neutral-800">Modo de Facturación Predeterminado</Label>
+                  <p className="text-[10px] text-neutral-500 mt-0.5">Seleccione el tipo de comprobante que se pre-seleccionará al crear una nueva factura. Puede cambiarlo en cualquier momento desde el formulario de factura.</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setDefaultIssuanceMode('B')}
+                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer border text-left space-y-0.5 ${
+                      defaultIssuanceMode === 'B'
+                        ? 'bg-neutral-900 text-white border-neutral-900 shadow-sm'
+                        : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
+                    }`}
+                  >
+                    <div>🏢 NCF Tradicional</div>
+                    <div className={`text-[9px] font-semibold ${defaultIssuanceMode === 'B' ? 'text-neutral-300' : 'text-neutral-400'}`}>Serie B (B01, B02, B14, B15)</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDefaultIssuanceMode('E')}
+                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer border text-left space-y-0.5 ${
+                      defaultIssuanceMode === 'E'
+                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                        : 'bg-white text-neutral-700 border-neutral-200 hover:bg-emerald-50'
+                    }`}
+                  >
+                    <div>⚡ e-CF Electrónico</div>
+                    <div className={`text-[9px] font-semibold ${defaultIssuanceMode === 'E' ? 'text-emerald-100' : 'text-neutral-400'}`}>Serie E (MSeller DGII)</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDefaultIssuanceMode('SIN')}
+                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer border text-left space-y-0.5 ${
+                      defaultIssuanceMode === 'SIN'
+                        ? 'bg-slate-700 text-white border-slate-700 shadow-sm'
+                        : 'bg-white text-neutral-700 border-neutral-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div>🛒 Genérico</div>
+                    <div className={`text-[9px] font-semibold ${defaultIssuanceMode === 'SIN' ? 'text-slate-300' : 'text-neutral-400'}`}>Sin RNC / Consumo Interno</div>
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
                 <Button type="submit" className="bg-black text-white hover:bg-neutral-800 text-xs font-semibold h-10 px-6">
                   Guardar Perfil Fiscal
                 </Button>

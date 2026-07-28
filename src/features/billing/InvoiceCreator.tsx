@@ -61,7 +61,13 @@ export default function InvoiceCreator({
   }, [initialDocType, initialPrefilledDoc]);
 
   const [selectedClientId, setSelectedClientId] = useState(initialPrefilledDoc ? initialPrefilledDoc.client.id : '');
-  const [selectedNcfType, setSelectedNcfType] = useState<NcfType>(initialPrefilledDoc ? initialPrefilledDoc.ncfType : 'B02');
+  const [selectedNcfType, setSelectedNcfType] = useState<NcfType>(() => {
+    if (initialPrefilledDoc) return initialPrefilledDoc.ncfType;
+    const def = templateSettings?.defaultIssuanceMode || 'B';
+    if (def === 'E') return 'E32';
+    if (def === 'SIN') return 'SIN';
+    return 'B02';
+  });
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(initialPrefilledDoc ? initialPrefilledDoc.paymentMethod : 'Efectivo');
   
   // Vendedor (Seller) logic
@@ -72,7 +78,10 @@ export default function InvoiceCreator({
   );
 
   // e-CF Mode
-  const [isEcfMode, setIsEcfMode] = useState<boolean>(initialPrefilledDoc ? !!initialPrefilledDoc.isEcf : false);
+  const [isEcfMode, setIsEcfMode] = useState<boolean>(() => {
+    if (initialPrefilledDoc) return !!initialPrefilledDoc.isEcf;
+    return templateSettings?.defaultIssuanceMode === 'E';
+  });
   const [isEmitting, setIsEmitting] = useState(false);
   
   // Custom Sequence override
@@ -1153,7 +1162,30 @@ export default function InvoiceCreator({
       <div className="space-y-2 max-w-2xl">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-bold text-neutral-800">Modo de Emisión y Tipo de Documento</Label>
-          <span className="text-[10px] text-neutral-500 font-semibold">Opciones 100% Flexibles para DGII</span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const defMode = templateSettings?.defaultIssuanceMode || 'B';
+                setDocType('Factura');
+                if (defMode === 'E') {
+                  setIsEcfMode(true);
+                  setSelectedNcfType('E32');
+                } else if (defMode === 'SIN') {
+                  setIsEcfMode(false);
+                  setSelectedNcfType('SIN' as any);
+                } else {
+                  setIsEcfMode(false);
+                  setSelectedNcfType('B02');
+                }
+                toast.success('Modo de emisión restablecido a la configuración predeterminada.');
+              }}
+              className="text-[10px] text-indigo-700 hover:text-indigo-900 font-bold bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 rounded-lg border border-indigo-200 cursor-pointer"
+            >
+              ↺ Restablecer Modo Predeterminado
+            </button>
+            <span className="text-[10px] text-neutral-500 font-semibold hidden sm:inline">Opciones 100% Flexibles DGII</span>
+          </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-neutral-100 p-1.5 rounded-xl border border-neutral-200">
           <button

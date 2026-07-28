@@ -265,6 +265,7 @@ export interface TemplateSettings {
   fontFamily?: string;
   informalMode?: boolean; // Si es true, el negocio es informal: sin RNC, sin NCF DGII, numeración interna FAC-######
   showProductPhotos?: boolean; // Global toggle to show product photos on PDFs
+  defaultIssuanceMode?: 'B' | 'E' | 'SIN'; // Modo de facturación por defecto (Tradicional B, Electrónico E, Genérico)
 }
 
 export interface Seller {
