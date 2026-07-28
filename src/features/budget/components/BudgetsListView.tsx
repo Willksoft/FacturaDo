@@ -14,7 +14,11 @@ import {
   FileSpreadsheet,
   ArrowRight,
   Filter,
-  Printer
+  Printer,
+  HardHat,
+  Sliders,
+  PenTool,
+  MessageSquare
 } from 'lucide-react';
 import { Card } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
@@ -22,6 +26,10 @@ import { Input } from '../../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Budget, BudgetStatus } from '../../../types/budget';
 import BudgetPdfModal from './BudgetPdfModal';
+import BudgetWorkOrderModal from './BudgetWorkOrderModal';
+import BudgetSensitivitySimulatorModal from './BudgetSensitivitySimulatorModal';
+import BudgetVersionComparerModal from './BudgetVersionComparerModal';
+import BudgetClientSignatureModal from './BudgetClientSignatureModal';
 
 interface BudgetsListViewProps {
   budgets: Budget[];
@@ -32,6 +40,7 @@ interface BudgetsListViewProps {
   onMoveToTrash: (id: string) => void;
   onToggleFavorite: (id: string) => void;
   onConvertToQuote: (budget: Budget) => void;
+  onSaveClientSignature?: (id: string, signatureUrl: string, name: string) => void;
 }
 
 export default function BudgetsListView({
@@ -42,11 +51,16 @@ export default function BudgetsListView({
   onCreateVersion,
   onMoveToTrash,
   onToggleFavorite,
-  onConvertToQuote
+  onConvertToQuote,
+  onSaveClientSignature
 }: BudgetsListViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('TODOS');
   const [selectedPdfBudget, setSelectedPdfBudget] = useState<Budget | null>(null);
+  const [selectedWorkOrderBudget, setSelectedWorkOrderBudget] = useState<Budget | null>(null);
+  const [selectedSimulatorBudget, setSelectedSimulatorBudget] = useState<Budget | null>(null);
+  const [selectedCompareBudget, setSelectedCompareBudget] = useState<Budget | null>(null);
+  const [selectedSignatureBudget, setSelectedSignatureBudget] = useState<Budget | null>(null);
 
   const activeBudgets = budgets.filter(b => !b.isDeleted);
 
@@ -167,6 +181,36 @@ export default function BudgetsListView({
                   <Button
                     variant="ghost"
                     size="icon"
+                    onClick={() => setSelectedSignatureBudget(b)}
+                    className="h-8 w-8 text-emerald-600 hover:bg-emerald-50 rounded-md"
+                    title="Aprobación & Firma Digital del Cliente"
+                  >
+                    <PenTool className="w-3.5 h-3.5" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSelectedWorkOrderBudget(b)}
+                    className="h-8 w-8 text-amber-600 hover:bg-amber-50 rounded-md"
+                    title="Hoja de Orden de Trabajo para Taller (Sin Precios)"
+                  >
+                    <HardHat className="w-3.5 h-3.5" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSelectedSimulatorBudget(b)}
+                    className="h-8 w-8 text-purple-600 hover:bg-purple-50 rounded-md"
+                    title="Simulador de Sensibilidad What-If"
+                  >
+                    <Sliders className="w-3.5 h-3.5" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setSelectedPdfBudget(b)}
                     className="h-8 w-8 text-slate-700 hover:bg-slate-100 rounded-md"
                     title="Vista PDF e Imprimir Presupuesto"
@@ -177,21 +221,34 @@ export default function BudgetsListView({
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => onDuplicateBudget(b.id)}
-                    className="h-8 w-8 text-neutral-600 hover:bg-neutral-100 rounded-md"
-                    title="Duplicar Presupuesto"
+                    onClick={() => {
+                      const text = encodeURIComponent(`Hola ${b.clientName || ''}, te compartimos el presupuesto ${b.budgetNumber} por un total de RD$ ${b.total.toLocaleString('es-DO')}.`);
+                      window.open(`https://wa.me/?text=${text}`, '_blank');
+                    }}
+                    className="h-8 w-8 text-emerald-600 hover:bg-emerald-50 rounded-md"
+                    title="Enviar por WhatsApp"
                   >
-                    <Copy className="w-3.5 h-3.5" />
+                    <MessageSquare className="w-3.5 h-3.5" />
                   </Button>
 
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => onCreateVersion(b.id)}
+                    onClick={() => setSelectedCompareBudget(b)}
                     className="h-8 w-8 text-indigo-600 hover:bg-indigo-50 rounded-md"
-                    title="Crear Nueva Versión (v+1)"
+                    title="Comparar Versiones Lado a Lado"
                   >
                     <GitBranch className="w-3.5 h-3.5" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDuplicateBudget(b.id)}
+                    className="h-8 w-8 text-neutral-600 hover:bg-neutral-100 rounded-md"
+                    title="Duplicar Presupuesto"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
                   </Button>
 
                   <Button
@@ -214,6 +271,40 @@ export default function BudgetsListView({
         <BudgetPdfModal
           budget={selectedPdfBudget}
           onClose={() => setSelectedPdfBudget(null)}
+        />
+      )}
+
+      {selectedWorkOrderBudget && (
+        <BudgetWorkOrderModal
+          budget={selectedWorkOrderBudget}
+          onClose={() => setSelectedWorkOrderBudget(null)}
+        />
+      )}
+
+      {selectedSimulatorBudget && (
+        <BudgetSensitivitySimulatorModal
+          budget={selectedSimulatorBudget}
+          onClose={() => setSelectedSimulatorBudget(null)}
+        />
+      )}
+
+      {selectedCompareBudget && (
+        <BudgetVersionComparerModal
+          currentBudget={selectedCompareBudget}
+          allBudgets={budgets}
+          onClose={() => setSelectedCompareBudget(null)}
+        />
+      )}
+
+      {selectedSignatureBudget && (
+        <BudgetClientSignatureModal
+          budget={selectedSignatureBudget}
+          onClose={() => setSelectedSignatureBudget(null)}
+          onSaveSignature={(id, url, name) => {
+            if (onSaveClientSignature) {
+              onSaveClientSignature(id, url, name);
+            }
+          }}
         />
       )}
     </div>

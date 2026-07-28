@@ -174,6 +174,10 @@ export interface Budget {
   convertedToQuoteNo?: string;
   convertedToInvoiceId?: string;
   convertedToInvoiceNo?: string;
+  clientSignatureUrl?: string;
+  clientSignatureDate?: string;
+  isStockReserved?: boolean;
+  workOrderNo?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -60,7 +60,8 @@ export default function BudgetCenterMainView({
     restoreFromTrash,
     deleteBudgetPermanently,
     toggleFavoriteBudget,
-    saveProject
+    saveProject,
+    saveClientSignature
   } = useBudgetState();
 
   const [showEditorModal, setShowEditorModal] = useState(false);
@@ -243,6 +244,7 @@ export default function BudgetCenterMainView({
           onMoveToTrash={moveToTrash}
           onToggleFavorite={toggleFavoriteBudget}
           onConvertToQuote={handleConvertToQuote}
+          onSaveClientSignature={saveClientSignature}
         />
       )}
 
