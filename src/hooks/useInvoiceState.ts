@@ -896,30 +896,10 @@ export function useInvoiceState() {
         }
         setClients(loadedClients);
       } else {
-        if (isRealUser) {
-          // A real new user has no clients at start! Create a Consumption Client with prefix in db, clean in local state!
-          const consumptionClient: Client = {
-            id: 'cli-consumo',
-            type: 'Fisica',
-            name: 'Cliente de Consumo',
-            rncOrCedula: '',
-            email: '',
-            phone: '',
-            address: '',
-            createdAt: new Date().toISOString(),
-            dgiiVerified: false,
-          };
-          const dbCli = mapClientToDb(consumptionClient);
-          dbCli.id = `${currentUserId}_${consumptionClient.id}`;
-          await insforge.database.from('clients').insert([dbCli]);
-          loadedClients = [consumptionClient];
-          setClients(loadedClients);
-        } else {
-          const seedMapped = initialClients.map(mapClientToDb);
-          await insforge.database.from('clients').insert(seedMapped);
-          loadedClients = initialClients;
-          setClients(initialClients);
-        }
+        const seedMapped = initialClients.map(mapClientToDb);
+        await insforge.database.from('clients').insert(seedMapped);
+        loadedClients = initialClients;
+        setClients(initialClients);
       }
       localStorage.setItem('inv_clients', JSON.stringify(loadedClients));
 
@@ -934,20 +914,10 @@ export function useInvoiceState() {
         }));
         setNcfSequences(loadedNcfSequences);
       } else {
-        if (isRealUser) {
-          const defaultUserNcf = initialNcfSequences.map(seq => ({
-            ...seq,
-            type: `${currentUserId}_${seq.type}` as any
-          }));
-          await insforge.database.from('ncf_sequences').insert(defaultUserNcf.map(mapNcfSequenceToDb));
-          loadedNcfSequences = initialNcfSequences;
-          setNcfSequences(initialNcfSequences);
-        } else {
-          const seedNcfMapped = initialNcfSequences.map(mapNcfSequenceToDb);
-          await insforge.database.from('ncf_sequences').insert(seedNcfMapped);
-          loadedNcfSequences = initialNcfSequences;
-          setNcfSequences(initialNcfSequences);
-        }
+        const seedNcfMapped = initialNcfSequences.map(mapNcfSequenceToDb);
+        await insforge.database.from('ncf_sequences').insert(seedNcfMapped);
+        loadedNcfSequences = initialNcfSequences;
+        setNcfSequences(initialNcfSequences);
       }
       localStorage.setItem('inv_ncf_seq', JSON.stringify(loadedNcfSequences));
 
@@ -962,15 +932,10 @@ export function useInvoiceState() {
         }));
         setProviders(loadedProviders);
       } else {
-        if (isRealUser) {
-          loadedProviders = [];
-          setProviders([]);
-        } else {
-          const seedProvidersMapped = initialProviders.map(mapProviderToDb);
-          await insforge.database.from('providers').insert(seedProvidersMapped);
-          loadedProviders = initialProviders;
-          setProviders(initialProviders);
-        }
+        const seedProvidersMapped = initialProviders.map(mapProviderToDb);
+        await insforge.database.from('providers').insert(seedProvidersMapped);
+        loadedProviders = initialProviders;
+        setProviders(initialProviders);
       }
       localStorage.setItem('inv_providers', JSON.stringify(loadedProviders));
 
@@ -985,26 +950,10 @@ export function useInvoiceState() {
         }));
         setWarehouses(loadedWarehouses);
       } else {
-        if (isRealUser) {
-          const defaultWh = {
-            id: 'wh-default',
-            name: 'AlmacÃ©n Principal',
-            code: 'ALM-01',
-            location: 'Santo Domingo',
-            phone: '809-555-0199',
-            manager: 'Administrador',
-            is_default: true
-          };
-          const dbWh = { ...defaultWh, id: `${currentUserId}_${defaultWh.id}` };
-          await insforge.database.from('warehouses').insert([dbWh]);
-          loadedWarehouses = [mapWarehouseFromDb(defaultWh)];
-          setWarehouses(loadedWarehouses);
-        } else {
-          const seedWhMapped = initialWarehouses.map(mapWarehouseToDb);
-          await insforge.database.from('warehouses').insert(seedWhMapped);
-          loadedWarehouses = initialWarehouses;
-          setWarehouses(initialWarehouses);
-        }
+        const seedWhMapped = initialWarehouses.map(mapWarehouseToDb);
+        await insforge.database.from('warehouses').insert(seedWhMapped);
+        loadedWarehouses = initialWarehouses;
+        setWarehouses(initialWarehouses);
       }
       localStorage.setItem('inv_warehouses', JSON.stringify(loadedWarehouses));
 
@@ -1021,15 +970,10 @@ export function useInvoiceState() {
         }));
         setProducts(loadedProducts);
       } else {
-        if (isRealUser) {
-          loadedProducts = [];
-          setProducts([]);
-        } else {
-          const seedProdMapped = initialProducts.map(mapProductToDb);
-          await insforge.database.from('products').insert(seedProdMapped);
-          loadedProducts = initialProducts;
-          setProducts(initialProducts);
-        }
+        const seedProdMapped = initialProducts.map(mapProductToDb);
+        await insforge.database.from('products').insert(seedProdMapped);
+        loadedProducts = initialProducts;
+        setProducts(initialProducts);
       }
       localStorage.setItem('inv_products', JSON.stringify(loadedProducts));
 
@@ -1044,23 +988,10 @@ export function useInvoiceState() {
         }));
         setFinancialAccounts(loadedAccounts);
       } else {
-        if (isRealUser) {
-          const defaultAccounts = [
-            { id: 'acc-1', name: 'Caja General (Efectivo)', type: 'Caja' as any, balance: 0, account_number: 'N/A', bank_name: 'Efectivo', createdAt: new Date().toISOString() },
-            { id: 'acc-2', name: 'Cuenta Operativa Popular', type: 'Banco' as any, balance: 0, account_number: '748596123', bank_name: 'Banco Popular', createdAt: new Date().toISOString() }
-          ];
-          await insforge.database.from('financial_accounts').insert(defaultAccounts.map(a => ({
-            ...mapFinancialAccountToDb(a),
-            id: `${currentUserId}_${a.id}`
-          })));
-          loadedAccounts = defaultAccounts;
-          setFinancialAccounts(loadedAccounts);
-        } else {
-          const seedAccMapped = initialFinancialAccounts.map(mapFinancialAccountToDb);
-          await insforge.database.from('financial_accounts').insert(seedAccMapped);
-          loadedAccounts = initialFinancialAccounts;
-          setFinancialAccounts(initialFinancialAccounts);
-        }
+        const seedAccMapped = initialFinancialAccounts.map(mapFinancialAccountToDb);
+        await insforge.database.from('financial_accounts').insert(seedAccMapped);
+        loadedAccounts = initialFinancialAccounts;
+        setFinancialAccounts(initialFinancialAccounts);
       }
       localStorage.setItem('inv_accounts', JSON.stringify(loadedAccounts));
 
@@ -1079,8 +1010,8 @@ export function useInvoiceState() {
         });
         setInvoices(loadedInvoices);
       } else {
-        loadedInvoices = [];
-        setInvoices([]);
+        loadedInvoices = initialInvoices;
+        setInvoices(initialInvoices);
       }
       localStorage.setItem('inv_invoices', JSON.stringify(loadedInvoices));
 
@@ -1099,8 +1030,8 @@ export function useInvoiceState() {
         });
         setReceipts(loadedReceipts);
       } else {
-        loadedReceipts = [];
-        setReceipts([]);
+        loadedReceipts = initialReceipts;
+        setReceipts(initialReceipts);
       }
       localStorage.setItem('inv_receipts', JSON.stringify(loadedReceipts));
 
@@ -1153,8 +1084,8 @@ export function useInvoiceState() {
         });
         setExpenses(loadedExpenses);
       } else {
-        loadedExpenses = [];
-        setExpenses([]);
+        loadedExpenses = initialExpenses;
+        setExpenses(initialExpenses);
       }
       localStorage.setItem('inv_expenses', JSON.stringify(loadedExpenses));
 

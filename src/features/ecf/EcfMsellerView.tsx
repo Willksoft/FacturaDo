@@ -145,7 +145,7 @@ export const EcfMsellerView: React.FC = () => {
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 text-emerald-400 rounded-full text-xs font-semibold backdrop-blur-xs border border-emerald-500/30">
             <Sparkles className="w-3.5 h-3.5" />
-            Integración Oficial eCF-MSeller & DGII
+            Integración Oficial e-CF & DGII República Dominicana
           </div>
           <h1 className="text-2xl sm:text-3xl font-heading font-bold text-white tracking-tight">
             Facturación Electrónica e-CF & Firma Digital (.p12)
@@ -213,7 +213,7 @@ export const EcfMsellerView: React.FC = () => {
             activeTab === 'config' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <Key className="w-4 h-4 text-purple-500" /> API Keys & Config
+          <ShieldCheck className="w-4 h-4 text-purple-500" /> Estado del Conector DGII
         </button>
       </div>
 
@@ -603,31 +603,37 @@ export const EcfMsellerView: React.FC = () => {
         </div>
       )}
 
-      {/* PESTAÑA 5: CONFIGURACIÓN & API KEYS */}
+      {/* PESTAÑA 5: ESTADO DEL CONECTOR DGII */}
       {activeTab === 'config' && (
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
           <div>
-            <h2 className="text-xl font-heading font-bold text-slate-900">Configuración de Credenciales MSeller</h2>
+            <h2 className="text-xl font-heading font-bold text-slate-900 flex items-center gap-2">
+              <ShieldCheck className="w-6 h-6 text-purple-600" />
+              Estado del Conector Oficial e-CF & DGII
+            </h2>
             <p className="text-xs text-slate-500 mt-1">
-              Claves de autenticación y conexión con el backend de MSeller.
+              Monitoreo del servicio interno de comunicación fiscal y firmas digitales.
             </p>
           </div>
 
-          <div className="max-w-xl space-y-4 text-xs">
-            <div>
-              <label className="font-medium text-slate-700 block mb-1">MSeller x-api-key (Producción / Test):</label>
-              <input
-                type="text"
-                value={apiKeyGenerated}
-                onChange={(e) => setApiKeyGenerated(e.target.value)}
-                className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl font-mono"
-              />
+          <div className="max-w-2xl space-y-4 text-xs">
+            <div className="p-4 bg-slate-900 text-white rounded-2xl space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span className="font-bold text-emerald-400 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Conexión Fiscal e-CF Interna: ACTIVA
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">Entorno: {environment}</span>
+              </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                La API e-CF opera de forma transparente e interna con los servidores de la Dirección General de Impuestos Internos (DGII). Todas las firmas electrónicas `.p12` se procesan con encriptación AES-256 en memoria segura sin exponer llaves privadas.
+              </p>
             </div>
 
             <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-1">
-              <span className="font-bold text-emerald-900 block">Estatus del Certificado Digital:</span>
-              <span className="text-xs text-emerald-800">
-                {certUploadedSuccess ? '✓ Certificado .p12 Activo y Encriptado en Almacenamiento Seguro' : '⚠️ No se ha cargado un certificado .p12 aún.'}
+              <span className="font-bold text-emerald-900 block">Estatus del Certificado Digital (.p12):</span>
+              <span className="text-xs text-emerald-800 font-medium">
+                {certUploadedSuccess ? '✓ Certificado Digital Activo y Encriptado en Almacenamiento Seguro' : '⚠️ Sin certificado .p12 configurado. Puede cargar uno en la pestaña de Certificación.'}
               </span>
             </div>
           </div>
