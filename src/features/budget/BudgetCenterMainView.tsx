@@ -196,107 +196,114 @@ export default function BudgetCenterMainView({
   };
 
   return (
-    <div className="space-y-6" id="budget-center-root">
-      {/* HEADER TITLE & SUBMODULE TAB BAR */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-neutral-200 p-4 rounded-2xl shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+    <div className="flex flex-col lg:flex-row gap-6 items-start" id="budget-center-root">
+      {/* SIDEBAR SECUNDARIO DE PRESUPUESTOS */}
+      <aside className="w-full lg:w-60 shrink-0 bg-white border border-neutral-200 rounded-2xl p-3.5 space-y-1.5 shadow-xs font-sans">
+        <div className="px-2 py-2 border-b border-neutral-150 mb-2 flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold shrink-0">
             <Calculator className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold text-neutral-900 font-heading">
-              Centro de Presupuestos
-            </h1>
-            <p className="text-xs text-neutral-500">
-              Estimación de costos dinámica, recursos, plantillas e integración con ventas.
-            </p>
+            <h2 className="text-xs font-extrabold text-neutral-900 leading-none">Centro Presupuestos</h2>
+            <span className="text-[10px] text-neutral-500 font-medium mt-0.5 block">Menú Secundario</span>
           </div>
         </div>
 
-        {/* SUBMODULE TABS */}
-        <div className="flex items-center space-x-1 bg-neutral-100 p-1 rounded-xl border border-neutral-200 overflow-x-auto max-w-full">
+        <nav className="space-y-1">
           <button
             onClick={() => setActiveTab('dashboard')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'dashboard' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+            <LayoutDashboard className="w-4 h-4 shrink-0" />
+            <span>🏠 Dashboard</span>
           </button>
 
           <button
             onClick={() => setActiveTab('presupuestos')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'presupuestos' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'presupuestos' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <FileText className="w-3.5 h-3.5" /> Presupuestos
+            <FileText className="w-4 h-4 shrink-0" />
+            <span>📄 Presupuestos</span>
           </button>
 
           <button
             onClick={() => setActiveTab('proyectos')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'proyectos' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'proyectos' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <Briefcase className="w-3.5 h-3.5" /> Proyectos
+            <Briefcase className="w-4 h-4 shrink-0" />
+            <span>📁 Proyectos</span>
           </button>
 
           <button
             onClick={() => setActiveTab('plantillas')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'plantillas' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'plantillas' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" /> Plantillas
+            <Layers className="w-4 h-4 shrink-0" />
+            <span>🧩 Plantillas</span>
           </button>
 
           <button
             onClick={() => setActiveTab('recursos')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'recursos' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'recursos' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <Package className="w-3.5 h-3.5" /> Recursos
+            <Package className="w-4 h-4 shrink-0" />
+            <span>📦 Recursos</span>
           </button>
 
           <button
             onClick={() => setActiveTab('variables')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'variables' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'variables' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <Sliders className="w-3.5 h-3.5" /> Variables
+            <Sliders className="w-4 h-4 shrink-0" />
+            <span>🧮 Variables & Categorías</span>
           </button>
 
           <button
             onClick={() => setActiveTab('favoritos')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'favoritos' ? 'bg-amber-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'favoritos' ? 'bg-amber-500 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <Star className="w-3.5 h-3.5 fill-amber-300" /> Favoritos
+            <Star className="w-4 h-4 shrink-0 fill-amber-200" />
+            <span>⭐ Favoritos</span>
           </button>
 
           <button
             onClick={() => setActiveTab('auditoria')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'auditoria' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'auditoria' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <History className="w-3.5 h-3.5" /> Historial
+            <History className="w-4 h-4 shrink-0" />
+            <span>📜 Historial & Papelera</span>
           </button>
 
           <button
             onClick={() => setActiveTab('config')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'config' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900'
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+              activeTab === 'config' ? 'bg-indigo-600 text-white shadow-xs' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'
             }`}
           >
-            <Settings className="w-3.5 h-3.5" /> Config
+            <Settings className="w-4 h-4 shrink-0" />
+            <span>⚙ Configuración</span>
           </button>
-        </div>
-      </div>
+        </nav>
+      </aside>
+
+      {/* WORKSPACE CONTENT AREA */}
+      <main className="flex-1 min-w-0 w-full space-y-6">
 
       {/* RENDER ACTIVE SUBMODULE */}
       {activeTab === 'dashboard' && (
@@ -409,6 +416,8 @@ export default function BudgetCenterMainView({
           onConvertToQuote={handleConvertToQuote}
         />
       )}
+
+      </main>
 
       {/* FLOATING ACTION BUTTON (+) FOR QUICK CREATION */}
       <div className="fixed bottom-6 right-6 z-40">

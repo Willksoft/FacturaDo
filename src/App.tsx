@@ -209,7 +209,6 @@ const sidebarCategories = [
       { id: 'pos', name: 'Punto de Venta (POS)', icon: Store },
       { id: 'facturas', name: 'Facturas', icon: FilePlus, params: 'facturas_all' },
       { id: 'ecf-mseller', name: 'Facturación Electrónica (e-CF)', icon: ShieldCheck },
-      { id: 'centro-presupuestos', name: 'Centro de Presupuestos', icon: Calculator },
       { id: 'vendedores', name: 'Vendedores', icon: Briefcase },
       { id: 'cotizaciones', name: 'Cotizaciones', icon: ClipboardList, params: 'cotizaciones_all' },
       { id: 'notas-credito', name: 'Notas de crédito', icon: AlertTriangle },
@@ -271,20 +270,6 @@ const sidebarCategories = [
       { id: 'rep-608', name: 'Reporte 608', icon: FileSpreadsheet },
       { id: 'rep-609', name: 'Reporte 609', icon: FileSpreadsheet },
       { id: 'rep-excel', name: 'Exportar Excel', icon: FileSpreadsheet },
-    ]
-  },
-  {
-    title: "Nómina & R.H.",
-    icon: Users,
-    items: [
-      { id: 'nomina', name: 'Nómina TSS & ISR', icon: Users },
-    ]
-  },
-  {
-    title: "Centro de Presupuestos",
-    icon: Calculator,
-    items: [
-      { id: 'centro-presupuestos', name: 'Centro de Presupuestos', icon: Calculator },
     ]
   },
   {
@@ -1143,6 +1128,38 @@ export default function App() {
             >
               <TrendingUp className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0`} />
               {!isSidebarCollapsed && <span>Estado de mi negocio</span>}
+            </button>
+          </div>
+
+          <div className="space-y-1 mt-1">
+            <button
+              type="button"
+              title={isSidebarCollapsed ? "Nómina y R.H." : undefined}
+              onClick={() => checkAndNavigate('nomina')}
+              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
+                currentTab === 'nomina'
+                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
+              }`}
+            >
+              <Users className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-indigo-500`} />
+              {!isSidebarCollapsed && <span>Nómina y R.H.</span>}
+            </button>
+          </div>
+
+          <div className="space-y-1 mt-1">
+            <button
+              type="button"
+              title={isSidebarCollapsed ? "Centro de Presupuestos" : undefined}
+              onClick={() => checkAndNavigate('centro-presupuestos')}
+              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
+                currentTab === 'centro-presupuestos'
+                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
+              }`}
+            >
+              <Calculator className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-emerald-600`} />
+              {!isSidebarCollapsed && <span>Centro de Presupuestos</span>}
             </button>
           </div>
 
