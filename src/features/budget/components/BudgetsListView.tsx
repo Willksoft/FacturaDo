@@ -13,13 +13,15 @@ import {
   Eye,
   FileSpreadsheet,
   ArrowRight,
-  Filter
+  Filter,
+  Printer
 } from 'lucide-react';
 import { Card } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Budget, BudgetStatus } from '../../../types/budget';
+import BudgetPdfModal from './BudgetPdfModal';
 
 interface BudgetsListViewProps {
   budgets: Budget[];
@@ -44,6 +46,7 @@ export default function BudgetsListView({
 }: BudgetsListViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('TODOS');
+  const [selectedPdfBudget, setSelectedPdfBudget] = useState<Budget | null>(null);
 
   const activeBudgets = budgets.filter(b => !b.isDeleted);
 
@@ -164,6 +167,16 @@ export default function BudgetsListView({
                   <Button
                     variant="ghost"
                     size="icon"
+                    onClick={() => setSelectedPdfBudget(b)}
+                    className="h-8 w-8 text-slate-700 hover:bg-slate-100 rounded-md"
+                    title="Vista PDF e Imprimir Presupuesto"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => onDuplicateBudget(b.id)}
                     className="h-8 w-8 text-neutral-600 hover:bg-neutral-100 rounded-md"
                     title="Duplicar Presupuesto"
@@ -196,6 +209,13 @@ export default function BudgetsListView({
           ))
         )}
       </div>
+
+      {selectedPdfBudget && (
+        <BudgetPdfModal
+          budget={selectedPdfBudget}
+          onClose={() => setSelectedPdfBudget(null)}
+        />
+      )}
     </div>
   );
 }
