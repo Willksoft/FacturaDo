@@ -1149,26 +1149,75 @@ export default function InvoiceCreator({
         </div>
       </div>
 
-      {/* COMPACT DOCUMENT TYPE SWITCH */}
-      <div className="max-w-md space-y-1">
-        <Label className="text-xs font-semibold text-neutral-700">Tipo de Documento Principal</Label>
-        <div className="grid grid-cols-2 gap-1.5 bg-neutral-100 p-1 rounded-lg">
-          <Button
-            id="btntype-factura"
-            variant={docType === 'Factura' ? 'default' : 'ghost'}
-            className="text-xs h-8 rounded-md transition-all font-medium py-0"
-            onClick={() => setDocType('Factura')}
+      {/* COMPACT DOCUMENT TYPE & ISSUANCE MODE SWITCH */}
+      <div className="space-y-2 max-w-2xl">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-bold text-neutral-800">Modo de Emisión y Tipo de Documento</Label>
+          <span className="text-[10px] text-neutral-500 font-semibold">Opciones 100% Flexibles para DGII</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-neutral-100 p-1.5 rounded-xl border border-neutral-200">
+          <button
+            type="button"
+            onClick={() => {
+              setDocType('Factura');
+              setIsEcfMode(false);
+              if (selectedNcfType === 'SIN') setSelectedNcfType('B02');
+            }}
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+              docType === 'Factura' && !isEcfMode && selectedNcfType !== 'SIN'
+                ? 'bg-neutral-900 text-white border-neutral-900 shadow-xs'
+                : 'bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50'
+            }`}
           >
-            Factura de Venta
-          </Button>
-          <Button
-            id="btntype-cotizacion"
-            variant={docType === 'Cotizacion' ? 'default' : 'ghost'}
-            className="text-xs h-8 rounded-md transition-all font-medium py-0"
-            onClick={() => setDocType('Cotizacion')}
+            🏢 NCF Tradicional (B)
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setDocType('Factura');
+              setIsEcfMode(true);
+              setSelectedNcfType('E32');
+            }}
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+              docType === 'Factura' && isEcfMode
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : 'bg-white text-neutral-700 border-neutral-200 hover:bg-emerald-50'
+            }`}
           >
-            Cotización
-          </Button>
+            ⚡ e-CF Electrónico (E)
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setDocType('Factura');
+              setIsEcfMode(false);
+              setSelectedNcfType('SIN' as any);
+            }}
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+              docType === 'Factura' && !isEcfMode && selectedNcfType === 'SIN'
+                ? 'bg-slate-700 text-white border-slate-700 shadow-xs'
+                : 'bg-white text-neutral-700 border-neutral-200 hover:bg-slate-50'
+            }`}
+          >
+            🛒 Genérico (Sin RNC)
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setDocType('Cotizacion');
+              setIsEcfMode(false);
+            }}
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+              docType === 'Cotizacion'
+                ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                : 'bg-white text-neutral-700 border-neutral-200 hover:bg-indigo-50'
+            }`}
+          >
+            📋 Cotización
+          </button>
         </div>
       </div>
 
