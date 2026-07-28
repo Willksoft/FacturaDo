@@ -139,6 +139,20 @@ import {
   Eye,
   EyeOff,
   UploadCloud,
+  Wallet,
+  Clock,
+  Building2,
+  Scale,
+  ArrowDownLeft,
+  ArrowUpRight,
+  Boxes,
+  UserCheck,
+  FileCheck,
+  FileX,
+  FileCode,
+  SlidersHorizontal,
+  Truck,
+  Coins,
 } from 'lucide-react';
 
 type TabType =
@@ -231,14 +245,14 @@ const sidebarCategories = [
       { id: 'productos', name: 'Productos', icon: Package },
       { id: 'categorias', name: 'Categorías', icon: FolderOpen },
       { id: 'inventario', name: 'Inventario', icon: Warehouse },
-      { id: 'inventario-ajustes', name: 'Ajustes de stock', icon: Warehouse },
+      { id: 'inventario-ajustes', name: 'Ajustes de stock', icon: SlidersHorizontal },
     ]
   },
   {
     title: "Compras",
     icon: ShoppingCart,
     items: [
-      { id: 'suplidores', name: 'Suplidores', icon: Users },
+      { id: 'suplidores', name: 'Suplidores', icon: Truck },
       { id: 'purchase-orders', name: 'Órdenes de compra', icon: ShoppingCart },
       { id: 'gastos', name: 'Gastos', icon: TrendingDown },
     ]
@@ -247,28 +261,28 @@ const sidebarCategories = [
     title: "Finanzas",
     icon: Landmark,
     items: [
-      { id: 'caja', name: 'Caja', icon: Landmark },
-      { id: 'turnos', name: 'Turnos', icon: Landmark },
-      { id: 'bancos', name: 'Bancos', icon: Landmark },
-      { id: 'conciliacion', name: 'Conciliación Bancaria', icon: FileSpreadsheet },
-      { id: 'cobrar', name: 'Cuentas por cobrar', icon: ReceiptIcon },
-      { id: 'pagar', name: 'Cuentas por pagar', icon: Landmark },
+      { id: 'caja', name: 'Caja', icon: Wallet },
+      { id: 'turnos', name: 'Turnos', icon: Clock },
+      { id: 'bancos', name: 'Bancos', icon: Building2 },
+      { id: 'conciliacion', name: 'Conciliación Bancaria', icon: Scale },
+      { id: 'cobrar', name: 'Cuentas por cobrar', icon: ArrowDownLeft },
+      { id: 'pagar', name: 'Cuentas por pagar', icon: ArrowUpRight },
     ]
   },
   {
     title: "Reportes",
     icon: FileSpreadsheet,
     items: [
-      { id: 'rep-ventas', name: 'Ventas', icon: FileSpreadsheet },
+      { id: 'rep-ventas', name: 'Ventas', icon: TrendingUp },
       { id: 'rep-gastos', name: 'Gastos', icon: TrendingDown },
-      { id: 'rep-utilidades', name: 'Utilidades', icon: Landmark },
-      { id: 'rep-inv', name: 'Inventario', icon: Warehouse },
-      { id: 'rep-cli', name: 'Clientes', icon: Users },
-      { id: 'rep-dgii', name: 'DGII', icon: FileSpreadsheet },
-      { id: 'rep-606', name: 'Reporte 606', icon: FileSpreadsheet },
-      { id: 'rep-607', name: 'Reporte 607', icon: FileSpreadsheet },
-      { id: 'rep-608', name: 'Reporte 608', icon: FileSpreadsheet },
-      { id: 'rep-609', name: 'Reporte 609', icon: FileSpreadsheet },
+      { id: 'rep-utilidades', name: 'Utilidades', icon: Coins },
+      { id: 'rep-inv', name: 'Inventario', icon: Boxes },
+      { id: 'rep-cli', name: 'Clientes', icon: UserCheck },
+      { id: 'rep-dgii', name: 'DGII', icon: FileCheck },
+      { id: 'rep-606', name: 'Reporte 606', icon: FileText },
+      { id: 'rep-607', name: 'Reporte 607', icon: FilePlus },
+      { id: 'rep-608', name: 'Reporte 608', icon: FileX },
+      { id: 'rep-609', name: 'Reporte 609', icon: FileCode },
       { id: 'rep-excel', name: 'Exportar Excel', icon: FileSpreadsheet },
     ]
   },
@@ -1136,101 +1150,106 @@ export default function App() {
           {/* Eliminar también el botón previo de presupuestos — se renderiza después de sidebarCategories */}
           {sidebarCategories.map((cat, catIdx) => {
             const isOpen = !!openCategories[cat.title];
+            const isConfig = cat.title === "Configuración";
+
             return (
-              <div key={catIdx} className="space-y-1">
-                {!isSidebarCollapsed ? (
-                  <button
-                    type="button"
-                    onClick={() => toggleCategory(cat.title)}
-                    className="w-full text-left text-[12px] font-extrabold text-neutral-500 uppercase tracking-wider pl-2 pr-1.5 py-1.5 flex items-center justify-between gap-1.5 border-b border-neutral-100 mb-1 hover:text-neutral-900 transition-colors cursor-pointer bg-transparent border-0"
-                  >
-                    <div className="flex items-center gap-2">
-                      <cat.icon className="w-4 h-4 shrink-0 text-neutral-400" />
-                      <span className="font-bold tracking-wider">{cat.title}</span>
-                    </div>
-                    {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-neutral-400 shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 text-neutral-400 shrink-0" />}
-                  </button>
-                ) : (
-                  <div className="flex justify-center py-2 border-b border-neutral-100 mb-1 mt-2" title={cat.title}>
-                    <cat.icon className="w-5 h-5 text-neutral-300" />
+              <React.Fragment key={catIdx}>
+                {isConfig && (
+                  <div className="space-y-0.5 my-1">
+                    <button
+                      type="button"
+                      title={isSidebarCollapsed ? "Nómina y R.H." : undefined}
+                      onClick={() => checkAndNavigate('nomina')}
+                      className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
+                        currentTab === 'nomina'
+                          ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                          : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
+                      }`}
+                    >
+                      <Users className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-indigo-500`} />
+                      {!isSidebarCollapsed && <span>Nómina y R.H.</span>}
+                    </button>
+
+                    <button
+                      type="button"
+                      title={isSidebarCollapsed ? "Centro de Presupuestos" : undefined}
+                      onClick={() => checkAndNavigate('centro-presupuestos')}
+                      className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
+                        currentTab === 'centro-presupuestos'
+                          ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                          : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
+                      }`}
+                    >
+                      <Calculator className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-emerald-600`} />
+                      {!isSidebarCollapsed && <span>Centro de Presupuestos</span>}
+                    </button>
                   </div>
                 )}
-                {(isOpen || isSidebarCollapsed) && (
-                  <div className={isSidebarCollapsed ? 'space-y-2' : 'space-y-0.5'}>
-                    {cat.items.map((item) => {
-                      const mappedTab = item.id;
-                      const isActive = currentTab === mappedTab;
-                      const IconComp = item.icon;
-                      const hasQuickCreate = ['clientes', 'productos', 'facturas', 'cotizaciones', 'recibos', 'categorias'].includes(item.id);
 
-                      return (
-                        <div key={item.id} className={`relative group flex items-center ${isSidebarCollapsed ? 'justify-center' : ''}`} title={isSidebarCollapsed ? item.name : undefined}>
-                          <button
-                            onClick={() => {
-                              checkAndNavigate(mappedTab as TabType);
-                            }}
-                            className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2 pr-8'} ${
-                              isActive
-                                ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                                : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
-                            }`}
-                          >
-                            <IconComp className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0`} />
-                            {!isSidebarCollapsed && <span className="truncate">{item.name}</span>}
-                          </button>
-                          {hasQuickCreate && !isSidebarCollapsed && (
+                <div className="space-y-1">
+                  {!isSidebarCollapsed ? (
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory(cat.title)}
+                      className="w-full text-left text-[12px] font-extrabold text-neutral-500 uppercase tracking-wider pl-2 pr-1.5 py-1.5 flex items-center justify-between gap-1.5 border-b border-neutral-100 mb-1 hover:text-neutral-900 transition-colors cursor-pointer bg-transparent border-0"
+                    >
+                      <div className="flex items-center gap-2">
+                        <cat.icon className="w-4 h-4 shrink-0 text-neutral-400" />
+                        <span className="font-bold tracking-wider">{cat.title}</span>
+                      </div>
+                      {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-neutral-400 shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 text-neutral-400 shrink-0" />}
+                    </button>
+                  ) : (
+                    <div className="flex justify-center py-2 border-b border-neutral-100 mb-1 mt-2" title={cat.title}>
+                      <cat.icon className="w-5 h-5 text-neutral-300" />
+                    </div>
+                  )}
+                  {(isOpen || isSidebarCollapsed) && (
+                    <div className={isSidebarCollapsed ? 'space-y-2' : 'space-y-0.5'}>
+                      {cat.items.map((item) => {
+                        const mappedTab = item.id;
+                        const isActive = currentTab === mappedTab;
+                        const IconComp = item.icon;
+                        const hasQuickCreate = ['clientes', 'productos', 'facturas', 'cotizaciones', 'recibos', 'categorias'].includes(item.id);
+
+                        return (
+                          <div key={item.id} className={`relative group flex items-center ${isSidebarCollapsed ? 'justify-center' : ''}`} title={isSidebarCollapsed ? item.name : undefined}>
                             <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleQuickCreate(item.id);
+                              onClick={() => {
+                                checkAndNavigate(mappedTab as TabType);
                               }}
-                              title="Añadir nuevo"
-                              className={`absolute right-2 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center ${
-                                isActive ? 'text-white hover:bg-neutral-800' : 'text-neutral-400 hover:bg-neutral-200 hover:text-neutral-900'
+                              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2 pr-8'} ${
+                                isActive
+                                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
                               }`}
                             >
-                              <Plus className="w-3.5 h-3.5" />
+                              <IconComp className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0`} />
+                              {!isSidebarCollapsed && <span className="truncate">{item.name}</span>}
                             </button>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                            {hasQuickCreate && !isSidebarCollapsed && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleQuickCreate(item.id);
+                                }}
+                                title="Añadir nuevo"
+                                className={`absolute right-2 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center ${
+                                  isActive ? 'text-white hover:bg-neutral-800' : 'text-neutral-400 hover:bg-neutral-200 hover:text-neutral-900'
+                                }`}
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </React.Fragment>
             );
           })}
-          {/* Nómina y Centro de Presupuestos — DEBAJO de Reportes */}
-          <div className="space-y-1">
-            <button
-              type="button"
-              title={isSidebarCollapsed ? "Nómina y R.H." : undefined}
-              onClick={() => checkAndNavigate('nomina')}
-              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
-                currentTab === 'nomina'
-                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
-              }`}
-            >
-              <Users className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-indigo-500`} />
-              {!isSidebarCollapsed && <span>Nómina y R.H.</span>}
-            </button>
-          </div>
-          <div className="space-y-1">
-            <button
-              type="button"
-              title={isSidebarCollapsed ? "Centro de Presupuestos" : undefined}
-              onClick={() => checkAndNavigate('centro-presupuestos')}
-              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
-                currentTab === 'centro-presupuestos'
-                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
-              }`}
-            >
-              <Calculator className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-emerald-600`} />
-              {!isSidebarCollapsed && <span>Centro de Presupuestos</span>}
-            </button>
-          </div>
         </div>
 
         {/* LOGGED USER DETAILED DETAILS AT SIDEBAR BOTTOM */}
@@ -2501,76 +2520,83 @@ export default function App() {
 
                 {sidebarCategories.map((cat, catIdx) => {
                   const isOpen = !!openCategories[cat.title];
+                  const isConfig = cat.title === "Configuración";
+
                   return (
-                    <div key={catIdx} className="space-y-1 mt-2">
-                      <button
-                        type="button"
-                        onClick={() => toggleCategory(cat.title)}
-                        className="w-full text-left text-[13px] font-extrabold text-neutral-500 uppercase tracking-wider pl-3 pr-2 py-3 flex items-center justify-between gap-1.5 border-b border-neutral-100 mb-1 active:bg-neutral-50 transition-colors cursor-pointer bg-transparent border-0"
-                      >
-                        <div className="flex items-center gap-2">
-                          <cat.icon className="w-4 h-4 shrink-0 text-neutral-400" />
-                          <span className="font-bold tracking-wider">{cat.title}</span>
-                        </div>
-                        {isOpen ? <ChevronDown className="w-4 h-4 text-neutral-400 shrink-0" /> : <ChevronRight className="w-4 h-4 text-neutral-400 shrink-0" />}
-                      </button>
-
-                      {isOpen && (
-                        <div className="space-y-1 px-1">
-                          {cat.items.map((item) => {
-                            const mappedTab = item.id;
-                            const isActive = currentTab === mappedTab;
-                            const IconComp = item.icon;
-
-                            return (
-                              <button
-                                key={item.id}
-                                onClick={() => {
-                                  checkAndNavigate(mappedTab as TabType);
-                                  setMobileMenuOpen(false);
-                                }}
-                                className={`w-full flex items-center py-3 rounded-xl transition-all text-left text-[14px] px-3 space-x-3 ${
-                                  isActive
-                                    ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                                    : 'text-neutral-600 active:bg-neutral-100 font-medium'
-                                }`}
-                              >
-                                <IconComp className="w-5 h-5 shrink-0" />
-                                <span className="truncate">{item.name}</span>
-                              </button>
-                            );
-                          })}
+                    <React.Fragment key={catIdx}>
+                      {isConfig && (
+                        <div className="space-y-1 mt-2">
+                          <button
+                            type="button"
+                            onClick={() => { checkAndNavigate('nomina'); setMobileMenuOpen(false); }}
+                            className={`w-full flex items-center py-3 rounded-xl transition-all text-left text-[14px] px-3 space-x-3 ${
+                              currentTab === 'nomina'
+                                ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                                : 'text-neutral-600 active:bg-neutral-100 font-medium'
+                            }`}
+                          >
+                            <Users className="w-5 h-5 shrink-0 text-indigo-500" />
+                            <span>Nómina y R.H.</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { checkAndNavigate('centro-presupuestos'); setMobileMenuOpen(false); }}
+                            className={`w-full flex items-center py-3 rounded-xl transition-all text-left text-[14px] px-3 space-x-3 ${
+                              currentTab === 'centro-presupuestos'
+                                ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                                : 'text-neutral-600 active:bg-neutral-100 font-medium'
+                            }`}
+                          >
+                            <Calculator className="w-5 h-5 shrink-0 text-emerald-600" />
+                            <span>Centro de Presupuestos</span>
+                          </button>
                         </div>
                       )}
-                    </div>
+
+                      <div className="space-y-1 mt-2">
+                        <button
+                          type="button"
+                          onClick={() => toggleCategory(cat.title)}
+                          className="w-full text-left text-[13px] font-extrabold text-neutral-500 uppercase tracking-wider pl-3 pr-2 py-3 flex items-center justify-between gap-1.5 border-b border-neutral-100 mb-1 active:bg-neutral-50 transition-colors cursor-pointer bg-transparent border-0"
+                        >
+                          <div className="flex items-center gap-2">
+                            <cat.icon className="w-4 h-4 shrink-0 text-neutral-400" />
+                            <span className="font-bold tracking-wider">{cat.title}</span>
+                          </div>
+                          {isOpen ? <ChevronDown className="w-4 h-4 text-neutral-400 shrink-0" /> : <ChevronRight className="w-4 h-4 text-neutral-400 shrink-0" />}
+                        </button>
+
+                        {isOpen && (
+                          <div className="space-y-1 px-1">
+                            {cat.items.map((item) => {
+                              const mappedTab = item.id;
+                              const isActive = currentTab === mappedTab;
+                              const IconComp = item.icon;
+
+                              return (
+                                <button
+                                  key={item.id}
+                                  onClick={() => {
+                                    checkAndNavigate(mappedTab as TabType);
+                                    setMobileMenuOpen(false);
+                                  }}
+                                  className={`w-full flex items-center py-3 rounded-xl transition-all text-left text-[14px] px-3 space-x-3 ${
+                                    isActive
+                                      ? 'bg-neutral-950 text-white font-bold shadow-xs'
+                                      : 'text-neutral-600 active:bg-neutral-100 font-medium'
+                                  }`}
+                                >
+                                  <IconComp className="w-5 h-5 shrink-0" />
+                                  <span className="truncate">{item.name}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </React.Fragment>
                   );
                 })}
-
-                {/* Nómina y Centro de Presupuestos — DEBAJO de Reportes en móvil */}
-                <button
-                  type="button"
-                  onClick={() => { checkAndNavigate('nomina'); setMobileMenuOpen(false); }}
-                  className={`w-full flex items-center py-3 rounded-xl transition-all text-left text-[14px] px-3 space-x-3 ${
-                    currentTab === 'nomina'
-                      ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                      : 'text-neutral-600 active:bg-neutral-100 font-medium'
-                  }`}
-                >
-                  <Users className="w-5 h-5 shrink-0 text-indigo-500" />
-                  <span>Nómina y R.H.</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { checkAndNavigate('centro-presupuestos'); setMobileMenuOpen(false); }}
-                  className={`w-full flex items-center py-3 rounded-xl transition-all text-left text-[14px] px-3 space-x-3 ${
-                    currentTab === 'centro-presupuestos'
-                      ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                      : 'text-neutral-600 active:bg-neutral-100 font-medium'
-                  }`}
-                >
-                  <Calculator className="w-5 h-5 shrink-0 text-emerald-600" />
-                  <span>Centro de Presupuestos</span>
-                </button>
 
                 <div className="space-y-1 mt-4">
                   <button
