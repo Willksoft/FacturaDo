@@ -285,42 +285,11 @@ export const EcfMsellerView: React.FC = () => {
               </div>
             </div>
 
-            {/* Paso 02: Crear API Key */}
-            <div className={`p-6 rounded-3xl border transition-all ${certStep === 2 ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-200 bg-slate-50/50'}`}>
+            {/* Paso 02: Pruebas de Simulación e-CF */}
+            <div className={`p-6 rounded-3xl border transition-all ${certStep === 2 ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-200 bg-slate-50/50'} space-y-3`}>
               <div className="flex items-start gap-4">
                 <div className="w-8 h-8 rounded-full bg-slate-800 text-white font-bold flex items-center justify-center shrink-0 text-sm">
                   02
-                </div>
-                <div className="space-y-3 flex-1">
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-base">Crear API Key CerteCF</h3>
-                    <p className="text-xs text-slate-500">
-                      Genera la llave que se usará como `x-api-key` en la integración con MSeller.
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <input
-                      type="text"
-                      readOnly
-                      value={apiKeyGenerated}
-                      className="flex-1 h-10 px-3 bg-white border border-slate-200 rounded-xl font-mono text-xs"
-                    />
-                    <button
-                      onClick={handleGenerateKey}
-                      className="px-5 h-10 bg-slate-900 hover:bg-black text-white rounded-xl font-bold text-xs cursor-pointer"
-                    >
-                      Generar Nueva Key
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Paso 03: Pruebas de Simulación e-CF */}
-            <div className="p-6 rounded-3xl border border-slate-200 bg-slate-50/50 space-y-3">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-slate-800 text-white font-bold flex items-center justify-center shrink-0 text-sm">
-                  03
                 </div>
                 <div className="space-y-3 flex-1">
                   <div>
