@@ -10,64 +10,84 @@ import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
 import AIAssistantWidget from './features/ai/AIAssistantWidget';
-// Vistas Lazy Load
-const LandingAndAuth = React.lazy(() => import('./features/auth/LandingAndAuth'));
-const BlogList = React.lazy(() => import('./features/blog/BlogList'));
-const BlogPost = React.lazy(() => import('./features/blog/BlogPost'));
-const OnboardingWizard = React.lazy(() => import('./features/auth/OnboardingWizard'));
-const Dashboard = React.lazy(() => import('./features/dashboard/Dashboard'));
-const AnalyticsDashboard = React.lazy(() => import('./features/dashboard/AnalyticsDashboard'));
-const InvoiceCreator = React.lazy(() => import('./features/billing/InvoiceCreator'));
-const InvoiceList = React.lazy(() => import('./features/billing/InvoiceList'));
-const Directories = React.lazy(() => import('./features/contacts/Directories'));
-const DgiiReports = React.lazy(() => import('./features/dashboard/DgiiReports'));
-const InventoryManager = React.lazy(() => import('./features/inventory/InventoryManager'));
-const TemplateSettingsPanel = React.lazy(() => import('./features/settings/TemplateSettingsPanel'));
-const AppearanceSettingsView = React.lazy(() => import('./features/settings/AppearanceSettingsView'));
-const ShiftsView = React.lazy(() => import('./features/hr/ShiftsView'));
-const UserPermissions = React.lazy(() => import('./features/settings/UserPermissions'));
-const SupportSection = React.lazy(() => import('./features/help/SupportSection'));
-const UserManual = React.lazy(() => import('./features/help/UserManual'));
-const ReceiptsList = React.lazy(() => import('./features/billing/ReceiptsList'));
-const POSView = React.lazy(() => import('./features/pos/POSView'));
-const WarehousesView = React.lazy(() => import('./features/inventory/WarehousesView'));
-const FinancialAccountsView = React.lazy(() => import('./features/settings/FinancialAccountsView'));
-const PurchaseOrdersView = React.lazy(() => import('./features/accounting/PurchaseOrdersView'));
-const DocumentDetailsView = React.lazy(() => import('./features/billing/DocumentDetailsView'));
-const DocumentEditView = React.lazy(() => import('./features/billing/DocumentEditView'));
-const BusinessStateView = React.lazy(() => import('./features/dashboard/BusinessStateView'));
+// Helper para auto-reintentar imports perezosos cuando cambia el bundle desplegado
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  componentImport: () => Promise<{ default: T } | any>
+) {
+  return React.lazy(async () => {
+    const pageHasBeenRefreshed = window.sessionStorage.getItem('page_has_been_refreshed');
+    try {
+      const component = await componentImport();
+      window.sessionStorage.removeItem('page_has_been_refreshed');
+      return component.default ? component : { default: component };
+    } catch (error) {
+      if (!pageHasBeenRefreshed) {
+        window.sessionStorage.setItem('page_has_been_refreshed', 'true');
+        window.location.reload();
+      }
+      throw error;
+    }
+  });
+}
+
+// Vistas Lazy Load con Auto-Reintento
+const LandingAndAuth = lazyWithRetry(() => import('./features/auth/LandingAndAuth'));
+const BlogList = lazyWithRetry(() => import('./features/blog/BlogList'));
+const BlogPost = lazyWithRetry(() => import('./features/blog/BlogPost'));
+const OnboardingWizard = lazyWithRetry(() => import('./features/auth/OnboardingWizard'));
+const Dashboard = lazyWithRetry(() => import('./features/dashboard/Dashboard'));
+const AnalyticsDashboard = lazyWithRetry(() => import('./features/dashboard/AnalyticsDashboard'));
+const InvoiceCreator = lazyWithRetry(() => import('./features/billing/InvoiceCreator'));
+const InvoiceList = lazyWithRetry(() => import('./features/billing/InvoiceList'));
+const Directories = lazyWithRetry(() => import('./features/contacts/Directories'));
+const DgiiReports = lazyWithRetry(() => import('./features/dashboard/DgiiReports'));
+const InventoryManager = lazyWithRetry(() => import('./features/inventory/InventoryManager'));
+const TemplateSettingsPanel = lazyWithRetry(() => import('./features/settings/TemplateSettingsPanel'));
+const AppearanceSettingsView = lazyWithRetry(() => import('./features/settings/AppearanceSettingsView'));
+const ShiftsView = lazyWithRetry(() => import('./features/hr/ShiftsView'));
+const UserPermissions = lazyWithRetry(() => import('./features/settings/UserPermissions'));
+const SupportSection = lazyWithRetry(() => import('./features/help/SupportSection'));
+const UserManual = lazyWithRetry(() => import('./features/help/UserManual'));
+const ReceiptsList = lazyWithRetry(() => import('./features/billing/ReceiptsList'));
+const POSView = lazyWithRetry(() => import('./features/pos/POSView'));
+const WarehousesView = lazyWithRetry(() => import('./features/inventory/WarehousesView'));
+const FinancialAccountsView = lazyWithRetry(() => import('./features/settings/FinancialAccountsView'));
+const PurchaseOrdersView = lazyWithRetry(() => import('./features/accounting/PurchaseOrdersView'));
+const DocumentDetailsView = lazyWithRetry(() => import('./features/billing/DocumentDetailsView'));
+const DocumentEditView = lazyWithRetry(() => import('./features/billing/DocumentEditView'));
+const BusinessStateView = lazyWithRetry(() => import('./features/dashboard/BusinessStateView'));
 
 // Named exports to Lazy
-const InsForgeServicesView = React.lazy(() => import('./features/core/InsForgeServicesView').then(m => ({ default: m.InsForgeServicesView })));
-const ExpensesView = React.lazy(() => import('./features/accounting/ExpensesView').then(m => ({ default: m.ExpensesView })));
-const VendedoresView = React.lazy(() => import('./features/hr/VendedoresView').then(m => ({ default: m.VendedoresView })));
-const AuditLogsView = React.lazy(() => import('./features/settings/AuditLogsView').then(m => ({ default: m.AuditLogsView })));
-const SecuritySettingsView = React.lazy(() => import('./features/settings/SecuritySettingsView').then(m => ({ default: m.SecuritySettingsView })));
-const SystemMigrationView = React.lazy(() => import('./features/migration/SystemMigrationView').then(m => ({ default: m.SystemMigrationView })));
-const PayrollMainView = React.lazy(() => import('./features/payroll/PayrollMainView'));
-const EcfMsellerView = React.lazy(() => import('./features/ecf/EcfMsellerView').then(m => ({ default: m.EcfMsellerView })));
-const BudgetCenterMainView = React.lazy(() => import('./features/budget/BudgetCenterMainView'));
+const InsForgeServicesView = lazyWithRetry(() => import('./features/core/InsForgeServicesView').then(m => ({ default: m.InsForgeServicesView })));
+const ExpensesView = lazyWithRetry(() => import('./features/accounting/ExpensesView').then(m => ({ default: m.ExpensesView })));
+const VendedoresView = lazyWithRetry(() => import('./features/hr/VendedoresView').then(m => ({ default: m.VendedoresView })));
+const AuditLogsView = lazyWithRetry(() => import('./features/settings/AuditLogsView').then(m => ({ default: m.AuditLogsView })));
+const SecuritySettingsView = lazyWithRetry(() => import('./features/settings/SecuritySettingsView').then(m => ({ default: m.SecuritySettingsView })));
+const SystemMigrationView = lazyWithRetry(() => import('./features/migration/SystemMigrationView').then(m => ({ default: m.SystemMigrationView })));
+const PayrollMainView = lazyWithRetry(() => import('./features/payroll/PayrollMainView'));
+const EcfMsellerView = lazyWithRetry(() => import('./features/ecf/EcfMsellerView').then(m => ({ default: m.EcfMsellerView })));
+const BudgetCenterMainView = lazyWithRetry(() => import('./features/budget/BudgetCenterMainView'));
 
 const Specialized = import('./features/accounting/SpecializedViews');
-const ClientHistoryView = React.lazy(() => Specialized.then(m => ({ default: m.ClientHistoryView })));
-const ClientAccountStatementView = React.lazy(() => Specialized.then(m => ({ default: m.ClientAccountStatementView })));
-const ProductCategoriesView = React.lazy(() => Specialized.then(m => ({ default: m.ProductCategoriesView })));
-const InventoryAdjustmentsView = React.lazy(() => Specialized.then(m => ({ default: m.InventoryAdjustmentsView })));
-const FinancialCajaView = React.lazy(() => Specialized.then(m => ({ default: m.FinancialCajaView })));
-const FinancialBancosView = React.lazy(() => Specialized.then(m => ({ default: m.FinancialBancosView })));
-const AccountsReceivableView = React.lazy(() => Specialized.then(m => ({ default: m.AccountsReceivableView })));
-const AccountsPayableView = React.lazy(() => Specialized.then(m => ({ default: m.AccountsPayableView })));
-const CreditNotesView = React.lazy(() => Specialized.then(m => ({ default: m.CreditNotesView })));
-const ConfigLogoView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigLogoView })));
-const ConfigImpuestosView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigImpuestosView })));
-const ReportVentasView = React.lazy(() => Specialized.then(m => ({ default: m.ReportVentasView })));
-const ReportGastosView = React.lazy(() => Specialized.then(m => ({ default: m.ReportGastosView })));
-const ReportUtilidadesView = React.lazy(() => Specialized.then(m => ({ default: m.ReportUtilidadesView })));
-const ReportInventoryView = React.lazy(() => Specialized.then(m => ({ default: m.ReportInventoryView })));
-const ReportClientsView = React.lazy(() => Specialized.then(m => ({ default: m.ReportClientsView })));
-const ReportExcelView = React.lazy(() => Specialized.then(m => ({ default: m.ReportExcelView })));
-const ConfigUsuariosView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigUsuariosView })));
-const ConfigRolesView = React.lazy(() => Specialized.then(m => ({ default: m.ConfigRolesView })));
+const ClientHistoryView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ClientHistoryView })));
+const ClientAccountStatementView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ClientAccountStatementView })));
+const ProductCategoriesView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ProductCategoriesView })));
+const InventoryAdjustmentsView = lazyWithRetry(() => Specialized.then(m => ({ default: m.InventoryAdjustmentsView })));
+const FinancialCajaView = lazyWithRetry(() => Specialized.then(m => ({ default: m.FinancialCajaView })));
+const FinancialBancosView = lazyWithRetry(() => Specialized.then(m => ({ default: m.FinancialBancosView })));
+const AccountsReceivableView = lazyWithRetry(() => Specialized.then(m => ({ default: m.AccountsReceivableView })));
+const AccountsPayableView = lazyWithRetry(() => Specialized.then(m => ({ default: m.AccountsPayableView })));
+const CreditNotesView = lazyWithRetry(() => Specialized.then(m => ({ default: m.CreditNotesView })));
+const ConfigLogoView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ConfigLogoView })));
+const ConfigImpuestosView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ConfigImpuestosView })));
+const ReportVentasView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ReportVentasView })));
+const ReportGastosView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ReportGastosView })));
+const ReportUtilidadesView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ReportUtilidadesView })));
+const ReportInventoryView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ReportInventoryView })));
+const ReportClientsView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ReportClientsView })));
+const ReportExcelView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ReportExcelView })));
+const ConfigUsuariosView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ConfigUsuariosView })));
+const ConfigRolesView = lazyWithRetry(() => Specialized.then(m => ({ default: m.ConfigRolesView })));
 const BankReconciliationView = React.lazy(() => import('./features/accounting/BankReconciliationView').then(m => ({ default: m.BankReconciliationView })));
 
 const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout'));
@@ -254,6 +274,20 @@ const sidebarCategories = [
     ]
   },
   {
+    title: "Nómina & R.H.",
+    icon: Users,
+    items: [
+      { id: 'nomina', name: 'Nómina TSS & ISR', icon: Users },
+    ]
+  },
+  {
+    title: "Centro de Presupuestos",
+    icon: Calculator,
+    items: [
+      { id: 'centro-presupuestos', name: 'Centro de Presupuestos', icon: Calculator },
+    ]
+  },
+  {
     title: "Configuración",
     icon: Settings,
     items: [
@@ -412,6 +446,14 @@ export default function App() {
     type: 'warning' | 'danger' | 'success' | 'info';
   }
 
+  const [dismissedNotificationIds, setDismissedNotificationIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('facturado_dismissed_notifications');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
@@ -475,11 +517,12 @@ export default function App() {
     if (autoAlerts.length > 0) {
       setNotifications(prev => {
         const existingIds = new Set(prev.map(n => n.id));
-        const newAlerts = autoAlerts.filter(a => !existingIds.has(a.id));
+        const dismissedSet = new Set(dismissedNotificationIds);
+        const newAlerts = autoAlerts.filter(a => !existingIds.has(a.id) && !dismissedSet.has(a.id));
         return newAlerts.length > 0 ? [...newAlerts, ...prev] : prev;
       });
     }
-  }, [loaded, products, invoices, ncfSequences]);
+  }, [loaded, products, invoices, ncfSequences, dismissedNotificationIds]);
 
   const handleHeaderSearch = (val: string) => {
     setHeaderSearch(val);
@@ -1103,22 +1146,6 @@ export default function App() {
             </button>
           </div>
 
-          <div className="space-y-1 mt-1">
-            <button
-              type="button"
-              title={isSidebarCollapsed ? "Nómina y R.H." : undefined}
-              onClick={() => checkAndNavigate('nomina')}
-              className={`w-full flex items-center py-2 rounded-lg transition-all text-left text-[14px] ${isSidebarCollapsed ? 'justify-center px-0' : 'px-3 space-x-2'} ${
-                currentTab === 'nomina'
-                  ? 'bg-neutral-950 text-white font-bold shadow-xs'
-                  : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 font-medium'
-              }`}
-            >
-              <Users className={`${isSidebarCollapsed ? 'w-6 h-6' : 'w-4 h-4'} shrink-0 text-indigo-500`} />
-              {!isSidebarCollapsed && <span>Nómina y R.H.</span>}
-            </button>
-          </div>
-
           {sidebarCategories.map((cat, catIdx) => {
             const isOpen = !!openCategories[cat.title];
             return (
@@ -1457,6 +1484,10 @@ export default function App() {
                             <button
                               type="button"
                               onClick={() => {
+                                const clearedIds = notifications.map(n => n.id);
+                                const updatedDismissed = Array.from(new Set([...dismissedNotificationIds, ...clearedIds]));
+                                setDismissedNotificationIds(updatedDismissed);
+                                localStorage.setItem('facturado_dismissed_notifications', JSON.stringify(updatedDismissed));
                                 setNotifications([]);
                               }}
                               className="text-rose-500 hover:text-rose-700 bg-transparent border-0 cursor-pointer text-[10px] font-bold"
@@ -1486,6 +1517,9 @@ export default function App() {
                               key={n.id} 
                               onClick={() => {
                                 setNotifications(prev => prev.map(item => item.id === n.id ? { ...item, read: true } : item));
+                                const updatedDismissed = Array.from(new Set([...dismissedNotificationIds, n.id]));
+                                setDismissedNotificationIds(updatedDismissed);
+                                localStorage.setItem('facturado_dismissed_notifications', JSON.stringify(updatedDismissed));
                               }}
                               className={`py-2.5 px-2 flex gap-2.5 items-start cursor-pointer transition-colors rounded-lg ${n.read ? 'opacity-60 hover:bg-neutral-50/55' : 'bg-neutral-50/60 hover:bg-neutral-50'}`}
                             >
@@ -2366,7 +2400,7 @@ export default function App() {
           {currentTab === 'centro-presupuestos' && (
             <BudgetCenterMainView
               onNavigateToTab={(tab: string) => setCurrentTab(tab as any)}
-              createInvoiceOrQuote={createInvoice}
+              createInvoiceOrQuote={createInvoiceOrQuote}
             />
           )}
 
