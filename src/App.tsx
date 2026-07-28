@@ -46,6 +46,7 @@ const SecuritySettingsView = React.lazy(() => import('./features/settings/Securi
 const SystemMigrationView = React.lazy(() => import('./features/migration/SystemMigrationView').then(m => ({ default: m.SystemMigrationView })));
 const PayrollMainView = React.lazy(() => import('./features/payroll/PayrollMainView'));
 const EcfMsellerView = React.lazy(() => import('./features/ecf/EcfMsellerView').then(m => ({ default: m.EcfMsellerView })));
+const BudgetCenterMainView = React.lazy(() => import('./features/budget/BudgetCenterMainView'));
 
 const Specialized = import('./features/accounting/SpecializedViews');
 const ClientHistoryView = React.lazy(() => Specialized.then(m => ({ default: m.ClientHistoryView })));
@@ -113,6 +114,8 @@ import {
   TrendingUp,
   Palette,
   Briefcase,
+  Calculator,
+  ShieldCheck,
   Eye,
   EyeOff,
   UploadCloud,
@@ -175,6 +178,7 @@ type TabType =
   | 'estado-negocio'
   | 'conciliacion'
   | 'ecf-mseller'
+  | 'centro-presupuestos'
   | 'user-manual';
 
 const sidebarCategories = [
@@ -185,6 +189,7 @@ const sidebarCategories = [
       { id: 'pos', name: 'Punto de Venta (POS)', icon: Store },
       { id: 'facturas', name: 'Facturas', icon: FilePlus, params: 'facturas_all' },
       { id: 'ecf-mseller', name: 'Facturación Electrónica (e-CF)', icon: ShieldCheck },
+      { id: 'centro-presupuestos', name: 'Centro de Presupuestos', icon: Calculator },
       { id: 'vendedores', name: 'Vendedores', icon: Briefcase },
       { id: 'cotizaciones', name: 'Cotizaciones', icon: ClipboardList, params: 'cotizaciones_all' },
       { id: 'notas-credito', name: 'Notas de crédito', icon: AlertTriangle },
@@ -2355,6 +2360,13 @@ export default function App() {
               deleteExpense={deleteExpense}
               currentUser={currentUser}
               financialAccounts={financialAccounts}
+            />
+          )}
+
+          {currentTab === 'centro-presupuestos' && (
+            <BudgetCenterMainView
+              onNavigateToTab={(tab: string) => setCurrentTab(tab as any)}
+              createInvoiceOrQuote={createInvoice}
             />
           )}
 
